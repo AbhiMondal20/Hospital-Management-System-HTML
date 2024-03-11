@@ -1,0 +1,12 @@
+HTTrack3.49-2+htsswf+htsjava launched on Mon, 11 Mar 2024 17:21:13 at https://rhythm-admin-template.multipurposethemes.com/main/index.html +*.png +*.gif +*.jpg +*.jpeg +*.css +*.js -ad.doubleclick.net/* -mime:application/foobar
+(winhttrack -qwC2%Ps2u1%s%uN0%I0p3DaK0H0%kf2A25000%f#f -F "Mozilla/4.5 (compatible; HTTrack 3.0x; Windows 98)" -%F "<!-- Mirrored from %s%s by HTTrack Website Copier/3.x [XR&CO'2014], %s -->" -%l "en, *" https://rhythm-admin-template.multipurposethemes.com/main/index.html -O1 "E:\XAMPP\htdocs\Hospital Management System HTML\Dashboard" +*.png +*.gif +*.jpg +*.jpeg +*.css +*.js -ad.doubleclick.net/* -mime:application/foobar )
+
+Information, Warnings and Errors reported for this mirror:
+note:	the hts-log.txt file, and hts-cache folder, may contain sensitive information,
+	such as username/password authentication for websites mirrored in this project
+	do not share these files/folders if you want these information to remain private
+
+17:24:46	Error: 	"Not Found" (404) at link https://rhythm-admin-template.multipurposethemes.com/main/www.youtube.com/watch?v=sK7riqg2mr4 (from https://rhythm-admin-template.multipurposethemes.com/main/sample_lightbox.html)
+
+HTTrack Website Copier/3.49-2 mirror complete in 3 minutes 56 seconds : 698 links scanned, 696 files written (78322266 bytes overall) [61088344 bytes received at 258848 bytes/sec], 23071014 bytes transferred using HTTP compression in 352 files, ratio 24%, 69.8 requests per connection
+(1 errors, 0 warnings, 0 messages)
