@@ -1,6 +1,73 @@
 <?php
-include('header.php');
+    session_start();
+    include ('../db_conn.php'); 
+    include ('header.php');
+
+    if(isset($_POST['save'])){
+
+        $final_diagnosis = $_POST['final_diagnosis'];
+        $reason_for_admission = $_POST['reason_for_admission'];
+        $chief_complaints = $_POST['chief_complaints'];
+        $history_of_present_illness = $_POST['history_of_present_illness'];
+        $personal_history = $_POST['personal_history'];
+        $past = $_POST['past'];
+        $allergies = $_POST['allergies'];
+        $date_of_procedure = $_POST['date_of_procedure'];
+        $details_of_operation = $_POST['details_of_operation'];
+        $ot_finding = $_POST['ot_finding'];
+        $general_examination = $_POST['general_examination'];
+        $systemic_examination = $_POST['systemic_examination'];
+        $course_during_hospital_stay = $_POST['course_during_hospital_stay'];
+        $lab_report = $_POST['lab_report'];
+        $condition_on_discharge = $_POST['condition_on_discharge'];
+        $transfusions = $_POST['transfusions'];
+        $discharge_advice = $_POST['discharge_advice'];
+        $follow_on = $_POST['follow_on'];
+        $when_how_to_obtain_urgent_care = $_POST['when_how_to_obtain_urgent_care'];
+        $medication_during_hospital_course = $_POST['medication_during_hospital_course'];
+    
+        // Construct SQL query
+        $sql ="INSERT INTO discharge (final_diagnosis, reason_for_admission, chief_complaints, history_of_present_illness, personal_history, past, allergies, date_of_procedure, details_of_operation, ot_finding, general_examination, systemic_examination, course_during_hospital_stay, lab_report, condition_on_discharge, transfusions, discharge_advice, follow_on, when_how_to_obtain_urgent_care, medication_during_hospital_course)
+        VALUES 
+        (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        
+        // Prepare the SQL statement
+        $stmt = sqlsrv_prepare($conn, $sql, array(
+            &$final_diagnosis,
+            &$reason_for_admission,
+            &$chief_complaints,
+            &$history_of_present_illness,
+            &$personal_history,
+            &$past,
+            &$allergies,
+            &$date_of_procedure,
+            &$details_of_operation,
+            &$ot_finding,
+            &$general_examination,
+            &$systemic_examination,
+            &$course_during_hospital_stay,
+            &$lab_report,
+            &$condition_on_discharge,
+            &$transfusions,
+            &$discharge_advice,
+            &$follow_on,
+            &$when_how_to_obtain_urgent_care,
+            &$medication_during_hospital_course
+        ));
+    
+        $res = sqlsrv_execute($stmt);
+    
+        if ($res === false) {
+            echo "Error inserting data: " . print_r(sqlsrv_errors(), true);
+        } else {
+            echo "<script>alert('Data inserted successfully')</script>";
+        }
+    
+        // Free statement resources
+        sqlsrv_free_stmt($stmt);
+    }    
 ?>
+
 <div class="content-wrapper">
     <div class="container-full">
         <section class="content">
@@ -10,7 +77,7 @@ include('header.php');
                         <div class="box-header with-border">
                             <h4 class="box-title">Discharge Form</h4>
                         </div>
-                        <form class="form">
+                        <form class="form" method="POST">
                             <div class="box-body">
                                 <div class="row">
                                     <div class="col-md-6">
@@ -20,8 +87,7 @@ include('header.php');
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label class="form-label">REASON FOR ADMISSION</label>
-                                            <textarea class="form-control" placeholder="REASON FOR ADMISSION"
-                                                name="reason_for_admission"
+                                            <textarea class="form-control" placeholder="REASON FOR ADMISSION" name="reason_for_admission"
                                                 placeholder="REASON FOR ADMISSION"></textarea>
                                         </div>
                                     </div>
@@ -65,8 +131,7 @@ include('header.php');
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label class="form-label">DATE OF PROCEDURE. / OPERATION</label>
-                                            <textarea placeholder="DATE OF PROCEDURE. / OPERATION"
-                                                name="date_of_procedure"></textarea>
+                                            <input type="date" placeholder="DATE OF PROCEDURE. / OPERATION" name="date_of_procedure">
                                         </div>
                                     </div>
                                     <div class="col-md-6">
@@ -171,11 +236,8 @@ include('header.php');
                                     </div>
                                 </div>
                             </div>
-                            <!-- /.box-body -->
                             <div class="box-footer">
-                                <button type="submit" class="btn btn-primary">
-                                    <i class="ti-save-alt"></i> Save
-                                </button>
+                                <input type="submit" class="btn btn-primary" value="Save" name="save">
                             </div>
                         </form>
                     </div>

@@ -184,7 +184,7 @@
                             <a class="dropdown-item" href="#"><i class="ti-wallet text-muted me-2"></i> My Wallet</a>
                             <a class="dropdown-item" href="#"><i class="ti-settings text-muted me-2"></i> Settings</a>
                             <div class="dropdown-divider"></div>
-                            <a class="dropdown-item" href="logout"><i class="ti-lock text-muted me-2"></i> Logout</a>
+                            <a class="dropdown-item" href="../logout"><i class="ti-lock text-muted me-2"></i> Logout</a>
                         </li>
                     </ul>
                 </li>
@@ -209,7 +209,7 @@
                 <!-- sidebar menu-->
                 <ul class="sidebar-menu" data-widget="tree">
                     <li class="treeview">
-                        <a href="index.php">
+                        <a href="/">
                             <i data-feather="monitor"></i>
                             <span>Dashboard</span>
                             <span class="pull-right-container">
@@ -218,7 +218,7 @@
                         </a>
                     </li>
                     <li>
-                        <a href="discharge.php">
+                        <a href="discharge">
                             <i data-feather="calendar"></i>
                             <span>Discharge</span>
                         </a>
