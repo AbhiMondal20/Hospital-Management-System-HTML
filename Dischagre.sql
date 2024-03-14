@@ -1,7 +1,7 @@
 select * from discharge
 SELECT * FROM [dbo].[dba] WHERE dUSERNAME = 'Administrator' AND dPASSWORD = 'Para@012'
-
 DROP TABLE discharge;
+
 CREATE TABLE discharge (
     id INT PRIMARY KEY IDENTITY(1,1),
     final_diagnosis NVARCHAR(MAX),
