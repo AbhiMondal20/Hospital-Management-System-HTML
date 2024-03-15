@@ -1,9 +1,18 @@
+select * from dba;
 select * from discharge
 SELECT * FROM [dbo].[dba] WHERE dUSERNAME = 'Administrator' AND dPASSWORD = 'Para@012'
 DROP TABLE discharge;
 
+
+
+select * from ba4 WHERE refno = 3844
+
+
 CREATE TABLE discharge (
     id INT PRIMARY KEY IDENTITY(1,1),
+    code NVARCHAR(MAX),
+    refno NVARCHAR(MAX),
+    pname NVARCHAR(MAX),
     final_diagnosis NVARCHAR(MAX),
     reason_for_admission NVARCHAR(MAX),
     chief_complaints NVARCHAR(MAX),
@@ -23,7 +32,9 @@ CREATE TABLE discharge (
     discharge_advice NVARCHAR(MAX),
     follow_on NVARCHAR(MAX),
     when_how_to_obtain_urgent_care NVARCHAR(MAX),
-    medication_during_hospital_course NVARCHAR(MAX)
+    medication_during_hospital_course NVARCHAR(MAX),
+    username NVARCHAR(MAX),
+	CurrentDate DATETIME DEFAULT GETDATE()
 );
 
 

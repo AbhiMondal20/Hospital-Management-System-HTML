@@ -331,9 +331,15 @@
 	<script src="../assets/vendor_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js"></script>
 	<script src="../assets/vendor_components/date-paginator/bootstrap-datepaginator.min.js"></script>
 	
+	<script src="../assets/icons/feather-icons/feather.min.js"></script>	
+	<script src="../assets/vendor_components/datatable/datatables.min.js"></script>
+
 	<!-- Rhythm Admin App -->
 	<script src="js/template.js"></script>
 	<script src="js/pages/dashboard.js"></script>
+
+	
+	<script src="js/pages/data-table.js"></script>
 	
 </body>
 </html>

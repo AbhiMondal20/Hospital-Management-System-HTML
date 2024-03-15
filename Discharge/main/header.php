@@ -1,3 +1,7 @@
+<?php
+    include('../db_conn.php');
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -224,7 +228,7 @@
                         </a>
                     </li>
                     <li class="treeview">
-                        <a href="#">
+                        <a href="patient">
                             <i data-feather="users"></i>
                             <span>Patients</span>
                             <span class="pull-right-container">

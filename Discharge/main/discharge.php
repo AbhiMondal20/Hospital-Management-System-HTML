@@ -1,6 +1,5 @@
 <?php
 session_start();
-include('../db_conn.php');
 include('header.php');
 
 if (isset($_POST['save'])) {
@@ -118,23 +117,23 @@ if (isset($_POST['save'])) {
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label class="form-label">Discharge Type</label>
-                                            <select class="form-control select2"
-                                                style="width: 100%;" tabindex="-1" aria-hidden="true">
-                                                <option selected="selected">Alabama</option>
-                                                <option>Alaska</option>
-                                                <option>California</option>
-                                                <option>Delaware</option>
-                                                <option>Tennessee</option>
-                                                <option>Texas</option>
-                                                <option>Washington</option>
+                                            <select class="form-control select2" tabindex="-1" aria-hidden="true">
+                                                <option selected="selected">Select Discharge Type</option>
+                                                <option value="CASE SUMMARY">CASE SUMMARY</option>
+                                                <option value="DEATH SUMMARY">DEATH SUMMARY</option>
+                                                <option value="DISCHARGE ON REQUEST">DISCHARGE ON REQUEST</option>
+                                                <option value="DISCHARGE SUMMARY">DISCHARGE SUMMARY</option>
+                                                <option value="GAMA SUMMARY">GAMA SUMMARY</option>
+                                                <option value="LAMA SUMMARY">LAMA SUMMARY</option>
+                                                <option value="LEFT AGAINEST MEDICAL ADVICE">LEFT AGAINEST MEDICAL ADVICE</option>
+                                                <option value="SURGICAL DISCHARGE SUMMARY">SURGICAL DISCHARGE SUMMARY</option>
                                             </select>
                                         </div>
                                     </div>
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label class="form-label">DATE OF PROCEDURE. / OPERATION</label>
-                                            <input type="date" placeholder="DATE OF PROCEDURE. / OPERATION"
-                                                name="date_of_procedure">
+                                            <input type="date" class="form-control" placeholder="DATE OF PROCEDURE. / OPERATION" id="date1" name="date_of_procedure">
                                         </div>
                                     </div>
                                     <div class="col-md-12 mt-4">
