@@ -1,60 +1,6 @@
 <?php
 session_start();
-include('header.php');
-
-if (isset($_POST['save'])) {
-
-    $date_of_procedure = $_POST['date_of_procedure'];
-    $presenting_complaints = $_POST['presenting_complaints'];
-    $final_diagnosis = $_POST['final_diagnosis'];
-    $past_history = $_POST['past_history'];
-    $phy_examination = $_POST['phy_examination'];
-    $systemic_examin = $_POST['systemic_examin'];
-    $summary_invest = $_POST['summary_invest'];
-    $course_discussion = $_POST['course_discussion'];
-    $condition_discharge = $_POST['condition_discharge'];
-    $advice_on_discharge = $_POST['advice_on_discharge'];
-    $summary_type = $_POST['summary_type'];
-
-
-    $sql = "INSERT INTO discharge (final_diagnosis, reason_for_admission, chief_complaints, history_of_present_illness, personal_history, past, allergies, date_of_procedure, details_of_operation, ot_finding, general_examination, systemic_examination, course_during_hospital_stay, lab_report, condition_on_discharge, transfusions, discharge_advice, follow_on, when_how_to_obtain_urgent_care, medication_during_hospital_course)
-        VALUES 
-        (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-    $stmt = sqlsrv_prepare(
-        $conn,
-        $sql,
-        array(
-            &
-            $date_of_procedure,
-            &
-            $presenting_complaints,
-            &
-            $final_diagnosis,
-            &
-            $phy_examination,
-            &
-            $systemic_examin,
-            &
-            $summary_invest,
-            &
-            $course_discussion,
-            &
-            $condition_discharge,
-            &
-            $advice_on_discharge
-        )
-    );
-
-    $res = sqlsrv_execute($stmt);
-
-    if ($res === false) {
-        echo "Error inserting data: " . print_r(sqlsrv_errors(), true);
-    } else {
-        echo "<script>alert('Data inserted successfully')</script>";
-    }
-    // Free statement resources
-    sqlsrv_free_stmt($stmt);
-}
+include ('header.php');
 ?>
 
 <div class="content-wrapper">
@@ -100,12 +46,46 @@ if (isset($_POST['save'])) {
                                     </thead>
                                     <tbody>
                                         <tr class="hover-primary odd" role="row">
-                                            <td class="sorting_1"> ADM REF: &nbsp; #p245879</td>
-                                            <td> ADM. DATE : &nbsp;14 April 2021, 10:30 AM</td>
-                                            <td>Name:&nbsp; Aaliyah clark</td>
-                                            <td>Consultant: &nbsp;Dr. Johen Doe</td>
-                                            <td>Age: &nbsp; 79 YEARS</td>
-                                            <td>GENDER: &nbsp; F</td>
+                                            <?php
+                                            $regno = $_GET['regno'];
+                                            $pname = $_GET['pname'];
+                                            $sql = "SELECT * FROM AdmitCard2324 WHERE regno = '$regno' AND pname='$pname'";
+                                            $stmt = sqlsrv_query($conn, $sql);
+                                            if ($stmt === false) {
+                                                die (print_r(sqlsrv_errors(), true));
+                                            }
+                                            while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
+                                                $regno = $row['regno'];
+                                                $pname = $row['pname'];
+                                                $plname = $row['plname'];
+                                                $age = $row['page'];
+                                                $gender = $row['psex'];
+                                                $refno = $row['refno'];
+                                                // $pdate = $row['pdate']; 
+                                                $pdate = $row['pdate']->format('Y-m-d');
+                                                $con_doc = $row['pcons'];
+                                                $padd = $row['padd'];
+                                            }
+                                            ?>
+                                            <td class="sorting_1"> Reg No: &nbsp;
+                                                <?php echo $regno; ?>
+                                            </td>
+                                            <td> ADM. DATE : &nbsp;
+                                                <?php echo $pdate; ?>
+                                            </td>
+                                            <td>Name:&nbsp;
+                                                <?php echo $pname; ?>
+                                                <?php echo $plname; ?>
+                                            </td>
+                                            <td>Consultant: &nbsp;
+                                                <?php echo $con_doc; ?>
+                                            </td>
+                                            <td>Age: &nbsp;
+                                                <?php echo $age; ?> YEARS
+                                            </td>
+                                            <td>GENDER: &nbsp;
+                                                <?php echo $gender; ?>
+                                            </td>
                                         </tr>
                                     </tbody>
                                 </table>
@@ -117,7 +97,8 @@ if (isset($_POST['save'])) {
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label class="form-label">Discharge Type</label>
-                                            <select class="form-control select2" tabindex="-1" aria-hidden="true">
+                                            <select class="form-control select2" tabindex="-1" aria-hidden="true"
+                                                name="dis_type">
                                                 <option selected="selected">Select Discharge Type</option>
                                                 <option value="CASE SUMMARY">CASE SUMMARY</option>
                                                 <option value="DEATH SUMMARY">DEATH SUMMARY</option>
@@ -125,15 +106,21 @@ if (isset($_POST['save'])) {
                                                 <option value="DISCHARGE SUMMARY">DISCHARGE SUMMARY</option>
                                                 <option value="GAMA SUMMARY">GAMA SUMMARY</option>
                                                 <option value="LAMA SUMMARY">LAMA SUMMARY</option>
-                                                <option value="LEFT AGAINEST MEDICAL ADVICE">LEFT AGAINEST MEDICAL ADVICE</option>
-                                                <option value="SURGICAL DISCHARGE SUMMARY">SURGICAL DISCHARGE SUMMARY</option>
+                                                <option value="LEFT AGAINEST MEDICAL ADVICE">LEFT AGAINEST MEDICAL
+                                                    ADVICE</option>
+                                                <option value="SURGICAL DISCHARGE SUMMARY">SURGICAL DISCHARGE SUMMARY
+                                                </option>
                                             </select>
                                         </div>
                                     </div>
+                                    <input class="form-control" type="hidden" value="<?php echo $regno; ?>" name="regno">
+                                    <input class="form-control" type="hidden" value="<?php echo $refno; ?>" name="refno">
+                                    <input class="form-control" type="hidden" value="<?php echo $pname; ?>" name="pname">
+
                                     <div class="col-md-6">
                                         <div class="form-group">
-                                            <label class="form-label">DATE OF PROCEDURE. / OPERATION</label>
-                                            <input type="date" class="form-control" placeholder="DATE OF PROCEDURE. / OPERATION" id="date1" name="date_of_procedure">
+                                            <label class="form-label">DISCHARGE DATE</label>
+                                            <input class="form-control" type="datetime-local" name="discharge_date">
                                         </div>
                                     </div>
                                     <div class="col-md-12 mt-4">
@@ -141,21 +128,21 @@ if (isset($_POST['save'])) {
                                             DURATION:- </label>
                                         <textarea name="presenting_complaints"
                                             placeholder="PRESENTING COMPLAINTS AT THE TIME OF ADMISSION WITH DURATION"
-                                            required=""></textarea>
+                                            ></textarea>
                                     </div>
 
                                     <div class="col-md-12 mt-4">
                                         <label class="form-label">FINAL DIAGNOSIS AT THE TIME OF DISCHARGE:-</label>
                                         <textarea name="final_diagnosis"
                                             placeholder="FINAL DIAGNOSIS AT THE TIME OF DISCHARGE:-"
-                                            required=""></textarea>
+                                            ></textarea>
                                     </div>
                                     <div class="col-md-12 mt-4">
                                         <div class="form-group">
                                             <label class="form-label">PAST MEDICAL / SURGICAL HISTORY IF ANY:- </label>
                                             <textarea class="form-control"
                                                 placeholder="PAST MEDICAL / SURGICAL HISTORY IF ANY:- "
-                                                name="past_history" required=""></textarea>
+                                                name="past_history" ></textarea>
                                         </div>
                                     </div>
                                 </div>
@@ -221,5 +208,70 @@ if (isset($_POST['save'])) {
     </div>
 </div>
 <?php
-include('footer.php');
+if (isset($_POST['save'])) {
+    $dis_type = $_POST['dis_type'];
+    $regno = $_POST['regno'];
+    $refno = $_POST['refno'];
+    $pname = $_POST['pname'];
+    $discharge_date = $_POST['discharge_date'];
+    $presenting_complaints = $_POST['presenting_complaints'];
+    $final_diagnosis = $_POST['final_diagnosis'];
+    $past_history = $_POST['past_history'];
+    $phy_examination = $_POST['phy_examination'];
+    $systemic_examin = $_POST['systemic_examin'];
+    $summary_invest = $_POST['summary_invest'];
+    $course_discussion = $_POST['course_discussion'];
+    $condition_discharge = $_POST['condition_discharge'];
+    $advice_on_discharge = $_POST['advice_on_discharge'];
+    $username = 'admin';
+
+    $sql = "INSERT INTO discharge (regno, refno, pname, dis_type, discharge_date, presenting_complaints, final_diagnosis, past_history, phy_examination, systemic_examin, summary_invest, course_discussion, condition_discharge, advice_on_discharge, username)
+        VALUES 
+        (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    
+    $params = array(
+        &$regno,
+        &$refno,
+        &$pname,
+        &$dis_type,
+        &$discharge_date,
+        &$presenting_complaints,
+        &$final_diagnosis,
+        &$past_history,
+        &$phy_examination,
+        &$systemic_examin,
+        &$summary_invest,
+        &$course_discussion,
+        &$condition_discharge,
+        &$advice_on_discharge,
+        &$username
+    );
+
+    $stmt = sqlsrv_prepare($conn, $sql, $params);
+
+    if ($stmt === false) {
+        echo "Error preparing statement: " . print_r(sqlsrv_errors(), true);
+    } else {
+        $res = sqlsrv_execute($stmt);
+        if ($res === false) {
+            echo "Error inserting data: " . print_r(sqlsrv_errors(), true);
+        } else {
+            echo "<script>
+            swal({
+                title: 'Successfull!',
+                text: 'Thank you!',
+                icon: 'success',
+                button: 'Ok!',
+            }).then(function() {
+                window.open('discharge_pdf?regno=$regno&refno=$refno', '_blank');
+            });
+        </script>";
+        }
+    }
+
+    // Free statement resources
+    sqlsrv_free_stmt($stmt);
+}
+
+include ('footer.php');
 ?>
