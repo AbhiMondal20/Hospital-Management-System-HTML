@@ -3,11 +3,20 @@ select * from discharge
 SELECT * FROM [dbo].[dba] WHERE dUSERNAME = 'Administrator' AND dPASSWORD = 'Para@012'
 DROP TABLE discharge;
 
+Select * FROM InPatho2324
+
 Select * FROM registration where rno = '237495'
 Select * FROM citymaster
 Select * FROM deptmaster
 Select * FROM docmaster
 Select * FROM titlemaster
+Select * FROM doctorreceipt
+Select * FROM packagemaster
+Select * FROM servmaster where servrate = '6500.00'
+
+
+
+Select * FROM InOpd2324 where regno = '237495'
 
 select * from ba4 WHERE refno = 3844
 Select * FROM AdmitCardCan2324 where regno = '237495'

@@ -16,3 +16,5 @@ OPD Module
 11. Deliver Reports	
 
 **In database 'registration' table use for OPD patient Registration
+**In database 'InPatho2324' table use for OPD Billing 
+**In database 'servmaster' table use for OPD Services/Package

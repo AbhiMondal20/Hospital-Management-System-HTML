@@ -144,13 +144,13 @@ include ('function.php');
                                 </a>
                             </li>
                             <li>
-                                <a href="reg_list">
+                                <a href="reg-list">
                                     <i data-feather="inbox"></i>
                                     <span>OPD Registration List</span>
                                 </a>
                             </li>
                             <li>
-                                <a href="#">
+                                <a href="opd-billing">
                                     <i data-feather="inbox"></i>
                                     <span>OPD Billing</span>
                                 </a>
