@@ -14,3 +14,5 @@ OPD Module
 9. Due Register
 10. Patient Wise Test Details
 11. Deliver Reports	
+
+**In database 'registration' table use for OPD patient Registration

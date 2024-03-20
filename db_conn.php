@@ -1,5 +1,5 @@
 <?php
-$serverName = "SERVER(sa)";
+$serverName = "SERVER";
 $connectionOptions = [
     "Database" => "CNHMS",
     "Uid" => "sa",

@@ -1,3 +1,7 @@
+<?php
+date_default_timezone_get();
+include ('function.php');
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -30,6 +34,20 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
         integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA=="
         crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"
+        integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.6.0/umd/popper.min.js"
+        integrity="sha512-BmM0/BQlqh02wuK5Gz9yrbe7VyIVwOzD1o40yi1IsTjriX/NGF37NyXHfmFzIlMmoSIBXgqDiG1VNU6kB5dBbA=="
+        crossorigin="anonymous"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js"
+        integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
+        crossorigin="anonymous"></script>
+    <!-- sweet alert -->
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+
 </head>
 
 <body class="hold-transition light-skin sidebar-mini theme-success fixed">
@@ -113,20 +131,20 @@
                     <div class="multinav-scroll" style="height: 100%;">
                         <!-- sidebar menu-->
                         <ul class="sidebar-menu" data-widget="tree">
-                            <li class="treeview">
+                            <li>
                                 <a href="index">
                                     <i data-feather="monitor"></i>
                                     <span>Dashboard</span>
                                 </a>
                             </li>
-                            <li class="treeview">
+                            <li>
                                 <a href="reg">
                                     <i data-feather="inbox"></i>
                                     <span>OPD Registration</span>
                                 </a>
                             </li>
                             <li>
-                                <a href="#">
+                                <a href="reg_list">
                                     <i data-feather="inbox"></i>
                                     <span>OPD Registration List</span>
                                 </a>

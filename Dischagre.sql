@@ -3,10 +3,15 @@ select * from discharge
 SELECT * FROM [dbo].[dba] WHERE dUSERNAME = 'Administrator' AND dPASSWORD = 'Para@012'
 DROP TABLE discharge;
 
-
+Select * FROM registration where rno = '237495'
+Select * FROM citymaster
+Select * FROM deptmaster
+Select * FROM docmaster
+Select * FROM titlemaster
 
 select * from ba4 WHERE refno = 3844
-
+Select * FROM AdmitCardCan2324 where regno = '237495'
+Select * FROM InOpd2324
 select * from AdmitCard2324 WHERE regno = '237245'
 SELECT * FROM AdmitCard2324 WHERE regno IN (SELECT MAX(regno) FROM AdmitCard2324 GROUP BY regno);
 

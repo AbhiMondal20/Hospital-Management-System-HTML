@@ -1,7 +1,7 @@
 # Hospital-Management-System-HTML
-Microsoft Drivers for PHP for SQL Server
-
- https://learn.microsoft.com/en-us/sql/connect/php/download-drivers-php-sql-server?view=sql-server-ver16#download
+For Sql server connection download php sql server connecter
+https://go.microsoft.com/fwlink/?linkid=2258816
+Video Link: https://youtu.be/XLTkcB_T8Mo?si=S00rV5GTg3PHjE7W
 
 
 # For php.ini file
