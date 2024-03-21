@@ -353,93 +353,62 @@ while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
                                 </div>
                                 <label for="">Bill Details</label>
                                 <hr>
-                                <div class="row">
-                                    <div class="col-lg-4">
-                                        <label for="Services">Services</label>
-                                        <select class="form-select select2" name="servname[]" id="servname"
-                                            onchange="getservname(this.value)">
-                                            <option>Select Services</option>
-                                            <?php
-                                            $sql = "SELECT servname FROM servmaster";
-                                            $stmt = sqlsrv_query($conn, $sql);
-                                            if ($stmt === false) {
-                                                die (print_r(sqlsrv_errors(), true));
-                                            } else {
-                                                while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
-                                                    $servname = $row['servname'];
-                                                    echo "<option value='$servname'>$servname</option>";
-                                                }
-                                            }
-                                            ?>
-                                        </select>
-                                    </div>
-                                    <div class="col-lg-4">
-                                        <label for="Price">Price</label>
-                                        <select class="form-select select2" name="servrate[]" id="servrate">
-                                            <option>Select Price</option>
-                                        </select>
-                                    </div>
-                                    <div class="col-lg-4">
-                                        <label for="Price"></label>
-                                        <button class="btn btn-md btn-primary mt-4">Add</button>
-                                    </div>
-                                </div>
-                                <table
-                                    class="table table-bordered table-hover display nowrap margin-top-10 w-p100 dataTable">
+                                <table class='table table-bordered'>
                                     <thead>
                                         <tr>
                                             <th>Services</th>
                                             <th>Price</th>
-                                            <th></th>
+                                            <th>Dept</th>
+                                            <th>Action</th>
                                         </tr>
                                     </thead>
-                                    <tbody></tbody>
-                                    <tfoot>
+                                    <tbody id='fees_tbody'>
                                         <tr>
-                                            <td colspan="2">Total Amount:</td>
-                                            <td><input type="text" class="form-control" placeholder="TOTAL Amount"
-                                                    name="totalPrice" id="totalPrice"></td>
-                                        </tr>
-                                        <tr>
-                                            <td colspan="2">Total Adjusted:</td>
-                                            <td><input type="text" class="form-control" placeholder="Total Adjusted"
-                                                    name="totalAdj" id="totalAdj"></td>
-                                        </tr>
-                                        <tr>
-                                            <td colspan="2">GST %:</td>
-                                            <td><input type="text" class="form-control" placeholder="GST %" name="gst"
-                                                    id="gst"></td>
-                                        </tr>
-                                        <tr>
-                                            <td colspan="2">Bill Amount:</td>
-                                            <td><input type="text" class="form-control" placeholder="Bill Amount"
-                                                    name="billAmount" id="billAmount"></td>
-                                        </tr>
-                                        <tr>
-                                            <td colspan="2">Paid Amount:</td>
-                                            <td><input type="text" class="form-control" placeholder="Paid Amount"
-                                                    name="paidAmount" id="paidAmount"></td>
-                                        </tr>
-                                        <tr>
-                                            <td colspan="2">Balance:</td>
-                                            <td><input type="text" class="form-control" placeholder="Balance"
-                                                    name="balance" id="balance"></td>
-                                        </tr>
-                                        <tr>
-                                            <td colspan="2">Payment Type:</td>
+                                            <td colspan="1">
+                                                <select class="form-select select2" name="servname[]" id="servname"
+                                                    onchange="getservname(this.value)">
+                                                    <option>Select Services</option>
+                                                    <?php
+                                                    $sql = "SELECT servname FROM servmaster";
+                                                    $stmt = sqlsrv_query($conn, $sql);
+                                                    if ($stmt === false) {
+                                                        die (print_r(sqlsrv_errors(), true));
+                                                    } else {
+                                                        while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
+                                                            $servname = $row['servname'];
+                                                            echo "<option value='$servname'>$servname</option>";
+                                                        }
+                                                    }
+                                                    ?>
+                                                </select>
+                                            </td>
                                             <td>
                                                 <select class="form-select select2" name="servrate[]" id="servrate">
-                                                    <option selected disabled>Payment Type</option>
-                                                    <option value="Cash">Cash</option>
-                                                    <option value="Card">Card</option>
-                                                    <option value="NEFT">NEFT</option>
-                                                    <option value="Cheque">Cheque</option>
-                                                    <option value="Credit">Credit</option>
+                                                    <option>Select Price</option>
                                                 </select>
+                                            </td>
+                                            <td>
+                                                <input type='button' value='x'
+                                                    class='btn btn-danger btn-sm btn-row-remove shadow-none'>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                    <tfoot>
+                                        <tr>
+                                            <td>
+                                                <input type='button' value='+ Add' class='btn btn-primary btn-sm'
+                                                    id='btn-add-row'>
                                             </td>
                                         </tr>
                                     </tfoot>
                                 </table>
+                                <div class="col-xl-4">
+                                    <div class="mb-3">
+                                        <label for="exampleFormControlInput2" class="form-label mb-2">TOTAL FEES</label>
+                                        <input type="number" class="form-control" placeholder="TOTAL FEES"
+                                            name="total_fees" id='total_fees'>
+                                    </div>
+                                </div>
                         </div>
                         <center>
                             <div class="text-xs-right">
@@ -448,12 +417,12 @@ while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
                         </center>
                         <div class="text-xs-right mt-4">
                             <!-- <button type="clear" class="btn btn-info">CLEAR</button> -->
-                            <button type="button" class="btn btn-info">Total Collection</button>
-                            <button type="button" class="btn btn-info">Delivery Report</button>
+                            <button class="btn btn-info">Total Collection</button>
+                            <button class="btn btn-info">Delivery Report</button>
                             <button type="button" class="btn btn-primary" data-bs-toggle="modal"
                                 data-bs-target=".bs-example-modal-lg">List of Register Patient</button>
-                            <button type="button" class="btn btn-primary">List of Admitted Patient</button>
-                            <button type="button" class="btn btn-info">Money Receipt</button>
+                            <button class="btn btn-primary">List of Admitted Patient</button>
+                            <button class="btn btn-info">Money Receipt</button>
                             <a href="index" class="btn btn-info"><i class="fa-solid fa-x"></i></a>
                         </div>
                         </form>
@@ -470,58 +439,6 @@ while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
 </div>
 </div>
 <!-- /.content-wrapper -->
-
-<script>
-    const formEl = document.querySelector("form");
-    const tbodyEl = document.querySelector("tbody");
-    const tableEl = document.querySelector("table");
-    const totalPriceEl = document.getElementById("totalPrice");
-
-    let prices = []; // Array to store prices
-
-
-
-    function calculateTotalPrice() {
-        let totalPrice = 0;
-        prices.forEach(price => {
-            totalPrice += parseFloat(price) || 0;
-        });
-        document.getElementById("totalPrice").value = totalPrice.toFixed(2);
-    }
-
-
-    function onAddWebsite(e) {
-        e.preventDefault();
-        const servrate = document.getElementById("servrate").value.replace(/,/g, ''); // Remove commas
-        const servname = document.getElementById("servname").value;
-        const newRow = `
-        <tr>
-            <td><input class="form-control" type="text" value="${servname}" name="servnames[]"></td>
-            <td><input class="form-control" type="text" value="${servrate}" name="servnames[]"</td>
-            <td><button class="deleteBtn btn-primary btn-md">Delete</button></td>
-        </tr>
-        `;
-        tbodyEl.innerHTML += newRow;
-        prices.push(parseFloat(servrate));
-        calculateTotalPrice();
-    }
-
-    function onDeleteRow(e) {
-        if (!e.target.classList.contains("deleteBtn")) {
-            return;
-        }
-
-        const btn = e.target;
-        const row = btn.closest("tr");
-        const rowIndex = Array.from(row.parentNode.children).indexOf(row);
-        prices.splice(rowIndex, 1);
-        row.remove();
-        calculateTotalPrice();
-    }
-
-    formEl.addEventListener("submit", onAddWebsite);
-    tableEl.addEventListener("click", onDeleteRow);
-</script>
 <script>
     function getservname(servname) {
         console.log(servname);
@@ -545,14 +462,14 @@ while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
 </script>
 <script>
     $(document).ready(function () {
-
-
+      
+       
         function getServiceRates(servname) {
             console.log(servname);
             $.ajax({
                 url: "load/get_fetch_price.php",
                 type: "POST",
-                data: { servname: servname },
+                data: { servname: servname }, 
                 dataType: "json",
                 success: function (data) {
                     var servrateDropdown = $(".getservrate");
@@ -566,7 +483,7 @@ while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
                 }
             });
         }
-
+       
 
 
         $("#btn-add-row").click(function () {
@@ -578,7 +495,7 @@ while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
             } ?></select></td><td><select class='form-select select2 getservrate' required name='servrate[]'><option>Select Price</option></select></td><td><input type='button' value='x' class='btn btn-danger btn-sm btn-row-remove'></td></tr>";
             $("#fees_tbody").append(row);
             getServiceRates(this.value);
-
+        
         });
         // function grand_total() {
         //     var tot = 0;

@@ -12,9 +12,11 @@ Select * FROM docmaster
 Select * FROM titlemaster
 Select * FROM doctorreceipt
 Select * FROM packagemaster
-Select * FROM servmaster where servrate = '6500.00'
+Select * FROM servmaster where servname = 'PERICARDIAL FLUID'
 
+SELECT  servmaster.servrate AS servrate FROM servmaster
 
+SELECT servname, servrate FROM servmaster
 
 Select * FROM InOpd2324 where regno = '237495'
 
