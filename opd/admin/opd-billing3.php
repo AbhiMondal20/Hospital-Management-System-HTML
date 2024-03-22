@@ -119,9 +119,124 @@ while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
                                     <div class="col-md-3">
                                         <div class="form-group">
                                             <div class="controls">
-                                                <h5>Name <span class="text-danger">*</span></h5>
-                                                <input type="text" class="form-control" required name="pname"
-                                                    value="<?php echo $rfname; ?> <?php echo $rmname; ?> <?php echo $rlname; ?>"
+                                                <h5> <span class="text-danger">*</span></h5>
+                                                <input type="text" name="se" class="form-control" placeholder="Session"
+                                                    required value="<?php echo $se; ?>" readonly
+                                                    data-validation-required-message="This field is required">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <h5>Reg. Date <span class="text-danger">*</span></h5>
+                                            <div class="controls">
+                                                <input type="date" value="<?php echo $rdate; ?>" class="form-control"
+                                                    required name="rdate"
+                                                    data-validation-required-message="This field is required">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <h5>Salutation <span class="text-danger">*</span></h5>
+                                            <select class="form-select select2" name="rtitle">
+                                                <?php
+                                                $sql = "SELECT * FROM titlemaster";
+                                                $stmt = sqlsrv_query($conn, $sql);
+                                                if ($stmt === false) {
+                                                    die (print_r(sqlsrv_errors(), true));
+                                                } else {
+                                                    while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
+                                                        $title = $row['title'];
+                                                        echo '<option value="' . $title . '"';
+                                                        if ($title == $rtitle) {
+                                                            echo ' selected';
+                                                        }
+                                                        echo '>' . $title . '</option>';
+                                                    }
+                                                }
+                                                ?>
+                                            </select>
+
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <div class="controls">
+                                                <h5>First Name <span class="text-danger">*</span></h5>
+                                                <input type="text" class="form-control" required name="rfname"
+                                                    value="<?php echo $rfname; ?>"
+                                                    data-validation-required-message="This field is required">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <div class="controls">
+                                                <h5>Middle Name</h5>
+                                                <input type="text" class="form-control" name="rmname"
+                                                    value="<?php echo $rmname; ?>">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <div class="controls">
+                                                <h5>Last Name <span class="text-danger">*</span></h5>
+                                                <input type="text" class="form-control" required name="rlname"
+                                                    value="<?php echo $rlname; ?>"
+                                                    data-validation-required-message="This field is required">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <h5>Gender <span class="text-danger">*</span></h5>
+                                            <select class="form-select" name="rsex">
+                                                <option value="Male" <?php if ($rsex == 'Male')
+                                                    echo 'selected'; ?>>Male
+                                                </option>
+                                                <option value="Female" <?php if ($rsex == 'Female')
+                                                    echo 'selected'; ?>>
+                                                    Female</option>
+                                                <option value="Others" <?php if ($rsex == 'Others')
+                                                    echo 'selected'; ?>>
+                                                    Others</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <div class="form-group">
+                                            <div class="controls">
+                                                <h5>Age (Years) <span class="text-danger">*</span></h5>
+                                                <input type="text" class="form-control" required name="rage"
+                                                    value="<?php echo $rage; ?>"
+                                                    data-validation-required-message="This field is required">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <div class="form-group">
+                                            <div class="controls">
+                                                <h5>Month </h5>
+                                                <input type="text" class="form-control" name="month">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <div class="form-group">
+                                            <div class="controls">
+                                                <h5>Days </h5>
+                                                <input type="text" class="form-control" name="days">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <div class="controls">
+                                                <h5>F/H/S/D/W <span class="text-danger">*</span></h5>
+                                                <input type="text" class="form-control" required name="fname"
+                                                    value="<?php echo $fname; ?>"
                                                     data-validation-required-message="This field is required">
                                             </div>
                                         </div>
@@ -129,18 +244,95 @@ while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <div class="controls">
-                                                <h5>Ph. No. <span class="text-danger">*</span></h5>
-                                                <input type="text" class="form-control" name="phone"
-                                                    value="<?php echo $rrace; ?>" maxlength="10">
+                                                <h5>Address <span class="text-danger">*</span></h5>
+
+                                                <input type="text" class="form-control" required name="radd1"
+                                                    value="<?php echo $radd1; ?>"
+                                                    data-validation-required-message="This field is required">
                                             </div>
                                         </div>
                                     </div>
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            <h5>Doctor <span class="text-danger">*</span></h5>
-                                            <select class="form-select select2" name="rdocname">
+                                            <div class="controls">
+                                                <h5>Address <span class="text-danger">*</span></h5>
+                                                <input type="text" class="form-control" required name="radd2"
+                                                    value="<?php echo $radd2; ?>"
+                                                    data-validation-required-message="This field is required">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <div class="controls">
+                                                <h5>Pin Code <span class="text-danger">*</span></h5>
+                                                <input type="text" class="form-control" name="rrace">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <h5>City <span class="text-danger">*</span></h5>
+                                            <select class="form-select select2" id="rcity" name="rcity">
                                                 <?php
-                                                $sql = "SELECT docName FROM docmaster";
+                                                $sql = "SELECT * FROM citymaster";
+                                                $stmt = sqlsrv_query($conn, $sql);
+                                                if ($stmt === false) {
+                                                    die (print_r(sqlsrv_errors(), true));
+                                                } else {
+                                                    while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
+                                                        $Cityname = $row['Cityname'];
+                                                        echo '<option value="' . $Cityname . '"';
+                                                        if ($rcity == $Cityname) {
+                                                            echo ' selected';
+                                                        }
+                                                        echo '>' . $Cityname . '</option>';
+                                                    }
+                                                }
+                                                ?>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <h5>District <span class="text-danger">*</span></h5>
+                                            <input type="text" name="rdist" class="form-control" required
+                                                value="<?php echo $rdist; ?>"
+                                                data-validation-required-message="This field is required">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <h5>State <span class="text-danger">*</span></h5>
+                                            <input type="text" name="rstate" class="form-control" required
+                                                value="<?php echo $rstate; ?>"
+                                                data-validation-required-message="This field is required">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <h5>Country <span class="text-danger">*</span></h5>
+                                            <input type="text" name="rcountry" class="form-control" required
+                                                value="<?php echo $rcountry; ?>"
+                                                data-validation-required-message="This field is required">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <div class="controls">
+                                                <h5>Ph. No. <span class="text-danger">*</span></h5>
+                                                <input type="text" class="form-control" required name="rrace"
+                                                    value="<?php echo $rrace; ?>" maxlength="10"
+                                                    data-validation-required-message="This field is required">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <h5>Ref. Doctor <span class="text-danger">*</span></h5>
+                                            <select class="form-select select2" name="rdoc">
+                                                <?php
+                                                $sql = "SELECT * FROM docmaster";
                                                 $stmt = sqlsrv_query($conn, $sql);
                                                 if ($stmt === false) {
                                                     die (print_r(sqlsrv_errors(), true));
@@ -161,147 +353,76 @@ while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
                                 </div>
                                 <label for="">Bill Details</label>
                                 <hr>
-                                <div class="row">
-                                    <div class="col-md-3">
-                                        <div class="form-group">
-                                            <h5>Bill No: <span class="text-danger">*</span></h5>
-                                            <div class="controls">
-                                                <?php
-                                                $sql = "SELECT TOP 1 billno FROM InPatho2324 ORDER BY id DESC";
-                                                $stmt = sqlsrv_query($conn, $sql);
-                                                if ($stmt === false) {
-                                                    die (print_r(sqlsrv_errors(), true));
-                                                } else {
-                                                    $row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC);
-                                                    $last_billno = $row['billno'];
-                                                    if ($last_billno == '') {
-                                                        $next_billno = "237495";
-                                                    } else {
-                                                        $next_billno = strval(intval($last_billno) + 1);
-                                                    }
-                                                }
-                                                ?>
-                                                <input type="text" name="billno" placeholder="237495"
-                                                    class="form-control" required value="<?php echo $next_billno; ?>"
-                                                    readonly data-validation-required-message="This field is required">
-
-
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <div class="form-group">
-                                            <h5>Bill Date <span class="text-danger">*</span></h5>
-                                            <div class="controls">
-                                                <input type="date" placeholder="" class="form-control" required
-                                                    name="billdate"
-                                                    data-validation-required-message="This field is required">
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-lg-4">
-                                        <label for="Services">Services</label>
-                                        <select class="form-select select2" name="servname[]" id="servname"
-                                            onchange="getservname(this.value)">
-                                            <option>Select Services</option>
-                                            <?php
-                                            $sql = "SELECT servname FROM servmaster";
-                                            $stmt = sqlsrv_query($conn, $sql);
-                                            if ($stmt === false) {
-                                                die (print_r(sqlsrv_errors(), true));
-                                            } else {
-                                                while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
-                                                    $servname = $row['servname'];
-                                                    echo "<option value='$servname'>$servname</option>";
-                                                }
-                                            }
-                                            ?>
-                                        </select>
-                                    </div>
-                                    <div class="col-lg-4">
-                                        <label for="Price">Price</label>
-                                        <select class="form-select select2" name="servrate[]" id="servrate">
-                                            <option>Select Price</option>
-                                        </select>
-                                    </div>
-                                    <div class="col-lg-4">
-                                        <label for="add"></label>
-                                        <button type="button" id="addBtn"
-                                            class="btn btn-md btn-primary mt-4">Add</button>
-                                    </div>
-                                </div>
-                                <table
-                                    class="table table-bordered table-hover display nowrap margin-top-10 w-p100 dataTable">
+                                <table class='table table-bordered'>
                                     <thead>
                                         <tr>
                                             <th>Services</th>
                                             <th>Price</th>
-                                            <th></th>
+                                            <th>Dept</th>
+                                            <th>Action</th>
                                         </tr>
                                     </thead>
-                                    <tbody></tbody>
+                                    <tbody id='fees_tbody'>
+                                        <tr>
+                                            <td colspan="1">
+                                                <select class="form-select select2" name="servname[]" id="servname"
+                                                    onchange="getservname(this.value)">
+                                                    <option>Select Services</option>
+                                                    <?php
+                                                    $sql = "SELECT servname FROM servmaster";
+                                                    $stmt = sqlsrv_query($conn, $sql);
+                                                    if ($stmt === false) {
+                                                        die (print_r(sqlsrv_errors(), true));
+                                                    } else {
+                                                        while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
+                                                            $servname = $row['servname'];
+                                                            echo "<option value='$servname'>$servname</option>";
+                                                        }
+                                                    }
+                                                    ?>
+                                                </select>
+                                            </td>
+                                            <td>
+                                                <select class="form-select select2" name="servrate[]" id="servrate">
+                                                    <option>Select Price</option>
+                                                </select>
+                                            </td>
+                                            <td>
+                                                <input type='button' value='x'
+                                                    class='btn btn-danger btn-sm btn-row-remove shadow-none'>
+                                            </td>
+                                        </tr>
+                                    </tbody>
                                     <tfoot>
                                         <tr>
-                                            <td colspan="2">Total Amount:</td>
-                                            <td><input type="text" class="form-control" placeholder="TOTAL Amount"
-                                                    name="totalPrice" id="totalPrice"></td>
-                                        </tr>
-                                        <tr>
-                                            <td colspan="2">Total Adjusted:</td>
-                                            <td><input type="text" class="form-control" placeholder="Total Adjusted"
-                                                    name="totalAdj" id="totalAdj"></td>
-                                        </tr>
-                                        <tr>
-                                            <td colspan="2">GST %:</td>
-                                            <td><input type="text" class="form-control" placeholder="GST %" name="gst"
-                                                    id="gst"></td>
-                                        </tr>
-                                        <tr>
-                                            <td colspan="2">Bill Amount:</td>
-                                            <td><input type="text" class="form-control" placeholder="Bill Amount"
-                                                    name="billAmount" id="billAmount"></td>
-                                        </tr>
-                                        <tr>
-                                            <td colspan="2">Paid Amount:</td>
-                                            <td><input type="text" class="form-control" placeholder="Paid Amount"
-                                                    name="paidAmount" id="paidAmount"></td>
-                                        </tr>
-                                        <tr>
-                                            <td colspan="2">Balance:</td>
-                                            <td><input type="text" class="form-control" placeholder="Balance"
-                                                    name="balance" id="balance"></td>
-                                        </tr>
-                                        <tr>
-                                            <td colspan="2">Payment Type:</td>
                                             <td>
-                                                <select class="form-select select2" name="paymentType" id="servrate">
-                                                    <option selected disabled>Payment Type</option>
-                                                    <option value="Cash">Cash</option>
-                                                    <option value="Card">Card</option>
-                                                    <option value="NEFT">NEFT</option>
-                                                    <option value="Cheque">Cheque</option>
-                                                    <option value="Credit">Credit</option>
-                                                </select>
+                                                <input type='button' value='+ Add' class='btn btn-primary btn-sm'
+                                                    id='btn-add-row'>
                                             </td>
                                         </tr>
                                     </tfoot>
                                 </table>
+                                <div class="col-xl-4">
+                                    <div class="mb-3">
+                                        <label for="exampleFormControlInput2" class="form-label mb-2">TOTAL FEES</label>
+                                        <input type="number" class="form-control" placeholder="TOTAL FEES"
+                                            name="total_fees" id='total_fees'>
+                                    </div>
+                                </div>
                         </div>
                         <center>
                             <div class="text-xs-right">
-                                <button type="submit" class="btn btn-info" name="billSave">SAVE</button>
+                                <button type="submit" class="btn btn-info" name="save">SAVE</button>
                             </div>
                         </center>
                         <div class="text-xs-right mt-4">
                             <!-- <button type="clear" class="btn btn-info">CLEAR</button> -->
-                            <button type="button" class="btn btn-info">Total Collection</button>
-                            <button type="button" class="btn btn-info">Delivery Report</button>
+                            <button class="btn btn-info">Total Collection</button>
+                            <button class="btn btn-info">Delivery Report</button>
                             <button type="button" class="btn btn-primary" data-bs-toggle="modal"
                                 data-bs-target=".bs-example-modal-lg">List of Register Patient</button>
-                            <button type="button" class="btn btn-primary">List of Admitted Patient</button>
-                            <button type="button" class="btn btn-info">Money Receipt</button>
+                            <button class="btn btn-primary">List of Admitted Patient</button>
+                            <button class="btn btn-info">Money Receipt</button>
                             <a href="index" class="btn btn-info"><i class="fa-solid fa-x"></i></a>
                         </div>
                         </form>
@@ -318,76 +439,6 @@ while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
 </div>
 </div>
 <!-- /.content-wrapper -->
-
-<script>
-    const tbodyEl = document.querySelector("tbody");
-    const tableEl = document.querySelector("table");
-    const addBtn = document.getElementById("addBtn");
-    const totalPriceEl = document.getElementById("totalPrice");
-    const totalAdjEl = document.getElementById("totalAdj");
-    const gstEl = document.getElementById("gst");
-    const billAmountEl = document.getElementById("billAmount");
-    const paidAmountEl = document.getElementById("paidAmount");
-    const balanceEl = document.getElementById("balance");
-
-    let prices = [];
-
-    function calculateTotalPrice() {
-        let totalPrice = 0;
-        prices.forEach(price => {
-            totalPrice += parseFloat(price) || 0;
-        });
-
-        const totalAdj = parseFloat(totalAdjEl.value) || 0;
-        const gst = parseFloat(gstEl.value) || 0;
-
-        const adjustedTotalPrice = totalPrice - totalAdj;
-        const billAmount = adjustedTotalPrice + (adjustedTotalPrice * gst / 100);
-        const balance = billAmount - (parseFloat(paidAmountEl.value) || 0);
-
-        totalPriceEl.value = totalPrice.toFixed(2);
-        billAmountEl.value = billAmount.toFixed(2);
-        balanceEl.value = balance.toFixed(2);
-    }
-
-    // Event listeners for input fields to trigger calculation
-    const inputs = document.querySelectorAll("#totalPrice, #totalAdj, #gst, #paidAmount");
-    inputs.forEach(input => {
-        input.addEventListener("input", calculateTotalPrice);
-    });
-
-    calculateTotalPrice();
-
-    function onAddRow() {
-        const servrate = document.getElementById("servrate").value.replace(/,/g, '');
-        const servname = document.getElementById("servname").value;
-        const newRow = `
-        <tr>
-            <td><input class="form-control" type="text" value="${servname}" name="servname[]"></td>
-            <td><input class="form-control" type="text" value="${servrate}" name="servrate[]"</td>
-            <td><button class="deleteBtn btn-primary btn-md">Delete</button></td>
-        </tr>
-        `;
-        tbodyEl.innerHTML += newRow;
-        prices.push(parseFloat(servrate));
-        calculateTotalPrice();
-    }
-
-    function onDeleteRow(e) {
-        if (!e.target.classList.contains("deleteBtn")) {
-            return;
-        }
-        const btn = e.target;
-        const row = btn.closest("tr");
-        const rowIndex = Array.from(row.parentNode.children).indexOf(row);
-        prices.splice(rowIndex, 1);
-        row.remove();
-        calculateTotalPrice();
-    }
-
-    addBtn.addEventListener("click", onAddRow);
-    tableEl.addEventListener("click", onDeleteRow);
-</script>
 <script>
     function getservname(servname) {
         console.log(servname);
@@ -411,14 +462,14 @@ while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
 </script>
 <script>
     $(document).ready(function () {
-
-
+      
+       
         function getServiceRates(servname) {
             console.log(servname);
             $.ajax({
                 url: "load/get_fetch_price.php",
                 type: "POST",
-                data: { servname: servname },
+                data: { servname: servname }, 
                 dataType: "json",
                 success: function (data) {
                     var servrateDropdown = $(".getservrate");
@@ -432,7 +483,7 @@ while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
                 }
             });
         }
-
+       
 
 
         $("#btn-add-row").click(function () {
@@ -444,7 +495,7 @@ while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
             } ?></select></td><td><select class='form-select select2 getservrate' required name='servrate[]'><option>Select Price</option></select></td><td><input type='button' value='x' class='btn btn-danger btn-sm btn-row-remove'></td></tr>";
             $("#fees_tbody").append(row);
             getServiceRates(this.value);
-
+        
         });
         // function grand_total() {
         //     var tot = 0;
@@ -473,76 +524,9 @@ while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
 
 </script>
 
-<?php
-
-if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["billSave"])) {
-    $rstatus = $_POST["rstatus"];
-    $rno = $_POST["rno"];
-    $pname = $_POST["pname"];
-    $phone = $_POST["phone"];
-    $rdocname = $_POST["rdocname"];
-    $billno = $_POST["billno"];
-    $billdate = $_POST["billdate"];
-    $status = $_POST["paymentType"];
-    $rows = [];
-
-    $totalPrice = floatval($_POST['totalPrice']);
-    $totalAdj = $_POST['totalAdj'];
-    $gst = $_POST['gst'];
-    $billAmount = $_POST['billAmount'];
-    $paidAmount = $_POST['paidAmount'];
-    $balance = $_POST['balance'];
-
-    $datetime = date('Y-m-d h:i:sa');
-    
-    $sql = "INSERT INTO billingDetails (rstatus, rno, pname, phone, rdocname, billno, billdate, totalPrice, totalAdj, gst, billAmount, paidAmount, balance, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-    $params = array($rstatus, $rno, $pname, $phone, $rdocname, $billno, $billdate, $totalPrice, $totalAdj, $gst, $billAmount, $paidAmount, $balance, $status);
-    $stmt = sqlsrv_prepare($conn, $sql, $params);
-
-    if ($stmt) {
-        if (sqlsrv_execute($stmt)) {
-            for ($i = 0; $i < count($_POST['servname']); $i++) {
-                $servname = $_POST['servname'][$i];
-                $servrate = $_POST['servrate'][$i];
-
-                $sql2 = "INSERT INTO billing (rno, pname, billno, billdate, servname, servrate) VALUES (?, ?, ?, ?, ?, ?)";
-                $params2 = array($rno, $pname, $billno, $billdate, $servname, $servrate);
-                $stmt2 = sqlsrv_prepare($conn, $sql2, $params2);
-
-                if ($stmt2) {
-                    if (!sqlsrv_execute($stmt2)) {
-                        echo '<script>
-                                swal("Error!", "Error inserting billing item data.", "error");
-                            </script>';
-                        exit; 
-                    }
-                } else {
-                    echo '<script>
-                            swal("Error!", "Error preparing billing item SQL statement.", "error");
-                        </script>';
-                    exit; 
-                }
-            }
-            echo '<script>
-                    swal("Success!", "Data inserted successfully.", "success");
-                    setTimeout(function(){
-                        window.location.href = "opd-bill-cum-receipt?rno='.$rno.'&billno='.$billno.'";
-                    }, 1000);
-                </script>';
-        } else {
-            echo '<script>
-                    swal("Error!", "Error inserting main data.", "error");
-                </script>';
-        }
-    } else {
-        echo '<script>
-                swal("Error!", "Error preparing main SQL statement.", "error");
-            </script>';
-    }
-}
-?>
 
 
+<!-- List of register patient modal -->
 <div class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel"
     aria-hidden="true" style="display: none;">
     <div class="modal-dialog modal-lg">

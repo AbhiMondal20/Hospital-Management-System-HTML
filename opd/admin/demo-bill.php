@@ -1,12 +1,8 @@
 <?php
-
 include ('../../db_conn.php');
-
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -55,10 +51,10 @@ include ('../../db_conn.php');
 <body>
     <h1>Dynamically Add & Remove Table Rows</h1>
     <form>
+        <!-- <div class="form"> -->
         <div class="input-row">
             <label for="url">servname</label>
             <!-- <input type="text" name="url" id="url" /> -->
-
             <select class="form-select select2" name="servname[]" id="servname" onchange="getservname(this.value)">
                 <option>Select Services</option>
                 <?php
@@ -83,6 +79,7 @@ include ('../../db_conn.php');
             </select>
         </div>
         <button>Submit</button>
+        <!-- </div> -->
     </form>
     <table>
         <thead>
@@ -138,89 +135,72 @@ include ('../../db_conn.php');
         </tfoot>
     </table>
     <script>
-        const formEl = document.querySelector("form");
-        const tbodyEl = document.querySelector("tbody");
-        const tableEl = document.querySelector("table");
-        const totalPriceEl = document.getElementById("totalPrice");
+        document.addEventListener("DOMContentLoaded", function () {
+            const formEl = document.querySelector(".form");
+            const tbodyEl = document.querySelector("tbody");
+            const tableEl = document.querySelector("table");
+            const totalPriceEl = document.getElementById("totalPrice");
+            let prices = [];
+            function calculateTotalPrice() {
+                let totalPrice = 0;
+                prices.forEach(price => {
+                    totalPrice += parseFloat(price) || 0;
+                });
+                document.getElementById("totalPrice").value = totalPrice.toFixed(2);
+            }
+            function calculateValues() {
+                const totalAdj = parseFloat(document.getElementById("totalAdj").value) || 0;
+                const gst = parseFloat(document.getElementById("gst").value) || 0;
+                const paidAmount = parseFloat(document.getElementById("paidAmount").value) || 0;
+                const billAmount = (totalPriceEl - totalAdj).toFixed(2);
+                const balance = (billAmount - paidAmount).toFixed(2);
+                document.getElementById("billAmount").value = billAmount;
+                document.getElementById("balance").value = balance;
+                const gstAmount = (billAmount * (gst / 100)).toFixed(2);
+                const finalBillAmount = (parseFloat(billAmount) + parseFloat(gstAmount)).toFixed(2);
+                document.getElementById("gstAmount").value = gstAmount;
+                document.getElementById("finalBillAmount").value = finalBillAmount;
+            }
 
-        let prices = []; // Array to store prices
-
-        function calculateTotalPrice() {
-            let totalPrice = 0;
-            prices.forEach(price => {
-                totalPrice += parseFloat(price) || 0;
+            const inputs = document.querySelectorAll("#totalPrice, #totalAdj, #gst, #paidAmount");
+            inputs.forEach(input => {
+                input.addEventListener("input", calculateValues);
             });
-            document.getElementById("totalPrice").value = totalPrice.toFixed(2);
-        }
 
-        function calculateValues() {
-            const totalAdj = parseFloat(document.getElementById("totalAdj").value) || 0;
-            const gst = parseFloat(document.getElementById("gst").value) || 0;
-            const paidAmount = parseFloat(document.getElementById("paidAmount").value) || 0;
-
-            // Calculate bill amount after adjustments
-            const billAmount = (totalPriceEl - totalAdj).toFixed(2);
-
-            // Calculate balance
-            const balance = (billAmount - paidAmount).toFixed(2);
-
-            // Update input fields with calculated values
-            document.getElementById("billAmount").value = billAmount;
-            document.getElementById("balance").value = balance;
-
-            // Calculate final bill amount with GST
-            const gstAmount = (billAmount * (gst / 100)).toFixed(2);
-            const finalBillAmount = (parseFloat(billAmount) + parseFloat(gstAmount)).toFixed(2);
-
-            // Update input field for GST and final bill amount
-            document.getElementById("gstAmount").value = gstAmount;
-            document.getElementById("finalBillAmount").value = finalBillAmount;
-        }
-
-        // Attach event listeners to inputs for live calculation
-        const inputs = document.querySelectorAll("#totalPrice, #totalAdj, #gst, #paidAmount");
-        inputs.forEach(input => {
-            input.addEventListener("input", calculateValues);
-        });
-
-        // Calculate values initially
-
-
-
-
-        function onAddWebsite(e) {
-            e.preventDefault();
-            const servrate = document.getElementById("servrate").value.replace(/,/g, ''); // Remove commas
-            const servname = document.getElementById("servname").value;
-            const newRow = `
+            function onAddWebsite(e) {
+                e.preventDefault();
+                const servrate = document.getElementById("servrate").value.replace(/,/g, ''); // Remove commas
+                const servname = document.getElementById("servname").value;
+                const newRow = `
         <tr>
             <td><input type="text" value="${servname}" name="servnames[]"></td>
             <td><input type="text" value="${servrate}" name="servnames[]"</td>
             <td><button class="deleteBtn">Delete</button></td>
         </tr>
-        `;
-            tbodyEl.innerHTML += newRow;
-            prices.push(parseFloat(servrate));
-            calculateTotalPrice();
-            calculateValues();
+        `;.
+                tbodyEl.innerHTML += newRow;
+                prices.push(parseFloat(servrate));
+                calculateTotalPrice();
+                calculateValues();
 
-        }
-
-        function onDeleteRow(e) {
-            if (!e.target.classList.contains("deleteBtn")) {
-                return;
             }
 
-            const btn = e.target;
-            const row = btn.closest("tr");
-            const rowIndex = Array.from(row.parentNode.children).indexOf(row);
-            prices.splice(rowIndex, 1);
-            row.remove();
-            calculateTotalPrice();
-        }
+            function onDeleteRow(e) {
+                if (!e.target.classList.contains("deleteBtn")) {
+                    return;
+                }
 
-        formEl.addEventListener("submit", onAddWebsite);
-        tableEl.addEventListener("click", onDeleteRow);
+                const btn = e.target;
+                const row = btn.closest("tr");
+                const rowIndex = Array.from(row.parentNode.children).indexOf(row);
+                prices.splice(rowIndex, 1);
+                row.remove();
+                calculateTotalPrice();
+            }
+
+            formEl.addEventListener("submit", onAddWebsite);
+            tableEl.addEventListener("click", onDeleteRow);
+        });
     </script>
     <script>
         function getservname(servname) {

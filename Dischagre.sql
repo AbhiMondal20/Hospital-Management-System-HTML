@@ -1,7 +1,7 @@
 select * from dba;
 select * from discharge
 SELECT * FROM [dbo].[dba] WHERE dUSERNAME = 'Administrator' AND dPASSWORD = 'Para@012'
-DROP TABLE discharge;
+DROP TABLE billing;
 
 Select * FROM InPatho2324
 
@@ -18,13 +18,16 @@ SELECT  servmaster.servrate AS servrate FROM servmaster
 
 SELECT servname, servrate FROM servmaster
 
-Select * FROM InOpd2324 where regno = '237495'
-
+Select * FROM billing 
+Select * from InPatho2324 WHERE rno = '237493'
 select * from ba4 WHERE refno = 3844
 Select * FROM AdmitCardCan2324 where regno = '237495'
-Select * FROM InOpd2324
+Select * FROM InBill2324
 select * from AdmitCard2324 WHERE regno = '237245'
 SELECT * FROM AdmitCard2324 WHERE regno IN (SELECT MAX(regno) FROM AdmitCard2324 GROUP BY regno);
+
+
+
 
 
 CREATE TABLE discharge (
@@ -55,3 +58,47 @@ VALUES
 INSERT INTO discharge (final_diagnosis, reason_for_admission, chief_complaints, history_of_present_illness, personal_history, past, allergies, date_of_procedure, details_of_operation, ot_finding, general_examination, systemic_examination, course_during_hospital_stay, lab_report, condition_on_discharge, transfusions, discharge_advice, follow_on, when_how_to_obtain_urgent_care, medication_during_hospital_course)
 VALUES 
 ('Pneumonia', 'Fever and cough', 'Fever, Cough', 'Patient presented with fever and cough.', 'No significant personal history', 'No significant past medical history', 'Penicillin allergy', '2024-03-12', 'Bronchoscopy', 'Infection in right lung', 'Elevated temperature', 'Normal', 'Improved with antibiotics', 'Positive for bacterial infection', 'Discharged after improvement', 'None', 'Complete the course of antibiotics', 'Follow up after 2 weeks', 'In case of worsening symptoms, contact doctor', 'Antibiotics, Paracetamol');
+
+
+CREATE TABLE billingDetails(
+    id INT PRIMARY KEY IDENTITY(1,1) ,
+    rstatus VARCHAR(10) NULL,
+    rno VARCHAR(20) NULL,
+    pname VARCHAR(100) NULL,
+    phone VARCHAR(20) NULL,
+    rdocname VARCHAR(100) NULL,
+    billno VARCHAR(20) NULL,
+    billdate VARCHAR(20) NULL,
+    servname VARCHAR(100) NULL,
+    servrate DECIMAL(10,2),
+    totalPrice DECIMAL(10,2) NULL,
+    totalAdj DECIMAL(10,2) NULL,
+    gst DECIMAL(5,2) NULL,
+    billAmount DECIMAL(10,2) NULL,
+    paidAmount DECIMAL(10,2) NULL,
+    balance DECIMAL(10,2) NULL,
+    status VARCHAR(20) NULL ,
+	datetime DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE billing_details (
+    id INT PRIMARY KEY IDENTITY(1,1) ,
+    rstatus VARCHAR(10) NULL,
+    rno VARCHAR(20) NULL,
+    pname VARCHAR(100) NULL,
+    phone VARCHAR(20) NULL,
+    rdocname VARCHAR(100) NULL,
+    billno VARCHAR(20) NULL,
+    billdate VARCHAR(20) NULL,
+    servname VARCHAR(100) NULL,
+    servrate DECIMAL(10,2),
+    totalPrice DECIMAL(10,2) NULL,
+    totalAdj DECIMAL(10,2) NULL,
+    gst DECIMAL(5,2) NULL,
+    billAmount DECIMAL(10,2) NULL,
+    paidAmount DECIMAL(10,2) NULL,
+    balance DECIMAL(10,2) NULL,
+    status VARCHAR(20) NULL ,
+	datetime DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
