@@ -1,4 +1,10 @@
 <?php
+session_start();
+if (isset ($_SESSION['login']) && $_SESSION['login'] == true) {
+    $login_username = $_SESSION['username'];
+} else {
+    echo "<script>location.href='../../login';</script>";
+}
 include ('header.php');
 ?>
 <div class="content-wrapper">

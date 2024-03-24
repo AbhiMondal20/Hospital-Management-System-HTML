@@ -1,4 +1,11 @@
 <?php
+session_start();
+if (isset ($_SESSION['login']) && $_SESSION['login'] == true) {
+    $login_username = $_SESSION['username'];
+} else {
+    echo "<script>location.href='../../login';</script>";
+}
+
 include ('header.php');
 
 $id = $_GET['id'];
@@ -12,7 +19,8 @@ if ($stmt === false) {
 while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
     $rstatus = $row['rstatus'];
     $rno = $row['rno'];
-    $rdate = $row['rdate']->format('Y-m-d');;
+    $rdate = $row['rdate']->format('Y-m-d');
+    ;
     $rtitle = $row['rtitle'];
     $rtime = $row['rtime'];
     $se = $row['se'];
@@ -31,7 +39,7 @@ while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
     $rdist = $row['rdist'];
     $rstate = $row['rstate'];
     $rcountry = $row['rcountry'];
-    $wamt  =$row['wamt'];
+    $wamt = number_format($row['wamt'], 2);
 
 
 }
@@ -47,7 +55,8 @@ while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
                     <div class="d-inline-block align-items-center">
                         <nav>
                             <ol class="breadcrumb">
-                                <li class="breadcrumb-item"><a href="reg-list"><i class="mdi mdi-home-outline"></i></a></li>
+                                <li class="breadcrumb-item"><a href="reg-list"><i class="mdi mdi-home-outline"></i></a>
+                                </li>
                                 <li class="breadcrumb-item" aria-current="page">OPD List</li>
                                 <li class="breadcrumb-item active" aria-current="page">Registration</li>
                             </ol>
@@ -57,10 +66,8 @@ while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
 
             </div>
         </div>
-
         <!-- Main content -->
         <section class="content">
-
             <!-- Basic Forms -->
             <div class="box">
                 <!-- /.box-header -->
@@ -73,8 +80,12 @@ while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
                                         <div class="form-group">
                                             <h5>OPD / IPD <span class="text-danger">*</span></h5>
                                             <select class="form-select" name="rstatus">
-                                                <option value="OPD"<?php if ($rstatus == 'OPD') echo ' selected'; ?>>OPD</option>
-                                                <option value="IPD"<?php if ($rstatus == 'IPD') echo ' selected'; ?>>IPD</option>
+                                                <option value="OPD" <?php if ($rstatus == 'OPD')
+                                                    echo ' selected'; ?>>OPD
+                                                </option>
+                                                <option value="IPD" <?php if ($rstatus == 'IPD')
+                                                    echo ' selected'; ?>>IPD
+                                                </option>
                                             </select>
                                         </div>
                                     </div>
@@ -85,8 +96,6 @@ while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
                                                 <input type="text" name="rno" placeholder="237495" class="form-control"
                                                     required value="<?php echo $rno; ?>" readonly
                                                     data-validation-required-message="This field is required">
-
-
                                             </div>
                                         </div>
                                     </div>
@@ -104,7 +113,9 @@ while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
                                         <div class="form-group">
                                             <h5>Reg. Date <span class="text-danger">*</span></h5>
                                             <div class="controls">
-                                                <input type="date" value="<?php echo $rdate; ?>" class="form-control" required name="rdate" data-validation-required-message="This field is required">
+                                                <input type="date" value="<?php echo $rdate; ?>" class="form-control"
+                                                    required name="rdate"
+                                                    data-validation-required-message="This field is required">
                                             </div>
                                         </div>
                                     </div>
@@ -112,23 +123,23 @@ while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
                                         <div class="form-group">
                                             <h5>Salutation <span class="text-danger">*</span></h5>
                                             <select class="form-select select2" name="rtitle">
-                                            <?php
-                                            $sql = "SELECT * FROM titlemaster";
-                                            $stmt = sqlsrv_query($conn, $sql);
-                                            if ($stmt === false) {
-                                                die(print_r(sqlsrv_errors(), true));
-                                            } else {
-                                                while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
-                                                    $title = $row['title'];
-                                                    echo '<option value="' . $title . '"';
-                                                    if ($title == $rtitle) {
-                                                        echo ' selected';
+                                                <?php
+                                                $sql = "SELECT title FROM titlemaster";
+                                                $stmt = sqlsrv_query($conn, $sql);
+                                                if ($stmt === false) {
+                                                    die (print_r(sqlsrv_errors(), true));
+                                                } else {
+                                                    while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
+                                                        $title = $row['title'];
+                                                        echo '<option value="' . $title . '"';
+                                                        if ($title == $rtitle) {
+                                                            echo ' selected';
+                                                        }
+                                                        echo '>' . $title . '</option>';
                                                     }
-                                                    echo '>' . $title . '</option>';
                                                 }
-                                            }
-                                            ?>
-                                        </select>
+                                                ?>
+                                            </select>
 
                                         </div>
                                     </div>
@@ -136,7 +147,8 @@ while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
                                         <div class="form-group">
                                             <div class="controls">
                                                 <h5>First Name <span class="text-danger">*</span></h5>
-                                                <input type="text" class="form-control" required name="rfname" value="<?php echo $rfname; ?>"
+                                                <input type="text" class="form-control" required name="rfname"
+                                                    value="<?php echo $rfname; ?>"
                                                     data-validation-required-message="This field is required">
                                             </div>
                                         </div>
@@ -145,7 +157,8 @@ while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
                                         <div class="form-group">
                                             <div class="controls">
                                                 <h5>Middle Name</h5>
-                                                <input type="text" class="form-control" name="rmname" value="<?php echo $rmname; ?>">
+                                                <input type="text" class="form-control" name="rmname"
+                                                    value="<?php echo $rmname; ?>">
                                             </div>
                                         </div>
                                     </div>
@@ -153,7 +166,8 @@ while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
                                         <div class="form-group">
                                             <div class="controls">
                                                 <h5>Last Name <span class="text-danger">*</span></h5>
-                                                <input type="text" class="form-control" required name="rlname" value="<?php echo $rlname; ?>"
+                                                <input type="text" class="form-control" required name="rlname"
+                                                    value="<?php echo $rlname; ?>"
                                                     data-validation-required-message="This field is required">
                                             </div>
                                         </div>
@@ -162,9 +176,15 @@ while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
                                         <div class="form-group">
                                             <h5>Gender <span class="text-danger">*</span></h5>
                                             <select class="form-select" name="rsex">
-                                                <option value="Male" <?php if ($rsex == 'Male') echo 'selected'; ?>>Male</option>
-                                                <option value="Female" <?php if ($rsex == 'Female') echo 'selected'; ?>>Female</option>
-                                                <option value="Others" <?php if ($rsex == 'Others') echo 'selected'; ?>>Others</option>
+                                                <option value="Male" <?php if ($rsex == 'Male')
+                                                    echo 'selected'; ?>>Male
+                                                </option>
+                                                <option value="Female" <?php if ($rsex == 'Female')
+                                                    echo 'selected'; ?>>
+                                                    Female</option>
+                                                <option value="Others" <?php if ($rsex == 'Others')
+                                                    echo 'selected'; ?>>
+                                                    Others</option>
                                             </select>
                                         </div>
                                     </div>
@@ -172,7 +192,9 @@ while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
                                         <div class="form-group">
                                             <div class="controls">
                                                 <h5>Age (Years) <span class="text-danger">*</span></h5>
-                                                <input type="text" class="form-control" required name="rage" value="<?php echo $rage; ?>" data-validation-required-message="This field is required">
+                                                <input type="text" class="form-control" required name="rage"
+                                                    value="<?php echo $rage; ?>"
+                                                    data-validation-required-message="This field is required">
                                             </div>
                                         </div>
                                     </div>
@@ -196,7 +218,8 @@ while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
                                         <div class="form-group">
                                             <div class="controls">
                                                 <h5>F/H/S/D/W <span class="text-danger">*</span></h5>
-                                                <input type="text" class="form-control" required name="fname" value="<?php echo $fname; ?>"
+                                                <input type="text" class="form-control" required name="fname"
+                                                    value="<?php echo $fname; ?>"
                                                     data-validation-required-message="This field is required">
                                             </div>
                                         </div>
@@ -205,8 +228,8 @@ while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
                                         <div class="form-group">
                                             <div class="controls">
                                                 <h5>Address <span class="text-danger">*</span></h5>
-
-                                                <input type="text" class="form-control" required name="radd1" value="<?php echo $radd1; ?>"
+                                                <input type="text" class="form-control" required name="radd1"
+                                                    value="<?php echo $radd1; ?>"
                                                     data-validation-required-message="This field is required">
                                             </div>
                                         </div>
@@ -215,7 +238,8 @@ while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
                                         <div class="form-group">
                                             <div class="controls">
                                                 <h5>Address <span class="text-danger">*</span></h5>
-                                                <input type="text" class="form-control" required name="radd2" value="<?php echo $radd2; ?>"
+                                                <input type="text" class="form-control" required name="radd2"
+                                                    value="<?php echo $radd2; ?>"
                                                     data-validation-required-message="This field is required">
                                             </div>
                                         </div>
@@ -225,10 +249,10 @@ while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
                                             <h5>City <span class="text-danger">*</span></h5>
                                             <select class="form-select select2" id="rcity" name="rcity">
                                                 <?php
-                                                $sql = "SELECT * FROM citymaster";
+                                                $sql = "SELECT Cityname FROM citymaster";
                                                 $stmt = sqlsrv_query($conn, $sql);
                                                 if ($stmt === false) {
-                                                    die(print_r(sqlsrv_errors(), true));
+                                                    die (print_r(sqlsrv_errors(), true));
                                                 } else {
                                                     while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
                                                         $Cityname = $row['Cityname'];
@@ -246,7 +270,8 @@ while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
                                     <div class="col-md-3">
                                         <div class="form-group">
                                             <h5>District <span class="text-danger">*</span></h5>
-                                            <input type="text" name="rdist" class="form-control" required value="<?php echo $rdist; ?>"
+                                            <input type="text" name="rdist" class="form-control" required
+                                                value="<?php echo $rdist; ?>"
                                                 data-validation-required-message="This field is required">
                                         </div>
                                     </div>
@@ -254,14 +279,15 @@ while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
                                         <div class="form-group">
                                             <h5>State <span class="text-danger">*</span></h5>
                                             <input type="text" name="rstate" class="form-control" required
-                                            value="<?php echo $rstate; ?>"
+                                                value="<?php echo $rstate; ?>"
                                                 data-validation-required-message="This field is required">
                                         </div>
                                     </div>
                                     <div class="col-md-3">
                                         <div class="form-group">
                                             <h5>Country <span class="text-danger">*</span></h5>
-                                            <input type="text" name="rcountry" class="form-control" required value="<?php echo $rcountry; ?>"
+                                            <input type="text" name="rcountry" class="form-control" required
+                                                value="<?php echo $rcountry; ?>"
                                                 data-validation-required-message="This field is required">
                                         </div>
                                     </div>
@@ -270,20 +296,20 @@ while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
                                             <div class="controls">
                                                 <h5>Ph. No. <span class="text-danger">*</span></h5>
                                                 <input type="text" class="form-control" required name="rrace"
-                                                value="<?php echo $rrace; ?>"
-                                                    maxlength="10" data-validation-required-message="This field is required">
+                                                    value="<?php echo $rrace; ?>" maxlength="10"
+                                                    data-validation-required-message="This field is required">
                                             </div>
                                         </div>
                                     </div>
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <h5>Ref. Doctor <span class="text-danger">*</span></h5>
-                                            <select class="form-select select2" name="rdoc">
+                                            <select class="form-select select2" name="rdoc" onchange="getDocname(this.value)">
                                                 <?php
-                                                $sql = "SELECT * FROM docmaster";
+                                                $sql = "SELECT docName FROM docmaster";
                                                 $stmt = sqlsrv_query($conn, $sql);
                                                 if ($stmt === false) {
-                                                    die(print_r(sqlsrv_errors(), true));
+                                                    die (print_r(sqlsrv_errors(), true));
                                                 } else {
                                                     while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
                                                         $docName = $row['docName'];
@@ -302,7 +328,8 @@ while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
                                         <div class="form-group">
                                             <div class="controls">
                                                 <h5>Fee</h5>
-                                                <input type="text" class="form-control" name="wamt" value="<?php echo $wamt; ?>">
+                                                <input type="text" class="form-control" name="wamt" id="wamt"
+                                                    value="<?php echo $wamt; ?>">
                                             </div>
                                         </div>
                                     </div>
@@ -331,6 +358,23 @@ while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
 </div>
 <!-- /.content-wrapper -->
 
+<script>
+    function getDocname(docName) {
+        $.ajax({
+            url: "load/doc_fetch_price.php",
+            type: "POST",
+            data: { docName: docName },
+            dataType: "json",
+            success: function (data) {
+                $("#wamt").val(data.fee);
+            },
+            error: function (xhr, status, error) {
+                console.error(xhr.responseText);
+            }
+        });
+    }
+</script>
+
 
 <?php
 if (isset ($_POST['save'])) {
@@ -358,6 +402,8 @@ if (isset ($_POST['save'])) {
     $rdoc = $_POST['rdoc'];
     $wamt = $_POST['wamt'];
     $rcountry = $_POST['rcountry'];
+    $modify_date = date('Y-m-d H:i:s');
+
 
     $sql = "UPDATE registration SET 
     rno = '$rno',
@@ -380,6 +426,8 @@ if (isset ($_POST['save'])) {
     rrace = '$rrace',
     rdoc = '$rdoc',
     wamt = '$wamt',
+    modify_by = '$login_username',
+    modify_date = '$modify_date',
     rcountry = '$rcountry'
     WHERE rno = '$rno' AND id = '$id'";
 

@@ -5,18 +5,20 @@
 		Hospitals</a>. All Rights Reserved.
 </footer>
 
-<!-- Add the sidebar's background. This div must be placed immediately after the control sidebar -->
-<div class="control-sidebar-bg"></div>
-
-</div>
-<!-- ./wrapper -->
-
 <!-- Vendor JS -->
 <script src="js/vendors.min.js"></script>
 <script src="js/pages/chat-popup.js"></script>
 <script src="../assets/icons/feather-icons/feather.min.js"></script>
 
 <script src="../assets/vendor_components/apexcharts-bundle/dist/apexcharts.js"></script>
+<script src="../assets/vendor_components/echarts/dist/echarts-en.min.js"></script>
+
+<!-- Rhythm Admin App -->
+<script src="js/template.js"></script>
+<script src="js/pages/dashboard4.js"></script>
+
+
+
 <script src="../assets/vendor_components/date-paginator/moment.min.js"></script>
 <script src="../assets/vendor_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js"></script>
 <script src="../assets/vendor_components/date-paginator/bootstrap-datepaginator.min.js"></script>
@@ -41,16 +43,12 @@
 <script src="../assets/vendor_plugins/iCheck/icheck.min.js"></script>
 
 <!-- Rhythm Admin App -->
-<script src="js/template.js"></script>
 <script src="js/pages/advanced-form-element.js"></script>
 
 <script src="js/pages/dashboard.js"></script>
 <script src="js/pages/data-table.js"></script>
 
 <script src="../assets/vendor_plugins/JqueryPrintArea/demo/jquery.PrintArea.js"></script>
-
-<!-- Rhythm Admin App -->
-<script src="js/template.js"></script>
 
 <script src="js/pages/invoice.js"></script>
 

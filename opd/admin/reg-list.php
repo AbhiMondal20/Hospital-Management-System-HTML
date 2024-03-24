@@ -1,4 +1,10 @@
 <?php
+session_start();
+if (isset ($_SESSION['login']) && $_SESSION['login'] == true) {
+    $login_username = $_SESSION['username'];
+} else {
+    echo "<script>location.href='../../login';</script>";
+}
 include ('header.php');
 ?>
 <!-- Content Wrapper. Contains page content -->
@@ -55,6 +61,7 @@ include ('header.php');
                                         $rno = $row['rno'];
                                         $id = $row['id'];
                                         $rfname = $row['rfname'];
+                                         $wamt = number_format($row['wamt'], 2);
                                         ?>
                                         <tr>
                                             <td>
@@ -80,7 +87,7 @@ include ('header.php');
                                                 <?php echo $row['rcity']; ?>
                                             </td>
                                             <td>
-                                                <?php echo $row['wamt']; ?>
+                                                <?php echo $wamt; ?>
                                             </td>
                                             <td class="text-center">
 											<div class="list-icons d-inline-flex">
@@ -92,7 +99,7 @@ include ('header.php');
 														<div class="dropdown-divider"></div>
 														<a href="update-reg?id=<?php echo $id; ?>&rno=<?php echo $rno; ?>" class="dropdown-item"><i class="fa fa-pencil"></i> Edit</a>
 														<div class="dropdown-divider"></div>
-                                                        <a href="#" class="dropdown-item"><i
+                                                        <a href="visit-doctor?id=<?php echo $id; ?>&rno=<?php echo $rno; ?>" class="dropdown-item"><i
                                                         class="fa-solid fa-user-doctor"></i> Visit Doctor</a>
 														<a href="opd-billing?id=<?php echo $id; ?>&rno=<?php echo $rno; ?>" class="dropdown-item"> OPD Billing</a>
                                                         <a href="#" class="dropdown-item"> IPD Admisstion</a>

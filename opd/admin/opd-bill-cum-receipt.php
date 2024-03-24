@@ -1,6 +1,11 @@
 <?php
-include ('header.php');
-
+session_start();
+if (isset ($_SESSION['login']) && $_SESSION['login'] == true) {
+    $login_username = $_SESSION['username'];
+} else {
+    echo "<script>location.href='../../login';</script>";
+}
+    include ('header.php');
 ?>
 <div class="content-wrapper">
     <div class="container-full">
@@ -41,11 +46,9 @@ include ('header.php');
             $billno = $_GET['billno'];
 
             $sql = "SELECT bd.rstatus AS rstatus, 
-            bd.rno AS rno, 
             bd.pname AS pname, 
             bd.phone AS phone, 
-            bd.rdocname AS rdocname, 
-            bd.billno AS billno, 
+            bd.rdocname AS rdocname,
             bd.billdate AS billdate, 
             bd.totalPrice AS totalPrice, 
             bd.totalAdj AS totalAdj, 
@@ -56,20 +59,21 @@ include ('header.php');
             bd.status AS status, 
             rs.rage AS rage, 
             rs.rsex AS rsex,
-            rs.add1 AS add1,
-            rs.add2 AS add2,
-            rs.rcity AS city,
+            rs.radd1 AS add1,
+            rs.radd2 AS add2,
+            rs.rcity AS city
             FROM billingDetails AS bd 
             INNER JOIN registration AS rs 
             ON bd.rno = rs.rno
-            WHERE rno = '$rno' AND billno = '$billno'";
-            $res = sqlsrv_query($conn, $sql);
-            while ($row = sqlsrv_fetch_array($res, SQLSRV_FETCH_ASSOC)) {
+            WHERE bd.rno = '$rno' AND bd.billno = '$billno'";
+            $stmt = sqlsrv_query($conn, $sql);
+            if ($stmt === false) {
+                die (print_r(sqlsrv_errors(), true));
+            }
+            while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
                 $rstatus = $row['rstatus'];
-                $rno = $row['rno'];
                 $pname = $row['pname'];
                 $phone = $row['phone'];
-                $billno = $row['billno'];
                 $billdate = $row['billdate'];
                 $totalPrice = $row['totalPrice'];
                 $rdocname = $row['rdocname'];
@@ -78,6 +82,7 @@ include ('header.php');
                 $billAmount = $row['billAmount'];
                 $paidAmount = $row['paidAmount'];
                 $balance = $row['balance'];
+                $status = $row['status'];
 
                 $gender = $row['rsex'];
                 $age = $row['rage'];
@@ -96,24 +101,32 @@ include ('header.php');
                         <strong class="text-blue fs-16">Name of Patient :
                             <?php echo $pname; ?>, Age :
                             <?php echo $age; ?>Y,
-                            <?php echo $gender; ?>:
-                            Male
+                            Gender : <?php echo $gender; ?>
+                            
                         </strong><br>
-                        <strong class="d-inline">Address :<?php echo $add1."&nbsp;".$add2."&nbsp;".$city; ?></strong><br>
-                        <strong class="d-inline">Dr. : <?php echo $rdocname; ?></strong><br>
+                        <strong class="d-inline">Address :
+                            <?php echo $add1 . "&nbsp;" . $add2 . "&nbsp;" . $city; ?>
+                        </strong><br>
+                        <strong class="d-inline">Dr. :
+                            <?php echo $rdocname; ?>
+                        </strong><br>
                     </address>
                 </div>
                 <!-- /.col -->
                 <div class="col-md-6 invoice-col text-end">
                     <address>
-                        <strong class="text-blue fs-24">Bill No : <?php echo $billno; ?> / <?php echo $rstate; ?></strong><br>
-                        Date : <?php echo $billdate; ?><br>
+                        <strong class="text-blue fs-24">Bill No :
+                            <?php echo $billno; ?> /
+                            <?php echo $rstatus; ?>
+                        </strong><br>
+                        Date :
+                        <?php echo $billdate; ?><br>
                     </address>
                 </div>
             </div>
             <div class="row">
                 <div class="col-12 table-responsive">
-                    <table class="table table-bordered">
+                    <table class="table">
                         <tbody>
                             <tr>
                                 <th>#</th>
@@ -122,22 +135,33 @@ include ('header.php');
                                 <th class="text-end">Amount</th>
                             </tr>
                             <?php
-                                $sql = "SELECT servname, servrate FROM billing WHERE rno = '$rno'";
-                                $res = sqlsrv_query($conn, $sql);
-                                $sno = 0;
-                                while ($row = sqlsrv_fetch_array($res, SQLSRV_FETCH_ASSOC)) {
-                                    $sno = $sno + 1;
-                                    $servname = $row['servname'];
-                                    $servrate = $row['servrate'];
-                                
-                            ?>
-                            <tr>
-                                <td><?php echo $sno; ?></td>
-                                <td><?php echo $servname; ?></td>
-                                <td>1</td>
-                                <td class="text-end">₹ <?php echo $servrate; ?></td>
-                            </tr>
-                        <?php } ?>
+                           $sql = "SELECT billing.servname, MAX(billing.servrate) AS max_servrate 
+                           FROM billing 
+                           WHERE rno = '$rno' AND billno = '$billno' 
+                           GROUP BY billing.servname";                   
+                            $stmt = sqlsrv_query($conn, $sql);
+                            $sno = 0;
+                            if ($stmt === false) {
+                                die (print_r(sqlsrv_errors(), true));
+                            }
+                            while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
+                                $sno = $sno + 1;
+                                $servname = $row['servname'];
+                                $servrate = $row['max_servrate'];
+                                ?>
+                                <tr>
+                                    <td>
+                                        <?php echo $sno; ?>
+                                    </td>
+                                    <td >
+                                        <?php echo $servname; ?>
+                                    </td>
+                                    <td class="text-end">1</td>
+                                    <td class="text-end">₹
+                                        <?php echo $servrate; ?>
+                                    </td>
+                                </tr>
+                            <?php } ?>
                         </tbody>
                     </table>
                 </div>
@@ -146,31 +170,30 @@ include ('header.php');
             <div class="row">
                 <div class="col-12 text-end">
                     <div>
-                        <p>Sub - Total amount : ₹ 6500.00</p>
-                        <p>Less Adjusted : ₹ 500.00</p>
-                        <p>GST (%) : ₹ 600.00 </p>
+                        <p>Sub - Total amount : ₹ <?php echo $totalPrice; ?></p>
+                        <p>Less Adjusted : ₹ <?php echo $totalAdj; ?></p>
+                        <p>GST (%) : ₹ <?php echo $gst; ?> </p>
                     </div>
                     <div class="total-payment">
-                        <h3><b>Bill Amount :</b> ₹ 6600.00</h3><br>
+                        <h3><b>Bill Amount :</b> ₹ <?php echo $billAmount; ?></h3><br>
                     </div>
-                    <p>Advance : ₹ 5000.00</p>
-                    <p>Balance/Due : 1600.00</p>
-                    <p>Mode:CASH</p>
-
+                    <p>Advance : ₹ <?php echo $paidAmount; ?></p>
+                    <p>Balance/Due : ₹ <?php echo $balance; ?></p>
+                    <p>Mode: <?php echo $status; ?></p>
                 </div>
                 <div class="col-sm-12 invoice-col mb-15">
-                    <div class="invoice-details row no-margin">
-                        <div class="col-md-6 col-lg-3">Rupees:Six thousand Six hundred only</div>
-                        <!-- <div class="col-md-6 col-lg-3"><b>Order ID:</b> FC12548</div> -->
-                        <!-- <div class="col-md-6 col-lg-3"><b>Payment Due:</b> 14/08/2018</div> -->
-                        <!-- <div class="col-md-6 col-lg-3"><b>Account:</b> 00215487541296</div> -->
+                    <div class="row no-margin">
+                        <div class="col-md-6 col-lg-6">Rupees:&nbsp;<?php echo getIndianCurrency($billAmount) ?></div>
                     </div>
                 </div>
-                <p>All Disputes Subject to Jurisdiction Only</p>
-                <p>E.& O.E.<br>
-                    For Rhythm Health Care
-                </p>
-                <!-- /.col -->
+                <div class="col-sm-12 invoice-col mb-15">
+                    <div class="row no-margin">
+                        <div class="col-md-6 col-lg-6">All Disputes Subject to Jurisdiction Only</div>
+                    </div>
+                </div>
+                <center>
+                    E.& O.E. <br> For Rhythm Health Care
+                </center>
             </div>
         </section>
         <div class="col-12">

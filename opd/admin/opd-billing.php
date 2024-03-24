@@ -1,4 +1,10 @@
 <?php
+session_start();
+if (isset ($_SESSION['login']) && $_SESSION['login'] == true) {
+    $login_username = $_SESSION['username'];
+} else {
+    echo "<script>location.href='../../login';</script>";
+}
 include ('header.php');
 
 $rno = "";
@@ -59,10 +65,8 @@ while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
     $wamt = $row['wamt'];
 }
 ?>
-<!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">
     <div class="container-full">
-        <!-- Content Header (Page header) -->
         <div class="content-header">
             <div class="d-flex align-items-center">
                 <div class="me-auto">
@@ -78,7 +82,6 @@ while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
                         </nav>
                     </div>
                 </div>
-
             </div>
         </div>
 
@@ -167,7 +170,7 @@ while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
                                             <h5>Bill No: <span class="text-danger">*</span></h5>
                                             <div class="controls">
                                                 <?php
-                                                $sql = "SELECT TOP 1 billno FROM InPatho2324 ORDER BY id DESC";
+                                                $sql = "SELECT TOP 1 billno FROM billingDetails ORDER BY id DESC";
                                                 $stmt = sqlsrv_query($conn, $sql);
                                                 if ($stmt === false) {
                                                     die (print_r(sqlsrv_errors(), true));
@@ -184,8 +187,6 @@ while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
                                                 <input type="text" name="billno" placeholder="237495"
                                                     class="form-control" required value="<?php echo $next_billno; ?>"
                                                     readonly data-validation-required-message="This field is required">
-
-
                                             </div>
                                         </div>
                                     </div>
@@ -207,16 +208,16 @@ while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
                                             onchange="getservname(this.value)">
                                             <option>Select Services</option>
                                             <?php
-                                            $sql = "SELECT servname FROM servmaster";
-                                            $stmt = sqlsrv_query($conn, $sql);
-                                            if ($stmt === false) {
-                                                die (print_r(sqlsrv_errors(), true));
-                                            } else {
-                                                while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
-                                                    $servname = $row['servname'];
-                                                    echo "<option value='$servname'>$servname</option>";
+                                                $sql = "SELECT servname FROM servmaster";
+                                                $stmt = sqlsrv_query($conn, $sql);
+                                                if ($stmt === false) {
+                                                    die (print_r(sqlsrv_errors(), true));
+                                                } else {
+                                                    while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
+                                                        $servname_ = $row['servname'];
+                                                        echo "<option value='$servname_'>$servname_</option>";
+                                                    }
                                                 }
-                                            }
                                             ?>
                                         </select>
                                     </div>
@@ -276,7 +277,7 @@ while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
                                         <tr>
                                             <td colspan="2">Payment Type:</td>
                                             <td>
-                                                <select class="form-select select2" name="paymentType" id="servrate">
+                                                <select class="form-select select2" name="paymentType">
                                                     <option selected disabled>Payment Type</option>
                                                     <option value="Cash">Cash</option>
                                                     <option value="Card">Card</option>
@@ -301,23 +302,16 @@ while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
                             <button type="button" class="btn btn-primary" data-bs-toggle="modal"
                                 data-bs-target=".bs-example-modal-lg">List of Register Patient</button>
                             <button type="button" class="btn btn-primary">List of Admitted Patient</button>
-                            <button type="button" class="btn btn-info">Money Receipt</button>
+                            <a href="money-receipt-list" class="btn btn-info">Money Receipt</a>
                             <a href="index" class="btn btn-info"><i class="fa-solid fa-x"></i></a>
                         </div>
                         </form>
                     </div>
-                    <!-- /.col -->
                 </div>
-                <!-- /.row -->
             </div>
-            <!-- /.box-body -->
+        </section>
     </div>
-    <!-- /.box -->
-    </section>
-    <!-- /.content -->
 </div>
-</div>
-<!-- /.content-wrapper -->
 
 <script>
     const tbodyEl = document.querySelector("tbody");
@@ -329,9 +323,7 @@ while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
     const billAmountEl = document.getElementById("billAmount");
     const paidAmountEl = document.getElementById("paidAmount");
     const balanceEl = document.getElementById("balance");
-
     let prices = [];
-
     function calculateTotalPrice() {
         let totalPrice = 0;
         prices.forEach(price => {
@@ -384,10 +376,75 @@ while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
         row.remove();
         calculateTotalPrice();
     }
-
     addBtn.addEventListener("click", onAddRow);
     tableEl.addEventListener("click", onDeleteRow);
 </script>
+
+<?php
+
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset ($_POST["billSave"])) {
+    $rstatus = $_POST["rstatus"];
+    $rno = $_POST["rno"];
+    $pname = $_POST["pname"];
+    $phone = $_POST["phone"];
+    $rdocname = $_POST["rdocname"];
+    $billno = $_POST["billno"];
+    $billdate = $_POST["billdate"];
+    $status = $_POST["paymentType"];
+    $rows = [];
+    $totalPrice = floatval($_POST['totalPrice']);
+    $totalAdj = $_POST['totalAdj'];
+    $gst = $_POST['gst'];
+    $billAmount = $_POST['billAmount'];
+    $paidAmount = $_POST['paidAmount'];
+    $balance = $_POST['balance'];
+    $datetime = date('Y-m-d h:i:sa');
+    $sql = "INSERT INTO billingDetails (rstatus, rno, pname, phone, rdocname, billno, billdate, totalPrice, totalAdj, gst, billAmount, paidAmount, balance, status, uname) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    $params = array($rstatus, $rno, $pname, $phone, $rdocname, $billno, $billdate, $totalPrice, $totalAdj, $gst, $billAmount, $paidAmount, $balance, $status, $login_username);
+    $stmt = sqlsrv_prepare($conn, $sql, $params);
+    if ($stmt) {
+        if (sqlsrv_execute($stmt)) {
+            for ($i = 0; $i < count($_POST['servname']); $i++) {
+                $servname = $_POST['servname'][$i];
+                $servrate = $_POST['servrate'][$i];
+                $sql2 = "INSERT INTO billing (rno, pname, billno, billdate, servname, servrate, uname) VALUES ('$rno', '$pname', '$billno', '$billdate', '$servname', '$servrate', '$login_username')";
+                $stmt2 = sqlsrv_prepare($conn, $sql2);
+                if ($stmt2) {
+                    if (!sqlsrv_execute($stmt2)) {
+                        echo '<script>
+                                swal("Error!", "Error inserting billing item data.", "error");
+                            </script>';
+                        exit;
+                    }
+                } else {
+                    echo '<script>
+                            swal("Error!", "Error preparing billing item SQL statement.", "error");
+                        </script>';
+                    exit;
+                }
+            }
+            echo '<script>
+                    swal("Success!", "", "success");
+                    setTimeout(function(){
+                        window.location.href = "opd-bill-cum-receipt?rno=' . $rno . '&billno=' . $billno . '&billdate=' . $billdate . '";
+                        window.open("", "_blank");
+                    }, 1000);
+                </script>';
+        } else {
+            echo '<script>
+                    swal("Error!", "Error inserting main data.", "error");
+                </script>';
+        }
+    } else {
+        echo '<script>
+                swal("Error!", "Error preparing main SQL statement.", "error");
+            </script>';
+    }
+}
+?>
+
+
+<!-- load data -->
 <script>
     function getservname(servname) {
         console.log(servname);
@@ -411,8 +468,6 @@ while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
 </script>
 <script>
     $(document).ready(function () {
-
-
         function getServiceRates(servname) {
             console.log(servname);
             $.ajax({
@@ -432,116 +487,8 @@ while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
                 }
             });
         }
-
-
-
-        $("#btn-add-row").click(function () {
-            var row = "<tr><td><select class='form-select select2 getservname' required name='servname[]' onchange='getServiceRates(this.value)'><?php $sql = 'SELECT servname FROM servmaster';
-            $stmt = sqlsrv_query($conn, $sql);
-            while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
-                $servname = $row['servname'];
-                echo '<option value=' . $servname . '>' . $servname . '</option>';
-            } ?></select></td><td><select class='form-select select2 getservrate' required name='servrate[]'><option>Select Price</option></select></td><td><input type='button' value='x' class='btn btn-danger btn-sm btn-row-remove'></td></tr>";
-            $("#fees_tbody").append(row);
-            getServiceRates(this.value);
-
-        });
-        // function grand_total() {
-        //     var tot = 0;
-        //     $(".total").each(function () {
-        //         tot += Number($(this).val()) || 0;
-        //         $("#total_fees").val(tot);
-        //     });
-        //     console.log("Grand total updated: " + tot);
-        // }
-
-        // Remove added services scripts
-        $("body").on("click", ".btn-row-remove", function () {
-            swal({
-                title: "Are You Sure?",
-                icon: "warning",
-                buttons: ["Cancel", "Yes, delete it!"],
-                dangerMode: true,
-            }).then((willDelete) => {
-                if (willDelete) {
-                    $(this).closest("tr").remove();
-                    grand_total();
-                }
-            });
-        });
     });
-
 </script>
-
-<?php
-
-if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["billSave"])) {
-    $rstatus = $_POST["rstatus"];
-    $rno = $_POST["rno"];
-    $pname = $_POST["pname"];
-    $phone = $_POST["phone"];
-    $rdocname = $_POST["rdocname"];
-    $billno = $_POST["billno"];
-    $billdate = $_POST["billdate"];
-    $status = $_POST["paymentType"];
-    $rows = [];
-
-    $totalPrice = floatval($_POST['totalPrice']);
-    $totalAdj = $_POST['totalAdj'];
-    $gst = $_POST['gst'];
-    $billAmount = $_POST['billAmount'];
-    $paidAmount = $_POST['paidAmount'];
-    $balance = $_POST['balance'];
-
-    $datetime = date('Y-m-d h:i:sa');
-    
-    $sql = "INSERT INTO billingDetails (rstatus, rno, pname, phone, rdocname, billno, billdate, totalPrice, totalAdj, gst, billAmount, paidAmount, balance, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-    $params = array($rstatus, $rno, $pname, $phone, $rdocname, $billno, $billdate, $totalPrice, $totalAdj, $gst, $billAmount, $paidAmount, $balance, $status);
-    $stmt = sqlsrv_prepare($conn, $sql, $params);
-
-    if ($stmt) {
-        if (sqlsrv_execute($stmt)) {
-            for ($i = 0; $i < count($_POST['servname']); $i++) {
-                $servname = $_POST['servname'][$i];
-                $servrate = $_POST['servrate'][$i];
-
-                $sql2 = "INSERT INTO billing (rno, pname, billno, billdate, servname, servrate) VALUES (?, ?, ?, ?, ?, ?)";
-                $params2 = array($rno, $pname, $billno, $billdate, $servname, $servrate);
-                $stmt2 = sqlsrv_prepare($conn, $sql2, $params2);
-
-                if ($stmt2) {
-                    if (!sqlsrv_execute($stmt2)) {
-                        echo '<script>
-                                swal("Error!", "Error inserting billing item data.", "error");
-                            </script>';
-                        exit; 
-                    }
-                } else {
-                    echo '<script>
-                            swal("Error!", "Error preparing billing item SQL statement.", "error");
-                        </script>';
-                    exit; 
-                }
-            }
-            echo '<script>
-                    swal("Success!", "Data inserted successfully.", "success");
-                    setTimeout(function(){
-                        window.location.href = "opd-bill-cum-receipt?rno='.$rno.'&billno='.$billno.'";
-                    }, 1000);
-                </script>';
-        } else {
-            echo '<script>
-                    swal("Error!", "Error inserting main data.", "error");
-                </script>';
-        }
-    } else {
-        echo '<script>
-                swal("Error!", "Error preparing main SQL statement.", "error");
-            </script>';
-    }
-}
-?>
-
 
 <div class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel"
     aria-hidden="true" style="display: none;">
@@ -622,72 +569,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["billSave"])) {
     </div>
     <!-- /.modal-dialog -->
 </div>
+
 <?php
-if (isset ($_POST['save'])) {
-    $rno = $_POST['rno'];
-    $se = $_POST['se'];
-    $rdate = $_POST['rdate'];
-    $rtime = date('H:i:s A');
-    $rstatus = $_POST['rstatus'];
-    $rtitle = $_POST['rtitle'];
-    $rfname = $_POST['rfname'];
-    $rmname = $_POST['rmname'];
-    $rlname = $_POST['rlname'];
-    $rsex = $_POST['rsex'];
-    $rage = $_POST['rage'];
-    $month = $_POST['month'];
-    $days = $_POST['days'];
-    $fname = $_POST['fname'];
-    $radd1 = $_POST['radd1'];
-    $radd2 = $_POST['radd2'];
-    $rcity = $_POST['rcity'];
-    $rdist = $_POST['rdist'];
-    $rstate = $_POST['rstate'];
-    $rcity = $_POST['rcity'];
-    $rrace = $_POST['rrace'];
-    $rdoc = $_POST['rdoc'];
-    $wamt = $_POST['wamt'];
-    $rcountry = $_POST['rcountry'];
-
-    $sql = "UPDATE registration SET 
-    rno = '$rno',
-    se = '$se',
-    rdate = '$rdate',
-    rtime = '$rtime',
-    rstatus = '$rstatus',
-    rtitle = '$rtitle',
-    rfname = '$rfname',
-    rmname = '$rmname',
-    rlname = '$rlname',
-    rsex = '$rsex',
-    rage = '$rage',
-    fname = '$fname',
-    radd1 = '$radd1',
-    radd2 = '$radd2',
-    rcity = '$rcity',
-    rdist = '$rdist',
-    rstate = '$rstate',
-    rrace = '$rrace',
-    rdoc = '$rdoc',
-    wamt = '$wamt',
-    rcountry = '$rcountry'
-    WHERE rno = '$rno' AND id = '$id'";
-
-    $stmt = sqlsrv_query($conn, $sql);
-    if ($stmt === false) {
-        die (print_r(sqlsrv_errors(), true));
-    } else {
-        echo '<script>
-                swal("Success!", "", "success");
-                setTimeout(function(){
-                    window.location.href = "reg-list";
-                }, 1000);
-            </script>';
-    }
-}
-
-
-
 include ('footer.php');
-
 ?>

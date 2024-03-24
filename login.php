@@ -2,50 +2,28 @@
 session_start();
 include ('db_conn.php');
 
-if(isset($_POST['login'])){
-    $username = $_POST['username'];
-    $password = $_POST['password'];
-
-    // Use prepared statements to prevent SQL injection
-    $tsql = "SELECT * FROM [dbo].[dba] WHERE dUSERNAME = ? AND dPASSWORD = ?";
-    $params = array($username, $password);
-    $stmt = sqlsrv_query($conn, $tsql, $params);
-
-    if($stmt === false) {
-        // Handle query execution error
-        die( print_r( sqlsrv_errors(), true));
-    }
-    // Check if there is at least one row returned
-    if(sqlsrv_has_rows($stmt)){
-        // Redirect to welcome page
-        header("Location: main/index");
-        exit; // Stop further execution
-    } else {
-        echo "<script> alert('Invalid username or password') </script>";
-    }
-
-    // Free the statement resources
-    sqlsrv_free_stmt($stmt);
-}
 ?>
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="">
     <meta name="author" content="">
-    <link rel="icon" href="https://rhythm-admin-template.multipurposethemes.com/images/favicon.ico">
-    <title>Paramount Hospitals - Log in </title>
+    <link rel="icon" href="opd/images/favicon.ico">
+    <title>Rhythm Healthcare - Log in </title>
     <!-- Vendors Style-->
-    <link rel="stylesheet" href="main/css/vendors_css.css">
+    <link rel="stylesheet" href="opd/admin/css/vendors_css.css">
     <!-- Style-->
-    <link rel="stylesheet" href="main/css/style.css">
-    <link rel="stylesheet" href="main/css/skin_color.css">
+    <link rel="stylesheet" href="opd/admin/css/style.css">
+    <link rel="stylesheet" href="opd/admin/css/skin_color.css">
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+
 </head>
 
-<body class="hold-transition theme-primary bg-img" style="background-image: url(main/../images/auth-bg/bg-1.jpg)">
+<body class="hold-transition theme-primary bg-img" style="background-image: url(opd/images/auth-bg/bg-1.jpg)">
     <div class="container h-p100">
         <div class="row align-items-center justify-content-md-center h-p100">
             <div class="col-12">
@@ -54,7 +32,7 @@ if(isset($_POST['login'])){
                         <div class="bg-white rounded10 shadow-lg">
                             <div class="content-top-agile p-20 pb-0">
                                 <h2 class="text-primary">Let's Get Started</h2>
-                                <p class="mb-0">Sign in to continue to PHPL.</p>
+                                <p class="mb-0">Sign in to continue to Rhythm Healthcare.</p>
                             </div>
                             <div class="p-40">
                                 <form method="POST" action="">
@@ -74,14 +52,9 @@ if(isset($_POST['login'])){
                                         </div>
                                     </div>
                                     <div class="row">
-                                        <div class="col-6">
-                                            <div class="checkbox">
-                                                <input type="checkbox" id="basic_checkbox_1">
-                                                <label for="basic_checkbox_1">Remember Me</label>
-                                            </div>
-                                        </div>
                                         <div class="col-12 text-center">
-                                            <input type="submit" name="login" class="btn btn-danger mt-10" value="LOG IN">
+                                            <input type="submit" name="login" class="btn btn-danger mt-10"
+                                                value="LOG IN">
                                         </div>
                                     </div>
                                 </form>
@@ -93,11 +66,35 @@ if(isset($_POST['login'])){
         </div>
     </div>
     <!-- Vendor JS -->
-    <script src="main/js/vendors.min.js"></script>
-    <script src="main/js/pages/chat-popup.js"></script>
-    <script src="main/../assets/icons/feather-icons/feather.min.js"></script>
+    <script src="opd/admin/js/vendors.min.js"></script>
+    <script src="opd/admin/js/pages/chat-popup.js"></script>
+    <script src="opd/admin/assets/icons/feather-icons/feather.min.js"></script>
 
 </body>
 
 </html>
 
+<?php
+if (isset ($_POST['login'])) {
+    $username = $_POST['username'];
+    $password = $_POST['password'];
+    $tsql = "SELECT dUSERNAME, dPASSWORD FROM [dbo].[dba] WHERE dUSERNAME = ? AND dPASSWORD = ?";
+    $params = array($username, $password);
+    $stmt = sqlsrv_query($conn, $tsql, $params);
+    if ($stmt === false) {
+        die (print_r(sqlsrv_errors(), true));
+    }
+    if (sqlsrv_has_rows($stmt)) {
+        $_SESSION['login'] = true;
+        $_SESSION['username'] = $username;
+        header("Location: opd/admin/");
+        exit;
+    } else {
+
+        echo '<script>
+                swal("Invalid username or password!", "", "error");
+            </script>';
+    }
+    sqlsrv_free_stmt($stmt);
+}
+?>

@@ -1,11 +1,63 @@
 select * from dba;
 select * from discharge
 SELECT * FROM [dbo].[dba] WHERE dUSERNAME = 'Administrator' AND dPASSWORD = 'Para@012'
-DROP TABLE billing;
+--DROP TABLE billing;
 
-Select * FROM InPatho2324
+Select * FROM billingDetails where rno = '237500'
+DELETE FROM billingDetails WHERE rno = '237480'
+ALTER TABLE billingDetails
+ADD uname VARCHAR(MAX),
+	modify_by VARCHAR(255), -- or appropriate data type
+    modify_date DATETIME; -- or appropriate data type
 
-Select * FROM registration where rno = '237495'
+Select * FROM billing where billno = '237507'
+SELECT TOP 1 billno FROM billingDetails ORDER BY id DESC
+SELECT * FROM InPatho2324 Where rcno = '35985'
+
+SELECT 
+    billing.servname, 
+    billing.billno, 
+    billing.billdate, 
+    MAX(billing.servrate) AS max_servrate 
+FROM 
+    billing 
+WHERE 
+    billing.rno = '237507' 
+GROUP BY 
+    billing.servname, 
+    billing.billno, 
+    billing.billdate;
+
+
+
+select * from InAdv2324 where CODE = '237506'
+Select * FROM registration where rno = '237506'
+
+SELECT bd.rstatus AS rstatus, 
+       bd.rno AS rno, 
+       bd.pname AS pname, 
+       bd.phone AS phone, 
+       bd.rdocname AS rdocname, 
+       bd.billno AS billno, 
+       bd.billdate AS billdate, 
+       bd.totalPrice AS totalPrice, 
+       bd.totalAdj AS totalAdj, 
+       bd.gst AS gst, 
+       bd.billAmount AS billAmount, 
+       bd.paidAmount AS paidAmount, 
+       bd.balance AS balance, 
+       bd.status AS status, 
+       rs.rage AS rage, 
+       rs.rsex AS rsex 
+FROM billingDetails AS bd 
+INNER JOIN registration AS rs 
+ON bd.rno = rs.rno;
+
+ALTER TABLE registration
+ADD modify_by VARCHAR(255), -- or appropriate data type
+    modify_date DATETIME; -- or appropriate data type
+
+
 Select * FROM citymaster
 Select * FROM deptmaster
 Select * FROM docmaster
@@ -19,7 +71,7 @@ SELECT  servmaster.servrate AS servrate FROM servmaster
 SELECT servname, servrate FROM servmaster
 
 Select * FROM billing 
-Select * from InPatho2324 WHERE rno = '237493'
+Select * from billingDetails WHERE rno = '237493'
 select * from ba4 WHERE refno = 3844
 Select * FROM AdmitCardCan2324 where regno = '237495'
 Select * FROM InBill2324
@@ -62,43 +114,38 @@ VALUES
 
 CREATE TABLE billingDetails(
     id INT PRIMARY KEY IDENTITY(1,1) ,
-    rstatus VARCHAR(10) NULL,
-    rno VARCHAR(20) NULL,
-    pname VARCHAR(100) NULL,
-    phone VARCHAR(20) NULL,
-    rdocname VARCHAR(100) NULL,
-    billno VARCHAR(20) NULL,
-    billdate VARCHAR(20) NULL,
-    servname VARCHAR(100) NULL,
-    servrate DECIMAL(10,2),
-    totalPrice DECIMAL(10,2) NULL,
-    totalAdj DECIMAL(10,2) NULL,
-    gst DECIMAL(5,2) NULL,
-    billAmount DECIMAL(10,2) NULL,
-    paidAmount DECIMAL(10,2) NULL,
-    balance DECIMAL(10,2) NULL,
+    rstatus VARCHAR(MAX) NULL,
+    rno VARCHAR(MAX) NULL,
+    pname VARCHAR(MAX) NULL,
+    phone VARCHAR(MAX) NULL,
+    rdocname VARCHAR(MAX) NULL,
+    billno VARCHAR(MAX) NULL,
+    billdate VARCHAR(MAX) NULL,
+    totalPrice VARCHAR(MAX) NULL,
+    totalAdj VARCHAR(MAX) NULL,
+    gst VARCHAR(MAX) NULL,
+    billAmount VARCHAR(MAX) NULL,
+    paidAmount VARCHAR(MAX) NULL,
+    balance VARCHAR(MAX) NULL,
     status VARCHAR(20) NULL ,
 	datetime DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE TABLE billing_details (
+CREATE TABLE billing (
     id INT PRIMARY KEY IDENTITY(1,1) ,
-    rstatus VARCHAR(10) NULL,
-    rno VARCHAR(20) NULL,
-    pname VARCHAR(100) NULL,
-    phone VARCHAR(20) NULL,
-    rdocname VARCHAR(100) NULL,
-    billno VARCHAR(20) NULL,
-    billdate VARCHAR(20) NULL,
-    servname VARCHAR(100) NULL,
-    servrate DECIMAL(10,2),
-    totalPrice DECIMAL(10,2) NULL,
-    totalAdj DECIMAL(10,2) NULL,
-    gst DECIMAL(5,2) NULL,
-    billAmount DECIMAL(10,2) NULL,
-    paidAmount DECIMAL(10,2) NULL,
-    balance DECIMAL(10,2) NULL,
-    status VARCHAR(20) NULL ,
-	datetime DATETIME DEFAULT CURRENT_TIMESTAMP
+    rno VARCHAR(MAX) NULL,
+    pname VARCHAR(MAX) NULL,
+    billno VARCHAR(MAX) NULL,
+    billdate VARCHAR(MAX) NULL,
+    servname VARCHAR(MAX) NULL,
+    servrate VARCHAR(MAX) NULL,
+	uname VARCHAR(MAX) NULL,
+	datetime DATETIME DEFAULT CURRENT_TIMESTAMP,
+	modify_by VARCHAR(MAX) NULL,
+	modify_date DATETIME
 );
 
+INSERT INTO billing (rno, pname, billno, billdate, servname, servrate) VALUES ('001', 'Abhi', '0003', '22-03-2024', 'x-ray', '2500.00')
+
+INSERT INTO billingDetails (rstatus, rno, pname, phone, rdocname, billno, billdate, totalPrice, totalAdj, gst, billAmount, paidAmount, balance, status)
+VALUES ('OPD','000212' ,'Abhi','8101202074', 'Vivek Sarkar', '002125', '22-03-2024', '62000', '', '10', '66000', '50000', '16000', 'cash')

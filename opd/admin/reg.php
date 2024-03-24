@@ -1,4 +1,10 @@
 <?php
+session_start();
+if (isset ($_SESSION['login']) && $_SESSION['login'] == true) {
+    $login_username = $_SESSION['username'];
+} else {
+    echo "<script>location.href='../../login';</script>";
+}
 include ('header.php');
 
 ?>
@@ -15,7 +21,7 @@ include ('header.php');
                             <ol class="breadcrumb">
                                 <li class="breadcrumb-item"><a href="#"><i class="mdi mdi-home-outline"></i></a></li>
                                 <li class="breadcrumb-item" aria-current="page">OPD</li>
-                                <li class="breadcrumb-item active" aria-current="page">Registration</li>
+                                <li class="breadcrumb-item active" aria-current="page">Registration </li>
                             </ol>
                         </nav>
                     </div>
@@ -26,7 +32,6 @@ include ('header.php');
 
         <!-- Main content -->
         <section class="content">
-
             <!-- Basic Forms -->
             <div class="box">
                 <!-- /.box-header -->
@@ -107,7 +112,6 @@ include ('header.php');
                                                     }
                                                 }
                                                 ?>
-
                                             </select>
                                         </div>
                                     </div>
@@ -246,16 +250,17 @@ include ('header.php');
                                             <div class="controls">
                                                 <h5>Ph. No. <span class="text-danger">*</span></h5>
                                                 <input type="text" class="form-control" required name="rrace"
-                                                    maxlength="10" data-validation-required-message="This field is required">
+                                                    maxlength="10"
+                                                    data-validation-required-message="This field is required">
                                             </div>
                                         </div>
                                     </div>
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <h5>Ref. Doctor <span class="text-danger">*</span></h5>
-                                            <select class="form-select select2" name="rdoc">
+                                            <select class="form-select select2" name="rdoc" onchange="getDocname(this.value)">
                                                 <?php
-                                                $sql = "SELECT * FROM docmaster";
+                                                $sql = "SELECT docName FROM docmaster";
                                                 $stmt = sqlsrv_query($conn, $sql);
                                                 if ($stmt === false) {
                                                     die (print_r(sqlsrv_errors(), true));
@@ -274,11 +279,12 @@ include ('header.php');
                                         <div class="form-group">
                                             <div class="controls">
                                                 <h5>Fee</h5>
-                                                <input type="text" class="form-control" name="wamt">
+                                                <input type="text" class="form-control" name="wamt" id="wamt">
                                             </div>
                                         </div>
                                     </div>
-
+                                    <input type="hidden" class="form-control" name="uname"
+                                        value="<?php echo $login_username; ?>">
                                 </div>
                         </div>
                         <center>
@@ -287,22 +293,30 @@ include ('header.php');
                             </div>
                         </center>
                         </form>
-
                     </div>
-                    <!-- /.col -->
                 </div>
-                <!-- /.row -->
             </div>
-            <!-- /.box-body -->
     </div>
-    <!-- /.box -->
-
     </section>
-    <!-- /.content -->
 </div>
 </div>
 <!-- /.content-wrapper -->
-
+<script>
+    function getDocname(docName) {
+        $.ajax({
+            url: "load/doc_fetch_price.php",
+            type: "POST",
+            data: { docName: docName },
+            dataType: "json",
+            success: function (data) {
+                $("#wamt").val(data.fee);
+            },
+            error: function (xhr, status, error) {
+                console.error(xhr.responseText);
+            }
+        });
+    }
+</script>
 <!-- City Dist Dependency Dropdown -->
 <script>
     function populateDistricts() {
@@ -371,9 +385,10 @@ if (isset ($_POST['save'])) {
     $rdoc = $_POST['rdoc'];
     $wamt = $_POST['wamt'];
     $rcountry = $_POST['rcountry'];
+    $uname = $_POST['uname'];
 
-    $sql = "INSERT INTO registration (id, rno, se, rdate, rtime, rstatus, rtitle, rfname, rmname, rlname, rsex, rage, fname, radd1, radd2, rcity, rdist, rstate, rrace, rdoc, wamt, rcountry) 
-    VALUES ('$rno','$rno', '$se', '$rdate', '$rtime', '$rstatus' ,'$rtitle', '$rfname', '$rmname', '$rlname', '$rsex', '$rage', '$fname', '$radd1', '$radd2', '$rcity', '$rdist', '$rstate', '$rrace', '$rdoc', '$wamt', '$rcountry')";
+    $sql = "INSERT INTO registration (id, rno, se, rdate, rtime, rstatus, rtitle, rfname, rmname, uname, rlname, rsex, rage, fname, radd1, radd2, rcity, rdist, rstate, rrace, rdoc, wamt, rcountry) 
+    VALUES ('$rno','$rno', '$se', '$rdate', '$rtime', '$rstatus' ,'$rtitle', '$rfname', '$rmname', '$uname', '$rlname', '$rsex', '$rage', '$fname', '$radd1', '$radd2', '$rcity', '$rdist', '$rstate', '$rrace', '$rdoc', '$wamt', '$rcountry')";
 
     $stmt = sqlsrv_query($conn, $sql);
     if ($stmt === false) {
