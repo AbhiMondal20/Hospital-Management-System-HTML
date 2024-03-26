@@ -14,13 +14,13 @@ include ('header.php');
         <div class="content-header">
             <div class="d-flex align-items-center">
                 <div class="me-auto">
-                    <h4 class="page-title">User Wise Reports</h4>
+                    <h4 class="page-title">Patient List</h4>
                     <div class="d-inline-block align-items-center">
                         <nav>
                             <ol class="breadcrumb">
                                 <li class="breadcrumb-item"><a href="#"><i class="mdi mdi-home-outline"></i></a></li>
                                 <li class="breadcrumb-item" aria-current="page">OPD</li>
-                                <li class="breadcrumb-item active" aria-current="page">User Wise Reports</li>
+                                <li class="breadcrumb-item active" aria-current="page">Patient List</li>
                             </ol>
                         </nav>
                     </div>
@@ -60,7 +60,7 @@ include ('header.php');
                                         <div class="form-group">
                                             <div class="controls">
                                                 <h5>Form Date <span class="text-danger">*</span></h5>
-                                                <input type="date" name="form" placeholder="DD-MM-YYYY"
+                                                <input type="date" name="from" placeholder="DD-MM-YYYY"
                                                     class="form-control">
                                             </div>
                                         </div>
@@ -103,81 +103,58 @@ include ('header.php');
                                         <th>Name</th>
                                         <th>Gender</th>
                                         <th>Age</th>
-                                        <!-- <th>F/H/S/D/W</th> -->
                                         <th>Ph. No</th>
-                                        <th>City</th>
+                                        <th>Username</th>
                                         <th>Doctor</th>
                                         <th>Fee</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                <?php
-                                    if (isset ($_POST['search'])) {
-                                        $username = $_POST['username'];
-                                        $to = $_POST['to'];
-                                        $form = $_POST['form'];
-                                        $sql = "SELECT MAX(b.servname) AS servname, MAX(b.billdate) AS billdate, MAX(b.billno) AS billno, MAX(b.pname) AS pname, MAX(b.id) AS id, MAX(b.rno) AS rno, MAX(r.rage) AS age, MAX(r.rsex) AS sex, MAX(bd.rdocname) AS docname, MAX(bd.uname) AS uname
-                                        FROM billing AS b
-                                        INNER JOIN registration AS r ON b.rno = r.rno
-                                        INNER JOIN billingDetails AS bd ON r.rno = bd.rno
-                                        WHERE b.billdate BETWEEN ? AND ?";
-                                        if (!empty ($rno)) {
-                                            $sql .= " OR b.uname = ?";
-                                        }
-                                        $sql .= " GROUP BY b.servname";
-                                        $sql .= " ORDER BY MAX(b.id) DESC";
-                                        if (!empty ($rno)) {
-                                            $stmt = sqlsrv_query($conn, $sql, array(&$form, &$to, &$username));
-                                        } else {
-                                            $stmt = sqlsrv_query($conn, $sql, array(&$form, &$to));
-                                        }
-                                        if ($stmt === false) {
-                                            die (print_r(sqlsrv_errors(), true));
-                                        }
-                                        while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
-                                            $rno = $row['rno'];
-                                            $id = $row['id'];
-                                            $billno = $row['billno'];
-                                            ?>
-                                            <tr>
-                                                <td>
-                                                    <?php echo $rno; ?>
-                                                </td>
-                                                <td>
-                                                    <?php echo $billno; ?>
-                                                </td>
-                                                <td>
-                                                    <?php echo $row['billdate']; ?>
-                                                </td>
-                                                <td>
-                                                    <?php echo $row['pname']; ?>
-                                                </td>
-                                                <td>
-                                                    <?php echo $row['age']; ?>
-                                                </td>
-                                                <td>
-                                                    <?php echo $row['sex']; ?>
-                                                </td>
-                                                <td>
-                                                    <?php echo $row['servname']; ?>
-                                                </td>
-                                                <td>
-                                                    <?php echo $row['docname']; ?>
-                                                </td>
-                                                <td>
-                                                    <?php echo $row['uname']; ?>
-                                                </td>
-                                                <td class="text-center">
-                                                    <a href="heamatology-1?id=<?php echo $id ?>&rno=<?php echo $rno; ?>&billno=<?php echo $billno; ?>"
-                                                        class="btn btn-sm btn-primary">
-                                                        <i class="fa fa-file-text"></i>
-                                                    </a>
-                                                </td>
-                                            </tr>
-                                            <?php
-                                        }
+                                    <?php
+                                  if (isset($_POST['search'])) {
+                                    $username = $_POST['username'];
+                                    $to = $_POST['to'];
+                                    $from = $_POST['from'];
+                                    $sql = "SELECT
+                                                id, rno, rdate, rtime, 
+                                                rfname, CONCAT(rfname, ' ', COALESCE(rmname, ''), ' ', rlname) AS fullname, 
+                                                rsex, rage, fname, rrace, 
+                                                radd1, rcity, rdist, wamt, uname, rdoc
+                                            FROM 
+                                                registration 
+                                            WHERE 
+                                                uname = ? 
+                                                OR rdate BETWEEN ? AND ? 
+                                            ORDER BY 
+                                                id DESC";
+                                    $params = array($username, $from, $to);
+                                    $stmt = sqlsrv_query($conn, $sql, $params);
+                                    if ($stmt === false) {
+                                        die(print_r(sqlsrv_errors(), true));
                                     }
-                                    ?>
+                                    while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
+                                        $rno = $row['rno'];
+                                        $id = $row['id'];
+                                        $rfname = $row['rfname'];
+                                        $doctor = $row['rdoc'];
+                                        $wamt = number_format($row['wamt'], 2);
+                                        ?>
+                                        <tr>
+                                            <td><?php echo $rno; ?></td>
+                                            <td><?php echo date_format($row['rdate'], 'Y-m-d') . ' ' . $row['rtime']; ?></td>
+                                            <td><?php echo $row['fullname']; ?></td>
+                                            <td><?php echo $row['rsex']; ?></td>
+                                            <td><?php echo $row['rage']; ?></td>
+                                            <td><?php echo $row['rrace']; ?></td>
+                                            <td><?php echo $row['uname']; ?></td>
+                                            <td><?php echo $doctor; ?></td>
+                                            <td><?php echo $wamt; ?></td>
+                                        </tr>
+                                        <?php
+                                    }
+                                }
+                                ?>
+                                
                                 </tbody>
                             </table>
 
@@ -192,6 +169,7 @@ include ('header.php');
     <!-- /.row -->
     </section>
     <!-- /.content -->
+
 </div>
 </div>
 
