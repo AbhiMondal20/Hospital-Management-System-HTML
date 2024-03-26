@@ -258,7 +258,9 @@ include ('header.php');
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <h5>Ref. Doctor <span class="text-danger">*</span></h5>
-                                            <select class="form-select select2" name="rdoc" onchange="getDocname(this.value)">
+                                            <select class="form-select select2" name="rdoc"
+                                                onchange="getDocname(this.value)">
+                                                <option selected disabled>Select Doctor</option>
                                                 <?php
                                                 $sql = "SELECT docName FROM docmaster";
                                                 $stmt = sqlsrv_query($conn, $sql);

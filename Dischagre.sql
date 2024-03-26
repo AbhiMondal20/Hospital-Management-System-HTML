@@ -3,14 +3,26 @@ select * from discharge
 SELECT * FROM [dbo].[dba] WHERE dUSERNAME = 'Administrator' AND dPASSWORD = 'Para@012'
 --DROP TABLE billing;
 
-Select * FROM billingDetails where rno = '237500'
-DELETE FROM billingDetails WHERE rno = '237480'
+Select * FROM InPatho2324 where rno = '237500'
+--DELETE FROM billingDetails WHERE rno = '237480'
 ALTER TABLE billingDetails
 ADD uname VARCHAR(MAX),
 	modify_by VARCHAR(255), -- or appropriate data type
     modify_date DATETIME; -- or appropriate data type
 
 Select * FROM billing where billno = '237507'
+
+SELECT id, rno, pname, servname, billdate, uname 
+FROM billing 
+WHERE (billdate BETWEEN '2024-03-23' AND '2024-03-24') OR rno = '237482' 
+ORDER BY id DESC;
+
+
+SELECT id, rno, pname, servname, billdate, uname 
+FROM billing 
+INNER JOIN registration ON billing.rno = registration.rno
+
+SELECT id, rno, pname, servname, billdate, uname FROM billing 
 SELECT TOP 1 billno FROM billingDetails ORDER BY id DESC
 SELECT * FROM InPatho2324 Where rcno = '35985'
 
@@ -30,8 +42,19 @@ GROUP BY
 
 
 
-select * from InAdv2324 where CODE = '237506'
+select * from billing where rno = '237506'
+select * from billingDetails
 Select * FROM registration where rno = '237506'
+
+SELECT MAX(b.servname) AS servname, MAX(b.billdate) AS billdate, MAX(b.pname) AS pname, MAX(b.id) AS id, MAX(b.rno) AS rno, MAX(r.rage) AS age, MAX(r.rsex) AS sex
+FROM billing AS b
+INNER JOIN registration AS r ON b.rno = r.rno
+LEFT JOIN billingDetails AS bd ON b.rno = bd.rno
+
+SELECT MAX(b.servname) AS servname, MAX(b.billdate) AS billdate, MAX(b.pname) AS pname, MAX(b.id) AS id, MAX(b.rno) AS rno, MAX(r.rage) AS age, MAX(r.rsex) AS sex, MAX(bd.rdocname) AS docname, MAX(bd.uname) AS uname FROM billing AS b
+INNER JOIN registration AS r ON b.rno = r.rno
+INNER JOIN billingDetails AS bd ON r.rno = bd.rno
+
 
 SELECT bd.rstatus AS rstatus, 
        bd.rno AS rno, 
