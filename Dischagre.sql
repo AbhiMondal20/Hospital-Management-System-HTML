@@ -42,7 +42,7 @@ GROUP BY
 
 
 
-select * from billing where rno = '237506'
+select * from billing where rno = '237503'
 select * from billingDetails
 Select * FROM registration where rno = '237506'
 
