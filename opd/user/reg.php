@@ -190,7 +190,6 @@ include ('header.php');
                                         <div class="form-group">
                                             <div class="controls">
                                                 <h5>Address <span class="text-danger">*</span></h5>
-
                                                 <input type="text" class="form-control" required name="radd1"
                                                     data-validation-required-message="This field is required">
                                             </div>
@@ -210,7 +209,7 @@ include ('header.php');
                                             <h5>City <span class="text-danger">*</span></h5>
                                             <select class="form-select select2" id="rcity" name="rcity">
                                                 <?php
-                                                $sql = "SELECT * FROM citymaster";
+                                                $sql = "SELECT Cityname FROM citymaster";
                                                 $stmt = sqlsrv_query($conn, $sql);
                                                 if ($stmt === false) {
                                                     die (print_r(sqlsrv_errors(), true));

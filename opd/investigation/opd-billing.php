@@ -1,6 +1,6 @@
 <?php
 session_start();
-if (isset ($_SESSION['login']) && $_SESSION['login'] == true) {
+if (isset($_SESSION['login']) && $_SESSION['login'] == true) {
     $login_username = $_SESSION['username'];
 } else {
     echo "<script>location.href='../../login';</script>";
@@ -9,7 +9,7 @@ include ('header.php');
 
 $rno = "";
 $id = "";
-if (isset ($_GET['id']) && isset ($_GET['rno'])) {
+if (isset($_GET['id']) && isset($_GET['rno'])) {
     $id = $_GET['id'];
     $rno = $_GET['rno'];
 }
@@ -38,7 +38,7 @@ $sql = "SELECT id, rno, rdate, rtime, rstatus,rtitle, se, rdoc, rfname, rmname, 
 FROM registration WHERE rno = '$rno' AND id = '$id'";
 $stmt = sqlsrv_query($conn, $sql);
 if ($stmt === false) {
-    die (print_r(sqlsrv_errors(), true));
+    die(print_r(sqlsrv_errors(), true));
 }
 while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
     $rstatus = $row['rstatus'];
@@ -146,7 +146,7 @@ while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
                                                 $sql = "SELECT docName FROM docmaster";
                                                 $stmt = sqlsrv_query($conn, $sql);
                                                 if ($stmt === false) {
-                                                    die (print_r(sqlsrv_errors(), true));
+                                                    die(print_r(sqlsrv_errors(), true));
                                                 } else {
                                                     while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
                                                         $docName = $row['docName'];
@@ -173,7 +173,7 @@ while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
                                                 $sql = "SELECT TOP 1 billno FROM billingDetails ORDER BY id DESC";
                                                 $stmt = sqlsrv_query($conn, $sql);
                                                 if ($stmt === false) {
-                                                    die (print_r(sqlsrv_errors(), true));
+                                                    die(print_r(sqlsrv_errors(), true));
                                                 } else {
                                                     $row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC);
                                                     $last_billno = $row['billno'];
@@ -205,13 +205,13 @@ while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
                                     <div class="col-lg-4">
                                         <label for="Services">Services</label>
                                         <select class="form-select select2" name="sservname[]" id="servname"
-                                            onchange="getservname(this.value)">
+                                            tabindex="1" onchange="getservname(this.value)">
                                             <option value="">Select Services</option>
                                             <?php
                                             $sql = "SELECT servname FROM servmaster";
                                             $stmt = sqlsrv_query($conn, $sql);
                                             if ($stmt === false) {
-                                                die (print_r(sqlsrv_errors(), true));
+                                                die(print_r(sqlsrv_errors(), true));
                                             } else {
                                                 while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
                                                     $servname_ = $row['servname'];
@@ -228,7 +228,7 @@ while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
                                     </div>
                                     <div class="col-lg-4">
                                         <label for="add"></label>
-                                        <button type="button" id="addBtn"
+                                        <button type="button" id="addBtn" tabindex="2"
                                             class="btn btn-md btn-primary mt-4">Add</button>
                                     </div>
                                 </div>
@@ -364,26 +364,25 @@ while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
         }
 
         // Check if there are existing rows in the table body
-        const rows = tbody.querySelectorAll("tr");
-        if (rows.length === 0) {
-            console.log("No rows found in table body!");
-        }
+        // const rows = tbody.querySelectorAll("tr");
+        // if (rows.length === 0) {
+        //     console.log("No rows found in table body!");
+        // }
 
-        // Check if the service is already added
-        const existingServices = Array.from(rows).map(row => {
-            const input = row.querySelector("td:first-child input");
-            return input ? input.value : null;
-        });
-        console.log("Existing services:", existingServices);
-        if (existingServices.includes(servname)) {
-            console.log("Service already added!");
-            swal({
-                title: 'Service already added!',
-                icon: 'warning',
-                button: 'OK',
-            });
-            return;
-        }
+        // const existingServices = Array.from(rows).map(row => {
+        //     const input = row.querySelector("td:first-child input");
+        //     return input ? input.value : null;
+        // });
+        // console.log("Existing services:", existingServices);
+        // if (existingServices.includes(servname)) {
+        //     console.log("Service already added!");
+        //     swal({
+        //         title: 'Service already added!',
+        //         icon: 'warning',
+        //         button: 'OK',
+        //     });
+        //     return;
+        // }
 
         // Add service to the table
         const newRow = `
@@ -415,8 +414,9 @@ while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
 </script>
 
 <?php
+// Assuming $conn is your established SQL Server connection
 
-if ($_SERVER["REQUEST_METHOD"] == "POST" && isset ($_POST["billSave"])) {
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["billSave"])) {
     $rstatus = $_POST["rstatus"];
     $rno = $_POST["rno"];
     $pname = $_POST["pname"];
@@ -428,49 +428,70 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset ($_POST["billSave"])) {
     $rows = [];
     $totalPrice = floatval($_POST['totalPrice']);
     $totalAdj = $_POST['totalAdj'];
-    // $gst = $_POST['gst'];
-    $gst = '0';
+    $gst = '0'; // Assuming you're not using GST for now
     $billAmount = $_POST['billAmount'];
     $paidAmount = $_POST['paidAmount'];
     $balance = $_POST['balance'];
-    $datetime = date('Y-m-d h:i:sa');
-    $sql = "INSERT INTO billingDetails (rstatus, rno, pname, phone, rdocname, billno, billdate, totalPrice, totalAdj, gst, billAmount, paidAmount, balance, status, uname) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-    $params = array($rstatus, $rno, $pname, $phone, $rdocname, $billno, $billdate, $totalPrice, $totalAdj, $gst, $billAmount, $paidAmount, $balance, $status, $login_username);
-    $stmt = sqlsrv_prepare($conn, $sql, $params);
-    if ($stmt) {
-        if (sqlsrv_execute($stmt)) {
+    $login_username = ''; // Assuming you have this defined elsewhere
+
+    // Prepare main SQL statement for billingDetails table
+    $sqlMain = "INSERT INTO billingDetails (rstatus, rno, pname, phone, rdocname, billno, billdate, totalPrice, totalAdj, gst, billAmount, paidAmount, balance, status, uname) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    $paramsMain = array($rstatus, $rno, $pname, $phone, $rdocname, $billno, $billdate, $totalPrice, $totalAdj, $gst, $billAmount, $paidAmount, $balance, $status, $login_username);
+    $stmtMain = sqlsrv_prepare($conn, $sqlMain, $paramsMain);
+
+    if ($stmtMain) {
+        if (sqlsrv_execute($stmtMain)) {
+            $success = true;
+            // Prepare SQL statement for billing table
+            $sqlBilling = "INSERT INTO billing (rno, pname, billno, billdate, servname, servrate, uname) VALUES (?, ?, ?, ?, ?, ?, ?)";
+            $stmtBilling = sqlsrv_prepare($conn, $sqlBilling, array(&$rno, &$pname, &$billno, &$billdate, &$servname, &$servrate, &$login_username));
+            
+            if (!$stmtBilling) {
+                die(print_r(sqlsrv_errors(), true));
+            }
+
+            // Loop through each billing item
             for ($i = 0; $i < count($_POST['sservname']); $i++) {
                 $servname = $_POST['sservname'][$i];
                 $servrate = $_POST['sservrate'][$i];
-            $sql2 = "INSERT INTO billing (rno, pname, billno, billdate, servname, servrate, uname) VALUES (?, ?, ?, ?, ?, ?, ?)";
-                $params = array($rno, $pname, $billno, $billdate, $servname, $servrate, $login_username);
-                $stmt2 = sqlsrv_query($conn, $sql2, $params);
-                if ($stmt2 === false) {
+        
+                if (!sqlsrv_execute($stmtBilling)) {
+                    $success = false;
                     echo '<script>
-                            swal("Error!", "Error inserting billing item data.", "error");
-                        </script>';
-                    die (print_r(sqlsrv_errors(), true));
+                        swal("Error!", "Error inserting billing item ' . ($i + 1) . '.", "error"); // Provide specific item number for error
+                    </script>';
                 }
+            }
+
+            if ($success) {
                 echo '<script>
-                            swal("Success!", "", "success");
-                            setTimeout(function(){
-                                window.location.href = "opd-bill-cum-receipt?rno=' . $rno . '&billno=' . $billno . '&billdate=' . $billdate . '";
-                                window.open("", "_blank");
-                            }, 1000);
-                        </script>';
+                    swal("Success!", "", "success");
+                    setTimeout(function(){
+                        var url = "opd-bill-cum-receipt?rno=' . $rno . '&billno=' . $billno . '&billdate=' . $billdate . '";
+                        var link = document.createElement("a");
+                        link.href = url;
+                        link.target = "_blank";
+                        link.click();
+                    }, 1000);
+                </script>';
+            } else {
+                echo '<script>
+                    swal("Error!", "Error inserting one or more billing items.", "error");
+                </script>';
             }
         } else {
             echo '<script>
-                    swal("Error!", "Error inserting main data.", "error");
-                </script>';
+                swal("Error!", "Error inserting main data.", "error");
+            </script>';
         }
     } else {
         echo '<script>
-                swal("Error!", "Error preparing main SQL statement.", "error");
-            </script>';
+            swal("Error!", "Error preparing main SQL statement.", "error");
+        </script>';
     }
 }
 ?>
+
 
 
 <!-- load data -->
@@ -549,7 +570,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset ($_POST["billSave"])) {
                                     ORDER BY id DESC";
                             $stmt = sqlsrv_query($conn, $sql);
                             if ($stmt === false) {
-                                die (print_r(sqlsrv_errors(), true));
+                                die(print_r(sqlsrv_errors(), true));
                             }
                             while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
                                 $rno = $row['rno'];

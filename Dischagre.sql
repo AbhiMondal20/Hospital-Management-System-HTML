@@ -10,7 +10,13 @@ ADD uname VARCHAR(MAX),
 	modify_by VARCHAR(255), -- or appropriate data type
     modify_date DATETIME; -- or appropriate data type
 
-Select * FROM billing where billno = '237507'
+Select * FROM billing where billno = '237539'
+
+select * from AdmitCard2324 where regno = '237493'
+
+select * from bedmaster
+
+select * from AcctHeadMAster
 
 SELECT id, rno, pname, servname, billdate, uname 
 FROM billing 
@@ -44,7 +50,7 @@ GROUP BY
 
 select * from billing where rno = '237503'
 select * from billingDetails
-Select * FROM registration where rno = '237506'
+Select uname FROM registration where rno = '237506'
 
 SELECT MAX(b.servname) AS servname, MAX(b.billdate) AS billdate, MAX(b.pname) AS pname, MAX(b.id) AS id, MAX(b.rno) AS rno, MAX(r.rage) AS age, MAX(r.rsex) AS sex
 FROM billing AS b

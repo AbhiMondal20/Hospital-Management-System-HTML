@@ -114,7 +114,10 @@ include ('function.php');
                                 data-bs-toggle="dropdown" title="User">
                                 <div class="d-flex pt-5">
                                     <div class="text-end me-10">
-                                        <p class="pt-5 fs-14 mb-0 fw-700 text-primary" style="text-transform: capitalize;"><?php echo $login_username; ?></p>
+                                        <p class="pt-5 fs-14 mb-0 fw-700 text-primary"
+                                            style="text-transform: capitalize;">
+                                            <?php echo $login_username; ?>
+                                        </p>
                                     </div>
                                     <img src="../images/avatar/avatar-1.png"
                                         class="avatar rounded-10 bg-primary-light h-40 w-40" alt="" />
@@ -127,7 +130,8 @@ include ('function.php');
                                     <a class="dropdown-item" href="#"><i class="ti-settings text-muted me-2"></i>
                                         Settings</a>
                                     <div class="dropdown-divider"></div>
-                                    <a class="dropdown-item" href="../../logout"><i class="ti-lock text-muted me-2"></i> Logout</a>
+                                    <a class="dropdown-item" href="../../logout"><i class="ti-lock text-muted me-2"></i>
+                                        Logout</a>
                                 </li>
                             </ul>
                         </li>
@@ -150,96 +154,35 @@ include ('function.php');
                                     <span>Dashboard</span>
                                 </a>
                             </li>
-                            <li>
-                                <a href="reg">
-                                    <i data-feather="inbox"></i>
-                                    <span>OPD Registration</span>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="reg-list">
-                                    <i data-feather="inbox"></i>
-                                    <span>OPD Registration List</span>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="opd-billing">
-                                    <i data-feather="inbox"></i>
-                                    <span>OPD Billing</span>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="#">
-                                    <i data-feather="inbox"></i>
-                                    <span>Credit Note</span>
-                                </a>
-                            </li>
                             <li class="treeview">
                                 <a href="#">
-                                    <i data-feather="inbox"></i>
-                                    <span>OPD Bill Register</span>
+                                    <i data-feather="file"></i>
+                                    <span>Reports</span>
                                     <span class="pull-right-container">
                                         <i class="fa fa-angle-right pull-right"></i>
                                     </span>
                                 </a>
                                 <ul class="treeview-menu">
-                                    <li class="treeview">
-                                        <a href="#">
+                                    <li>
+                                        <a href="user-wise-report">
                                             <i class="icon-Commit"><span class="path1"></span><span
-                                                    class="path2"></span></i>Total Collection
+                                                    class="path2"></span></i>User Wise Report
                                         </a>
-                                        <a href="#">
+                                        <a href="total-cash-report">
                                             <i class="icon-Commit"><span class="path1"></span><span
-                                                    class="path2"></span></i>Delivery Reports
+                                                    class="path2"></span></i>Total Cash Reports
                                         </a>
-                                        <a href="money-receipt-list">
+                                        <a href="daily-cash-report">
                                             <i class="icon-Commit"><span class="path1"></span><span
-                                                    class="path2"></span></i>Money Receipt
+                                                    class="path2"></span></i>Daily Cash Report
                                         </a>
-                                        <a href="#">
+                                        <a href="doctor-wise-report">
                                             <i class="icon-Commit"><span class="path1"></span><span
-                                                    class="path2"></span></i>Admitted Patient List
+                                                    class="path2"></span></i>Doctor Wise Report
                                         </a>
                                     </li>
                                 </ul>
                             </li>
-                            <li>
-                                <a href="#">
-                                    <i data-feather="inbox"></i>
-                                    <span>Advance/Due Payment Recipet OPD</span>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="#">
-                                    <i data-feather="inbox"></i>
-                                    <span>Multiple OPD Payment</span>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="#">
-                                    <i data-feather="inbox"></i>
-                                    <span>Advance Register</span>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="#">
-                                    <i data-feather="inbox"></i>
-                                    <span>Due Register</span>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="#">
-                                    <i data-feather="inbox"></i>
-                                    <span>Patient Wise Test Details</span>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="#">
-                                    <i data-feather="inbox"></i>
-                                    <span>Deliver Reports</span>
-                                </a>
-                            </li>
-
                         </ul>
                     </div>
                 </div>
