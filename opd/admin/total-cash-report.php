@@ -42,7 +42,7 @@ include ('header.php');
                                             <!-- <input type="text" name="username" placeholder="Reg. No" class="form-control"> -->
                                             <select class="form-select" name="username">
                                                 <?php
-                                                $sql = "SELECT dUSERNAME FROM dba WHERE dUSERNAME = '$login_username'";
+                                                $sql = "SELECT dUSERNAME FROM dba";
                                                 $res = sqlsrv_query($conn, $sql);
                                                 if ($res === false) {
                                                     // Handle SQL error
@@ -111,6 +111,8 @@ include ('header.php');
                                 </thead>
                                 <tbody>
                                     <?php
+                                    $totalAmount = 0;
+
                                   if (isset($_POST['search'])) {
                                     $username = $_POST['username'];
                                     $to = $_POST['to'];
@@ -138,6 +140,7 @@ include ('header.php');
                                         $rfname = $row['rfname'];
                                         $doctor = $row['rdoc'];
                                         $wamt = number_format($row['wamt'], 2);
+                                        $totalAmount += $wamt;
                                         ?>
                                         <tr>
                                             <td><?php echo $rno; ?></td>
@@ -156,6 +159,12 @@ include ('header.php');
                                 ?>
                                 
                                 </tbody>
+                                <tfoot>
+                                <tr>
+                                    <td colspan="6">Total: </td>
+                                    <td><?php echo number_format($totalAmount, 2); ?></td>
+                                </tr>
+                                </tfoot>
                             </table>
 
                         </div>

@@ -157,6 +157,53 @@ include ('function.php');
                             <li class="treeview">
                                 <a href="#">
                                     <i data-feather="file"></i>
+                                    <span>Master</span>
+                                    <span class="pull-right-container">
+                                        <i class="fa fa-angle-right pull-right"></i>
+                                    </span>
+                                </a>
+                                <ul class="treeview-menu">
+                                    <li>
+                                        <a href="add-dept-master">
+                                            <i class="icon-Commit"><span class="path1"></span><span
+                                                    class="path2"></span></i>Add Department Master
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="dept-master">
+                                            <i class="icon-Commit"><span class="path1"></span><span
+                                                    class="path2"></span></i>Department Master
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="add-doctor-master">
+                                            <i class="icon-Commit"><span class="path1"></span><span
+                                                    class="path2"></span></i>Add Doctor Master
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="doctor-master">
+                                            <i class="icon-Commit"><span class="path1"></span><span
+                                                    class="path2"></span></i>Doctor Master
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="add-city-master">
+                                            <i class="icon-Commit"><span class="path1"></span><span
+                                                    class="path2"></span></i>Add City Master
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="city-master">
+                                            <i class="icon-Commit"><span class="path1"></span><span
+                                                    class="path2"></span></i>City Master
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li>
+                            <li class="treeview">
+                                <a href="#">
+                                    <i data-feather="file"></i>
                                     <span>Reports</span>
                                     <span class="pull-right-container">
                                         <i class="fa fa-angle-right pull-right"></i>

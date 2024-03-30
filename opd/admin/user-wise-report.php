@@ -42,7 +42,7 @@ include ('header.php');
                                             <!-- <input type="text" name="username" placeholder="Reg. No" class="form-control"> -->
                                             <select class="form-select" name="username">
                                                 <?php
-                                                $sql = "SELECT dUSERNAME FROM dba WHERE dUSERNAME = '$login_username'";
+                                                $sql = "SELECT dUSERNAME FROM dba";
                                                 $res = sqlsrv_query($conn, $sql);
                                                 if ($res === false) {
                                                     // Handle SQL error

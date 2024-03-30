@@ -42,7 +42,7 @@ include ('header.php');
                                             <!-- <input type="text" name="username" placeholder="Reg. No" class="form-control"> -->
                                             <select class="form-select" name="username">
                                                 <?php
-                                                $sql = "SELECT dUSERNAME FROM dba";
+                                                $sql = "SELECT dUSERNAME FROM dba WHERE dUSERNAME = '$login_username'";
                                                 $res = sqlsrv_query($conn, $sql);
                                                 if ($res === false) {
                                                     // Handle SQL error
@@ -140,7 +140,9 @@ include ('header.php');
                                         $rfname = $row['rfname'];
                                         $doctor = $row['rdoc'];
                                         $wamt = number_format($row['wamt'], 2);
-                                        $totalAmount += $wamt;
+                                        if (is_numeric($row['wamt'])) {
+                                            $totalAmount += $row['wamt'];
+                                        }
                                         ?>
                                         <tr>
                                             <td><?php echo $rno; ?></td>

@@ -14,13 +14,13 @@ include ('header.php');
         <div class="content-header">
             <div class="d-flex align-items-center">
                 <div class="me-auto">
-                    <h4 class="page-title">Patient List</h4>
+                    <h4 class="page-title">Total Cash </h4>
                     <div class="d-inline-block align-items-center">
                         <nav>
                             <ol class="breadcrumb">
                                 <li class="breadcrumb-item"><a href="#"><i class="mdi mdi-home-outline"></i></a></li>
                                 <li class="breadcrumb-item" aria-current="page">OPD</li>
-                                <li class="breadcrumb-item active" aria-current="page">Patient List</li>
+                                <li class="breadcrumb-item active" aria-current="page">Reports</li>
                             </ol>
                         </nav>
                     </div>
@@ -111,6 +111,8 @@ include ('header.php');
                                 </thead>
                                 <tbody>
                                     <?php
+                                    $totalAmount = 0;
+
                                   if (isset($_POST['search'])) {
                                     $username = $_POST['username'];
                                     $to = $_POST['to'];
@@ -122,9 +124,10 @@ include ('header.php');
                                                 radd1, rcity, rdist, wamt, uname, rdoc
                                             FROM 
                                                 registration 
+                                            INNER JOIN billingDetails 
                                             WHERE 
                                                 uname = ? 
-                                                OR rdate BETWEEN ? AND ? 
+                                                AND rdate BETWEEN ? AND ? 
                                             ORDER BY 
                                                 id DESC";
                                     $params = array($username, $from, $to);
@@ -138,6 +141,9 @@ include ('header.php');
                                         $rfname = $row['rfname'];
                                         $doctor = $row['rdoc'];
                                         $wamt = number_format($row['wamt'], 2);
+                                        if (is_numeric($row['wamt'])) {
+                                            $totalAmount += $row['wamt'];
+                                        }
                                         ?>
                                         <tr>
                                             <td><?php echo $rno; ?></td>
@@ -156,6 +162,12 @@ include ('header.php');
                                 ?>
                                 
                                 </tbody>
+                                <tfoot>
+                                <tr>
+                                    <td colspan="6">Total: </td>
+                                    <td><?php echo number_format($totalAmount, 2); ?></td>
+                                </tr>
+                                </tfoot>
                             </table>
 
                         </div>

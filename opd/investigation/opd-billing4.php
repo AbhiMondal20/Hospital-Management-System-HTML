@@ -170,7 +170,7 @@ while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
                                             <h5>Bill No: <span class="text-danger">*</span></h5>
                                             <div class="controls">
                                                 <?php
-                                                $sql = "SELECT TOP 1 billno FROM billingDetails ORDER BY id DESC";
+                                                $sql = "SELECT TOP 1 billno FROM billing ORDER BY id DESC";
                                                 $stmt = sqlsrv_query($conn, $sql);
                                                 if ($stmt === false) {
                                                     die(print_r(sqlsrv_errors(), true));
@@ -200,109 +200,109 @@ while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
                                             </div>
                                         </div>
                                     </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-lg-4">
-                                            <label for="Services">Services</label>
-                                            <select class="form-select select2" name="sservname[]" id="servname"
-                                                tabindex="1" onchange="getservname(this.value)">
-                                                <option value="">Select Services</option>
-                                                <?php
-                                                $sql = "SELECT servname FROM servmaster";
-                                                $stmt = sqlsrv_query($conn, $sql);
-                                                if ($stmt === false) {
-                                                    die(print_r(sqlsrv_errors(), true));
-                                                } else {
-                                                    while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
-                                                        $servname_ = $row['servname'];
-                                                        echo "<option value='$servname_'>$servname_</option>";
-                                                    }
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-4">
+                                        <label for="Services">Services</label>
+                                        <select class="form-select select2" name="sservname[]" id="servname"
+                                            tabindex="1" onchange="getservname(this.value)">
+                                            <option value="">Select Services</option>
+                                            <?php
+                                            $sql = "SELECT servname FROM servmaster";
+                                            $stmt = sqlsrv_query($conn, $sql);
+                                            if ($stmt === false) {
+                                                die(print_r(sqlsrv_errors(), true));
+                                            } else {
+                                                while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
+                                                    $servname_ = $row['servname'];
+                                                    echo "<option value='$servname_'>$servname_</option>";
                                                 }
-                                                ?>
-                                            </select>
-                                        </div>
-                                        <div class="col-lg-4">
-                                            <label for="Price">Price</label>
-                                            <input type="text" class="form-control" name="sservrate[]" id="servrate"
-                                                readonly>
-                                        </div>
-                                        <div class="col-lg-4">
-                                            <label for="add"></label>
-                                            <button type="button" id="addBtn" tabindex="2"
-                                                class="btn btn-md btn-primary mt-4">Add</button>
-                                        </div>
+                                            }
+                                            ?>
+                                        </select>
                                     </div>
-                            </div>
-                            <table class="table table-bordered table-hover display nowrap margin-top-10 w-p100 dataTable">
-                                <thead>
-                                    <tr>
-                                        <th>Services</th>
-                                        <th>Price</th>
-                                        <th></th>
-                                    </tr>
-                                </thead>
-                                <tbody></tbody>
-                                <tfoot>
-                                    <tr>
-                                        <td colspan="2">Total Amount:</td>
-                                        <td><input type="text" class="form-control" placeholder="TOTAL Amount" required
-                                                name="totalPrice" id="totalPrice"></td>
-                                    </tr>
-                                    <tr>
-                                        <td colspan="2">Total Adjusted:</td>
-                                        <td><input type="text" class="form-control" placeholder="Total Adjusted"
-                                                name="totalAdj" id="totalAdj"></td>
-                                    </tr>
-                                    <tr style="display:none">
-                                        <td colspan="2">GST %:</td>
-                                        <td><input type="text" class="form-control" placeholder="GST %" name="gst" id="gst">
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td colspan="2">Bill Amount:</td>
-                                        <td><input type="text" class="form-control" placeholder="Bill Amount"
-                                                name="billAmount" id="billAmount"></td>
-                                    </tr>
-                                    <tr>
-                                        <td colspan="2">Paid Amount:</td>
-                                        <td><input type="text" class="form-control" placeholder="Paid Amount" required
-                                                name="paidAmount" id="paidAmount"></td>
-                                    </tr>
-                                    <tr>
-                                        <td colspan="2">Balance:</td>
-                                        <td><input type="text" class="form-control" placeholder="Balance" name="balance"
-                                                id="balance"></td>
-                                    </tr>
-                                    <tr>
-                                        <td colspan="2">Payment Type:</td>
-                                        <td>
-                                            <select class="form-select select2" name="paymentType" required>
-                                                <option value="Cash">Cash</option>
-                                                <option value="Card">Card</option>
-                                                <option value="NEFT">NEFT</option>
-                                                <option value="Cheque">Cheque</option>
-                                                <option value="Credit">Credit</option>
-                                            </select>
-                                        </td>
-                                    </tr>
-                                </tfoot>
-                            </table>
+                                    <div class="col-lg-4">
+                                        <label for="Price">Price</label>
+                                        <input type="text" class="form-control" name="sservrate[]" id="servrate"
+                                            readonly>
+                                    </div>
+                                    <div class="col-lg-4">
+                                        <label for="add"></label>
+                                        <button type="button" id="addBtn" tabindex="2"
+                                            class="btn btn-md btn-primary mt-4">Add</button>
+                                    </div>
+                                </div>
                         </div>
-                        <center>
-                            <div class="text-xs-right">
-                                <button type="submit" class="btn btn-info" name="billSave">SAVE</button>
-                            </div>
-                        </center>
-                        <div class="text-xs-right mt-4">
-                            <!-- <button type="clear" class="btn btn-info">CLEAR</button> -->
-                            <button type="button" class="btn btn-info">Total Collection</button>
-                            <button type="button" class="btn btn-info">Delivery Report</button>
-                            <button type="button" class="btn btn-primary" data-bs-toggle="modal"
-                                data-bs-target=".bs-example-modal-lg">List of Register Patient</button>
-                            <button type="button" class="btn btn-primary">List of Admitted Patient</button>
-                            <a href="money-receipt-list" class="btn btn-info">Money Receipt</a>
-                            <a href="index" class="btn btn-info"><i class="fa-solid fa-x"></i></a>
+                        <table class="table table-bordered table-hover display nowrap margin-top-10 w-p100 dataTable">
+                            <thead>
+                                <tr>
+                                    <th>Services</th>
+                                    <th>Price</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                            <tfoot>
+                                <tr>
+                                    <td colspan="2">Total Amount:</td>
+                                    <td><input type="text" class="form-control" placeholder="TOTAL Amount" required
+                                            name="totalPrice" id="totalPrice"></td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2">Total Adjusted:</td>
+                                    <td><input type="text" class="form-control" placeholder="Total Adjusted"
+                                            name="totalAdj" id="totalAdj"></td>
+                                </tr>
+                                <tr style="display:none">
+                                    <td colspan="2">GST %:</td>
+                                    <td><input type="text" class="form-control" placeholder="GST %" name="gst" id="gst">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2">Bill Amount:</td>
+                                    <td><input type="text" class="form-control" placeholder="Bill Amount"
+                                            name="billAmount" id="billAmount"></td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2">Paid Amount:</td>
+                                    <td><input type="text" class="form-control" placeholder="Paid Amount" required
+                                            name="paidAmount" id="paidAmount"></td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2">Balance:</td>
+                                    <td><input type="text" class="form-control" placeholder="Balance" name="balance"
+                                            id="balance"></td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2">Payment Type:</td>
+                                    <td>
+                                        <select class="form-select select2" name="paymentType" required>
+                                            <option value="Cash">Cash</option>
+                                            <option value="Card">Card</option>
+                                            <option value="NEFT">NEFT</option>
+                                            <option value="Cheque">Cheque</option>
+                                            <option value="Credit">Credit</option>
+                                        </select>
+                                    </td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                    <center>
+                        <div class="text-xs-right">
+                            <button type="submit" class="btn btn-info" name="billSave">SAVE</button>
                         </div>
+                    </center>
+                    <div class="text-xs-right mt-4">
+                        <!-- <button type="clear" class="btn btn-info">CLEAR</button> -->
+                        <button type="button" class="btn btn-info">Total Collection</button>
+                        <button type="button" class="btn btn-info">Delivery Report</button>
+                        <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                            data-bs-target=".bs-example-modal-lg">List of Register Patient</button>
+                        <button type="button" class="btn btn-primary">List of Admitted Patient</button>
+                        <a href="money-receipt-list" class="btn btn-info">Money Receipt</a>
+                        <a href="index" class="btn btn-info"><i class="fa-solid fa-x"></i></a>
+                    </div>
                     </form>
                 </div>
             </div>
@@ -341,7 +341,6 @@ while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
 
     }
 
-    // Event listeners for input fields to trigger calculation
     const inputs = document.querySelectorAll("#totalPrice, #totalAdj, #gst, #paidAmount");
     inputs.forEach(input => {
         input.addEventListener("input", calculateTotalPrice);
@@ -349,51 +348,35 @@ while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
 
     calculateTotalPrice();
 
-    function onAddRow() {
-        console.log("Adding row...");
-        const servrate = document.getElementById("servrate").value.replace(/,/g, '');
+
+    function onAddRow(e) {
+        e.preventDefault();
+        const servrate = document.getElementById("servrate").value.replace(/,/g, ''); // Remove commas
         const servname = document.getElementById("servname").value;
-        console.log("Service name:", servname);
-        console.log("Service rate:", servrate);
-
-        // Check if the table body exists
-        const tbody = document.querySelector("tbody");
-        if (!tbody) {
-            console.error("Table body not found!");
-            return;
-        }
-
-        // Check if there are existing rows in the table body
-        const rows = tbody.querySelectorAll("tr");
-        if (rows.length === 0) {
-            console.log("No rows found in table body!");
-        }
-
-        const existingServices = Array.from(rows).map(row => {
-            const input = row.querySelector("td:first-child input");
-            return input ? input.value : null;
-        });
-        console.log("Existing services:", existingServices);
-        if (existingServices.includes(servname)) {
-            console.log("Service already added!");
-            swal({
-                title: 'Service already added!',
-                icon: 'warning',
-                button: 'OK',
-            });
-            return;
-        }
-
-        // Add service to the table
         const newRow = `
     <tr>
-        <td><input class="form-control" type="text" value="${servname}" name="sservname[]" ></td>
-        <td><input class="form-control" type="text" value="${servrate}" name="sservrate[]" ></td>
-        <td><button class="deleteBtn btn-primary btn-md">Delete</button></td>
+        <td><input type="text" value="${servname}" name="sservname[]"></td>
+        <td><input type="text" value="${servrate}" name="sservrate[]"></td>
+        <td><button class="deleteBtn">Delete</button></td>
     </tr>
     `;
-        tbody.innerHTML += newRow;
+        tbodyEl.innerHTML += newRow;
         prices.push(parseFloat(servrate));
+        calculateTotalPrice();
+    }
+
+
+
+    function onDeleteRow(e) {
+        if (!e.target.classList.contains("deleteBtn")) {
+            return;
+        }
+
+        const btn = e.target;
+        const row = btn.closest("tr");
+        const rowIndex = Array.from(row.parentNode.children).indexOf(row);
+        prices.splice(rowIndex, 1);
+        row.remove();
         calculateTotalPrice();
     }
 
@@ -414,89 +397,45 @@ while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
 </script>
 
 <?php
-// Assuming $conn is your established SQL Server connection
-
-if(isset($_POST["billSave"])) {
-    $rstatus = $_POST["rstatus"];
+if (isset($_POST['billSave'])) {
+    // Retrieve form data
     $rno = $_POST["rno"];
     $pname = $_POST["pname"];
-    $phone = $_POST["phone"];
-    $rdocname = $_POST["rdocname"];
     $billno = $_POST["billno"];
     $billdate = $_POST["billdate"];
-    $rows = [];
-    $totalPrice = floatval($_POST['totalPrice']);
-    $totalAdj = $_POST['totalAdj'];
-    $gst = '0';
-    $billAmount = $_POST['billAmount'];
-    $paidAmount = $_POST['paidAmount'];
-    $balance = $_POST['balance'];
     $username = $login_username;
-    $status = isset($_POST["paymentType"]) ? $_POST["paymentType"] : "";
 
-    if ($totalPrice === 0.00 || $paidAmount === 0.00 || $totalPrice === null || $paidAmount === null || $status === null) {
-        echo '<script>
-            swal("Error!", "Total Price and Paid Amount should be greater than 0.00.", "error");
-        </script>';
-    } else {
+    // Prepare the SQL query with placeholders
+    $sql = "INSERT INTO billing (rno, pname, billno, billdate, servname, servrate, uname) VALUES (?, ?, ?, ?, ?, ?, ?)";
 
-        // Prepare main SQL statement for billingDetails table
-        $sqlMain = "INSERT INTO billingDetails (rstatus, rno, pname, phone, rdocname, billno, billdate, totalPrice, totalAdj, gst, billAmount, paidAmount, balance, status, uname) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-        $paramsMain = array($rstatus, $rno, $pname, $phone, $rdocname, $billno, $billdate, $totalPrice, $totalAdj, $gst, $billAmount, $paidAmount, $balance, $status, $username);
-        $stmtMain = sqlsrv_prepare($conn, $sqlMain, $paramsMain);
+    // Loop through each service name and rate
+    for ($i = 0; $i < count($_POST['sservname']); $i++) {
+        $servname = $_POST['sservname'][$i];
+        $servrate = $_POST['sservrate'][$i];
 
-        if ($stmtMain) {
-            if (sqlsrv_execute($stmtMain)) {
-                $success = true;
-                $sqlBilling = "INSERT INTO billing (rno, pname, billno, billdate, servname, servrate, uname) VALUES (?, ?, ?, ?, ?, ?, ?)";
-                $stmtBilling = sqlsrv_prepare($conn, $sqlBilling, array(&$rno, &$pname, &$billno, &$billdate, &$servname, &$servrate, &$username));
+        // Execute the prepared statement
+        $params = array($rno, $pname, $billno, $billdate, $servname, $servrate, $username);
+        $stmt = sqlsrv_query($conn, $sql, $params);
 
-                if (!$stmtBilling) {
-                    die(print_r(sqlsrv_errors(), true));
-                }
-
-                for ($i = 0; $i < count($_POST['sservname']); $i++) {
-                    $servname = $_POST['sservname'][$i];
-                    $servrate = $_POST['sservrate'][$i];
-
-                    if (!sqlsrv_execute($stmtBilling)) {
-                        $success = false;
-                        echo '<script>
-                        swal("Error!", "Error inserting billing item ' . ($i + 1) . '.", "error"); // Provide specific item number for error
-                    </script>';
-                    }
-                }
-
-                if ($success) {
-                    echo '<script>
-                    swal("Success!", "", "success");
-                    setTimeout(function(){
-                        var url = "opd-bill-cum-receipt?rno=' . $rno . '&billno=' . $billno . '&billdate=' . $billdate . '";
-                        var link = document.createElement("a");
-                        link.href = url;
-                        link.target = "_blank";
-                        link.click();
-                    }, 1000);
-                </script>';
-                } else {
-                    echo '<script>
-                    swal("Error!", "Error inserting one or more billing items.", "error");
-                </script>';
-                }
-            } else {
-                echo '<script>
-                swal("Error!", "Error inserting main data.", "error");
-            </script>';
-            }
-        } else {
+        // Check for errors
+        if ($stmt === false) {
             echo '<script>
-            swal("Error!", "Error preparing main SQL statement.", "error");
-        </script>';
+                    swal("Error!", "Error inserting billing item data.", "error");
+                  </script>';
+            die(print_r(sqlsrv_errors(), true));
+        } else {
+            // Display success message
+            echo '<script>
+                swal("Success!", "Billing data inserted successfully.", "success")
+                .then(function() {
+                    window.location.href = "opd-bill-cum-receipt?rno=' . $rno . '&billno=' . $billno . '&billdate=' . $billdate . '";
+                });
+                </script>';
         }
     }
+
+
 }
-
-
 
 ?>
 

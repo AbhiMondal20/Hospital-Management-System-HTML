@@ -3,20 +3,44 @@ select * from discharge
 SELECT * FROM [dbo].[dba] WHERE dUSERNAME = 'Administrator' AND dPASSWORD = 'Para@012'
 --DROP TABLE billing;
 
-Select * FROM InPatho2324 where rno = '237500'
---DELETE FROM billingDetails WHERE rno = '237480'
-ALTER TABLE billingDetails
-ADD uname VARCHAR(MAX),
-	modify_by VARCHAR(255), -- or appropriate data type
-    modify_date DATETIME; -- or appropriate data type
+INSERT INTO citymaster (Cityname, distname, state, country, added_by) VALUES ('Kolkata', 'Kolkata', 'West Bengal', 'India', 'Administrator')
 
-Select * FROM billing where billno = '237539'
+Select * FROM citymaster
+
+UPDATE citymaster
+SET date = CURRENT_TIMESTAMP;
+
+Select * FROM InPatho2324 where rno = '237500'
+--DELETE FROM citymaster WHERE rno = '237480'
+ALTER TABLE citymaster
+ADD state VARCHAR(MAX),
+	country VARCHAR(MAX),
+	added_by VARCHAR(255), 
+    date DATETIME,
+	modify_by VARCHAR(255),
+    modify_date DATETIME; 
+
+-- Add the dept column to the end of the table
+ALTER TABLE registration
+ADD dept VARCHAR(MAX) NULL;
+
+
+Select * FROM deptmaster where billno = '237578'
+select * from billingDetails
 
 select * from AdmitCard2324 where regno = '237493'
 
 select * from bedmaster
 
-select * from AcctHeadMAster
+select * from docmaster where srno = '1985';
+select * from deptmaster
+
+--DELETE FROM deptmaster;
+
+INSERT INTO docmaster(docregno, docName, sp, fee) VALUES ('Neuro', 'MD004', 'Dr. Sajal Biswas', '700');
+
+SELECT srno, docName, sp, fee FROM docmaster ORDER BY srno DESC
+select * from citymaster
 
 SELECT id, rno, pname, servname, billdate, uname 
 FROM billing 
@@ -45,12 +69,11 @@ GROUP BY
     billing.servname, 
     billing.billno, 
     billing.billdate;
-
-
-
+	   
 select * from billing where rno = '237503'
 select * from billingDetails
-Select uname FROM registration where rno = '237506'
+Select * FROM registration where rno = '237506'
+
 
 SELECT MAX(b.servname) AS servname, MAX(b.billdate) AS billdate, MAX(b.pname) AS pname, MAX(b.id) AS id, MAX(b.rno) AS rno, MAX(r.rage) AS age, MAX(r.rsex) AS sex
 FROM billing AS b
@@ -85,6 +108,20 @@ ON bd.rno = rs.rno;
 ALTER TABLE registration
 ADD modify_by VARCHAR(255), -- or appropriate data type
     modify_date DATETIME; -- or appropriate data type
+
+ALTER TABLE registration
+ALTER COLUMN opid VARCHAR(MAX) NULL
+AFTER rno;
+ALTER TABLE registration
+ADD opid VARCHAR(MAX) NULL;
+
+ALTER TABLE registration
+DROP COLUMN opid_new;
+
+
+
+
+
 
 
 Select * FROM citymaster

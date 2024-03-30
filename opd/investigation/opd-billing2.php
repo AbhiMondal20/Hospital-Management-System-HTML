@@ -1,4 +1,10 @@
 <?php
+session_start();
+if (isset($_SESSION['login']) && $_SESSION['login'] == true) {
+    $login_username = $_SESSION['username'];
+} else {
+    echo "<script>location.href='../../login';</script>";
+}
 include ('header.php');
 
 $rno = "";
@@ -429,13 +435,13 @@ while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
                                         </tr>
                                         <tr>
                                             <td colspan="2">GST %:</td>
-                                            <td><input type="text[]" class="form-control" placeholder="GST %" name="gst"
+                                            <td><input type="text" class="form-control" placeholder="GST %" name="gst[]"
                                                     id="gst"></td>
                                         </tr>
                                         <tr>
                                             <td colspan="2">Bill Amount:</td>
-                                            <td><input type="text[]" class="form-control" placeholder="Bill Amount"
-                                                    name="billAmount" id="billAmount"></td>
+                                            <td><input type="text" class="form-control" placeholder="Bill Amount"
+                                                    name="billAmount[]" id="billAmount"></td>
                                         </tr>
                                         <tr>
                                             <td colspan="2">Paid Amount:</td>

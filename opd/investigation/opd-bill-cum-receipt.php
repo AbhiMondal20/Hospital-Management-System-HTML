@@ -172,7 +172,6 @@ if (isset ($_SESSION['login']) && $_SESSION['login'] == true) {
                     <div>
                         <p>Sub - Total amount : ₹ <?php echo $totalPrice; ?></p>
                         <p>Less Adjusted : ₹ <?php echo $totalAdj; ?></p>
-                        <p>GST (%) : ₹ <?php echo $gst; ?> </p>
                     </div>
                     <div class="total-payment">
                         <h3><b>Bill Amount :</b> ₹ <?php echo $billAmount; ?></h3><br>

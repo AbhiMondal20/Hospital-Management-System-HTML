@@ -1,6 +1,6 @@
 <?php
 session_start();
-if (isset ($_SESSION['login']) && $_SESSION['login'] == true) {
+if (isset($_SESSION['login']) && $_SESSION['login'] == true) {
     $login_username = $_SESSION['username'];
 } else {
     echo "<script>location.href='../../login';</script>";
@@ -40,40 +40,53 @@ include ('header.php');
                         <div class="col">
                             <form novalidate method="POST" action="">
                                 <div class="row">
-                                    <div class="col-md-2">
-                                        <div class="form-group">
-                                            <h5>OPD / IPD <span class="text-danger">*</span></h5>
-                                            <select class="form-select" name="rstatus">
-                                                <option value="OPD">OPD</option>
-                                                <!-- <option value="IPD">IPD</option> -->
-                                            </select>
-                                        </div>
-                                    </div>
                                     <div class="col-md-3">
                                         <div class="form-group">
-                                            <h5>Reg. No. <span class="text-danger">*</span></h5>
+                                            <h5>MR. No. <span class="text-danger">*</span></h5>
                                             <div class="controls">
                                                 <?php
                                                 $sql = "SELECT TOP 1 rno FROM registration ORDER BY id DESC";
                                                 $stmt = sqlsrv_query($conn, $sql);
                                                 if ($stmt === false) {
-                                                    die (print_r(sqlsrv_errors(), true));
+                                                    die(print_r(sqlsrv_errors(), true));
                                                 } else {
                                                     $row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC);
                                                     $last_rno = $row['rno'];
                                                     if ($last_rno == '') {
-                                                        $next_rno = "237495";
+                                                        $next_rno = "MR000001";
                                                     } else {
                                                         $next_rno = strval(intval($last_rno) + 1);
                                                     }
                                                 }
                                                 ?>
-
-                                                <input type="text" name="rno" placeholder="237495" class="form-control"
-                                                    required value="<?php echo $next_rno; ?>" readonly
-                                                    data-validation-required-message="This field is required">
-
-
+                                                <input type="text" name="rno" placeholder="MR000001"
+                                                    class="form-control" required value="<?php echo $next_rno; ?>"
+                                                    readonly data-validation-required-message="This field is required">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <h5>OP No. <span class="text-danger">*</span></h5>
+                                            <div class="controls">
+                                                <?php
+                                                $sql = "SELECT TOP 1 opid FROM registration ORDER BY id DESC";
+                                                $stmt = sqlsrv_query($conn, $sql);
+                                                if ($stmt === false) {
+                                                    die(print_r(sqlsrv_errors(), true));
+                                                } else {
+                                                    $row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC);
+                                                    $last_rno = $row['opid'];
+                                                    if ($last_rno == '') {
+                                                        $next_rno = "OP000001";
+                                                    } else {
+                                                        $next_rno = strval(intval($last_rno) + 1);
+                                                    }
+                                                }
+                                                ?>
+                                                <input type="text" name="rno" placeholder="OP000001"
+                                                    class="form-control" required value="<?php echo $next_rno; ?>"
+                                                    readonly data-validation-required-message="This field is required">
                                             </div>
                                         </div>
                                     </div>
@@ -87,11 +100,12 @@ include ('header.php');
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="col-md-4">
+                                    <div class="col-md-3">
                                         <div class="form-group">
                                             <h5>Reg. Date <span class="text-danger">*</span></h5>
                                             <div class="controls">
-                                                <input type="date" class="form-control" required name="rdate" value="<?php echo date('Y-m-d'); ?>"
+                                                <input type="date" class="form-control" required name="rdate"
+                                                    value="<?php echo date('Y-m-d'); ?>"
                                                     data-validation-required-message="This field is required">
                                             </div>
                                         </div>
@@ -101,10 +115,10 @@ include ('header.php');
                                             <h5>Salutation <span class="text-danger">*</span></h5>
                                             <select class="form-select select2" name="rtitle">
                                                 <?php
-                                                $sql = "SELECT * FROM titlemaster";
+                                                $sql = "SELECT title FROM titlemaster";
                                                 $stmt = sqlsrv_query($conn, $sql);
                                                 if ($stmt === false) {
-                                                    die (print_r(sqlsrv_errors(), true));
+                                                    die(print_r(sqlsrv_errors(), true));
                                                 } else {
                                                     while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
                                                         $title = $row['title'];
@@ -176,11 +190,21 @@ include ('header.php');
                                             </div>
                                         </div>
                                     </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <div class="controls">
+                                                <h5>Ph. No. <span class="text-danger">*</span></h5>
+                                                <input type="text" class="form-control" required name="rrace"
+                                                    id="rraceInput" maxlength="10" minlength="10"
+                                                    data-validation-required-message="This field is required"
+                                                    onblur="checkPhoneNumber()">
+                                            </div>
+                                        </div>
+                                    </div>
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <div class="controls">
                                                 <h5>F/H/S/D/W <span class="text-danger">*</span></h5>
-
                                                 <input type="text" class="form-control" required name="fname"
                                                     data-validation-required-message="This field is required">
                                             </div>
@@ -198,21 +222,22 @@ include ('header.php');
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <div class="controls">
-                                                <h5>Address <span class="text-danger">*</span></h5>
-                                                <input type="text" class="form-control" required name="radd2"
-                                                    data-validation-required-message="This field is required">
+                                                <h5>Area </h5>
+                                                <input type="text" class="form-control" name="radd2">
                                             </div>
                                         </div>
                                     </div>
+
                                     <div class="col-md-3">
                                         <div class="form-group">
                                             <h5>City <span class="text-danger">*</span></h5>
                                             <select class="form-select select2" id="rcity" name="rcity">
+                                                <option selected disabled>Select City</option>
                                                 <?php
                                                 $sql = "SELECT Cityname FROM citymaster";
                                                 $stmt = sqlsrv_query($conn, $sql);
                                                 if ($stmt === false) {
-                                                    die (print_r(sqlsrv_errors(), true));
+                                                    die(print_r(sqlsrv_errors(), true));
                                                 } else {
                                                     while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
                                                         $Cityname = $row['Cityname'];
@@ -226,39 +251,47 @@ include ('header.php');
                                     <div class="col-md-3">
                                         <div class="form-group">
                                             <h5>District <span class="text-danger">*</span></h5>
-                                            <input type="text" name="rdist" class="form-control" required
-                                                data-validation-required-message="This field is required">
+                                            <input type="text" class="form-control" name="rdist" id="rdist">
                                         </div>
                                     </div>
                                     <div class="col-md-3">
                                         <div class="form-group">
                                             <h5>State <span class="text-danger">*</span></h5>
-                                            <input type="text" name="rstate" class="form-control" required
-                                                data-validation-required-message="This field is required">
+                                            <input type="text" class="form-control" name="rstate" id="rstate">
                                         </div>
                                     </div>
                                     <div class="col-md-3">
                                         <div class="form-group">
                                             <h5>Country <span class="text-danger">*</span></h5>
-                                            <input type="text" name="rcountry" class="form-control" required
-                                                data-validation-required-message="This field is required">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <div class="form-group">
-                                            <div class="controls">
-                                                <h5>Ph. No. <span class="text-danger">*</span></h5>
-                                                <input type="text" class="form-control" required name="rrace"
-                                                    id="rraceInput" maxlength="10" minlength="10"
-                                                    data-validation-required-message="This field is required"
-                                                    onblur="checkPhoneNumber()">
-                                            </div>
+                                            <input type="text" class="form-control" name="rcountry" id="rcountry">
                                         </div>
                                     </div>
 
+
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            <h5>Ref. Doctor <span class="text-danger">*</span></h5>
+                                            <h5>Department <span class="text-danger">*</span></h5>
+                                            <select class="form-select select2" name="dept" id="dept"
+                                                onchange="getDept(this.value)">
+                                                <option selected disabled>Select Department</option>
+                                                <?php
+                                                $sql = "SELECT dept FROM deptmaster";
+                                                $stmt = sqlsrv_query($conn, $sql);
+                                                if ($stmt === false) {
+                                                    die(print_r(sqlsrv_errors(), true));
+                                                } else {
+                                                    while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
+                                                        $dept = $row['dept'];
+                                                        echo '<option value="' . $dept . '">' . $dept . '</option>';
+                                                    }
+                                                }
+                                                ?>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <h5>Consult Doctor <span class="text-danger">*</span></h5>
                                             <select class="form-select select2" name="rdoc"
                                                 onchange="getDocname(this.value)">
                                                 <option selected disabled>Select Doctor</option>
@@ -266,15 +299,15 @@ include ('header.php');
                                                 $sql = "SELECT docName FROM docmaster";
                                                 $stmt = sqlsrv_query($conn, $sql);
                                                 if ($stmt === false) {
-                                                    die (print_r(sqlsrv_errors(), true));
+                                                    die(print_r(sqlsrv_errors(), true));
                                                 } else {
                                                     while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
                                                         $docName = $row['docName'];
                                                         $fee = $row['fee'];
-                                                        echo '<option value="' . $docName . '">' . $docName . '</option>';
                                                     }
                                                 }
                                                 ?>
+                                                <option value=""></option>
                                             </select>
                                         </div>
                                     </div>
@@ -286,39 +319,129 @@ include ('header.php');
                                             </div>
                                         </div>
                                     </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <h5>Ref. Source <span class="text-danger">*</span></h5>
+                                            <select class="form-select select2" name="rdoc">
+                                                <option selected disabled>Select Doctor</option>
+                                                <?php
+                                                $sql = "SELECT docName FROM docmaster";
+                                                $stmt = sqlsrv_query($conn, $sql);
+                                                if ($stmt === false) {
+                                                    die(print_r(sqlsrv_errors(), true));
+                                                } else {
+                                                    while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
+                                                        $docName = $row['docName'];
+                                                        $fee = $row['fee'];
+                                                        echo '<option value="' . $docName . '">' . $docName . '</option>';
+                                                    }
+                                                }
+                                                ?>
+                                            </select>
+                                        </div>
+                                    </div>
+
+
                                     <input type="hidden" class="form-control" name="uname"
                                         value="<?php echo $login_username; ?>">
                                 </div>
                         </div>
-                        <center>
-                            <div class="text-xs-right">
-                                <button type="submit" class="btn btn-info" name="save">SAVE</button>
-                            </div>
-                        </center>
-                        </form>
                     </div>
+                    <center>
+                        <div class="text-xs-right">
+                            <button type="submit" class="btn btn-info" name="save">SAVE</button>
+                        </div>
+                    </center>
+                    </form>
                 </div>
             </div>
     </div>
-    </section>
+</div>
+</section>
 </div>
 </div>
 <!-- /.content-wrapper -->
 <script>
-    function getDocname(docName) {
+
+    // Amount dependency
+    function docDept(rdocname) {
         $.ajax({
-            url: "load/doc_fetch_price.php",
+            url: "load/doc_fetch.php",
             type: "POST",
-            data: { docName: docName },
+            data: { rdocname: rdocname },
             dataType: "json",
             success: function (data) {
-                $("#wamt").val(data.fee);
+                $("#wamt").val(data.docName);
             },
             error: function (xhr, status, error) {
                 console.error(xhr.responseText);
             }
         });
     }
+
+    // City to dist Dependency
+    $(document).ready(function () {
+        $('#rcity').change(function () {
+            var selectedCity = $(this).val();
+            getDistrictStateCountry(selectedCity);
+        });
+
+        function getDistrictStateCountry(rcity) {
+            $.ajax({
+                url: "load/get_dist.php",
+                type: "POST",
+                data: { rcity: rcity },
+                dataType: "json",
+                success: function (data) {
+                    $("#rdist").val(data.distname);
+                    $("#rstate").val(data.state);
+                    $("#rcountry").val(data.country);
+                },
+                error: function (xhr, status, error) {
+                    console.error(xhr.responseText);
+                }
+            });
+        }
+    });
+
+
+    // Dist to State Dependency
+    // $(document).ready(function () {
+    //     $('#rdist').change(function () {
+    //         var selectedState = $(this).val();
+    //         getstate(selectedState);
+    //     });
+    //     function getstate(rdist) {
+    //         $.ajax({
+    //             url: "load/get_state.php",
+    //             type: "POST",
+    //             data: { rdist: rdist },
+    //             dataType: "json",
+    //             success: function (data) {
+    //                 $("#rstate").val(data[0].state);
+    //             },
+    //             error: function (xhr, status, error) {
+    //                 console.error(xhr.responseText);
+    //             }
+    //         });
+    //     }
+    // });
+
+
+    // function getDocname(docName) {
+    //     $.ajax({
+    //         url: "load/doc_fetch_price.php",
+    //         type: "POST",
+    //         data: { docName: docName },
+    //         dataType: "json",
+    //         success: function (data) {
+    //             $("#wamt").val(data.fee);
+    //         },
+    //         error: function (xhr, status, error) {
+    //             console.error(xhr.responseText);
+    //         }
+    //     });
+    // }
 
 
     // Mobile number check
@@ -344,49 +467,71 @@ include ('header.php');
 </script>
 <!-- City Dist Dependency Dropdown -->
 <script>
-    function populateDistricts() {
-        console.log("Fetching districts..."); // Log message to check if the function is called
-        var city = document.getElementById("rcity").value;
-        var districtDropdown = document.getElementById("rdist");
-        // Clear previous options
-        districtDropdown.innerHTML = "";
+    // function populateDistricts() {
+    //     console.log("Fetching districts..."); // Log message to check if the function is called
+    //     var city = document.getElementById("rcity").value;
+    //     var districtDropdown = document.getElementById("rdist");
+    //     // Clear previous options
+    //     districtDropdown.innerHTML = "";
 
-        // Send AJAX request to fetch districts
-        var xhr = new XMLHttpRequest();
-        xhr.open("GET", "load/get_districts.php?city=" + city, true);
-        xhr.onreadystatechange = function () {
-            if (xhr.readyState == 4) {
-                console.log("Received response"); // Log message to check if the response is received
-                if (xhr.status == 200) {
-                    var districts = JSON.parse(xhr.responseText);
-                    // Populate district options
-                    for (var i = 0; i < districts.length; i++) {
-                        var option = document.createElement("option");
-                        option.text = districts[i];
-                        option.value = districts[i];
-                        districtDropdown.add(option);
-                    }
-                } else {
-                    console.log("Error: " + xhr.status); // Log message if there's an error in the response
-                }
-            }
-        };
-        xhr.send();
-    }
+    //     // Send AJAX request to fetch districts
+    //     var xhr = new XMLHttpRequest();
+    //     xhr.open("GET", "load/get_districts.php?city=" + city, true);
+    //     xhr.onreadystatechange = function () {
+    //         if (xhr.readyState == 4) {
+    //             console.log("Received response"); // Log message to check if the response is received
+    //             if (xhr.status == 200) {
+    //                 var districts = JSON.parse(xhr.responseText);
+    //                 // Populate district options
+    //                 for (var i = 0; i < districts.length; i++) {
+    //                     var option = document.createElement("option");
+    //                     option.text = districts[i];
+    //                     option.value = districts[i];
+    //                     districtDropdown.add(option);
+    //                 }
+    //             } else {
+    //                 console.log("Error: " + xhr.status); // Log message if there's an error in the response
+    //             }
+    //         }
+    //     };
+    //     xhr.send();
+    // }
 
 
-    // Populate district dropdown initially
-    populateDistricts();
+    // // Populate district dropdown initially
+    // populateDistricts();
 
-    // Add change event listener to city dropdown
-    document.getElementById("rcity").addEventListener("change", function () {
-        populateDistricts();
-    });
+    // // Add change event listener to city dropdown
+    // document.getElementById("rcity").addEventListener("change", function () {
+    //     populateDistricts();
+    // });
 </script>
 
+<!-- load -->
+<script>
+    // function getrdist(rcity) {
+    //     $.ajax({
+    //         url: "load/get_dist.php",
+    //         type: "POST",
+    //         data: { rcity: rcity },
+    //         dataType: "json",
+    //         success: function (data) {
+    //             var rdistDropdown = $("#rdist");
+    //             rdistDropdown.empty().append('<option value="">--Select Dist --</option>');
+    //             data.forEach(function (citymaster) {
+    //                 var distnames = citymaster.distname;
+    //                 distnames.forEach(function (distname) {
+    //                     rdistDropdown.append('<option value="' + distname + '">' + distname + '</option>');
+    //                 });
+    //             });
+    //         }
+    //     });
+    // }
+
+</script>
 <?php
-if (isset ($_POST['save'])) {
-    $rno = $_POST['rno'];
+if (isset($_POST['save'])) {
+    $rno = 'MR000001';
     $se = $_POST['se'];
     $rdate = $_POST['rdate'];
     $rtime = date('H:i:s A');
@@ -417,7 +562,7 @@ if (isset ($_POST['save'])) {
 
     $stmt = sqlsrv_query($conn, $sql);
     if ($stmt === false) {
-        die (print_r(sqlsrv_errors(), true));
+        die(print_r(sqlsrv_errors(), true));
     } else {
         echo '<script>
                 swal("Success!", "", "success");

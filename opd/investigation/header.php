@@ -202,6 +202,36 @@ include ('function.php');
                                     </li>
                                 </ul>
                             </li>
+
+                            <li class="treeview">
+                                <a href="#">
+                                    <i data-feather="file"></i>
+                                    <span>Billing Reports</span>
+                                    <span class="pull-right-container">
+                                        <i class="fa fa-angle-right pull-right"></i>
+                                    </span>
+                                </a>
+                                <ul class="treeview-menu">
+                                    <li>
+                                        <a href="user-wise-bill-report">
+                                            <i class="icon-Commit"><span class="path1"></span><span
+                                                    class="path2"></span></i>User Wise Bill Report
+                                        </a>
+                                        <a href="total-cash-bill-report">
+                                            <i class="icon-Commit"><span class="path1"></span><span
+                                                    class="path2"></span></i>Total Cash Bill Reports
+                                        </a>
+                                        <a href="daily-cash-bill-report">
+                                            <i class="icon-Commit"><span class="path1"></span><span
+                                                    class="path2"></span></i>Daily Cash Bill Report
+                                        </a>
+                                        <a href="doctor-wise-report">
+                                            <i class="icon-Commit"><span class="path1"></span><span
+                                                    class="path2"></span></i>Doctor Wise Report
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li>
                         </ul>
                     </div>
                 </div>
