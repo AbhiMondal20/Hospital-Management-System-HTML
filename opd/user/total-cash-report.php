@@ -1,6 +1,6 @@
 <?php
 session_start();
-if (isset ($_SESSION['login']) && $_SESSION['login'] == true) {
+if (isset($_SESSION['login']) && $_SESSION['login'] == true) {
     $login_username = $_SESSION['username'];
 } else {
     echo "<script>location.href='../../login';</script>";
@@ -38,21 +38,13 @@ include ('header.php');
                                 <div class="row">
                                     <div class="col-md-3">
                                         <div class="form-group">
-                                            <h5>Username <span class="text-danger">*</span></h5>
-                                            <!-- <input type="text" name="username" placeholder="Reg. No" class="form-control"> -->
-                                            <select class="form-select" name="username">
-                                                <?php
-                                                $sql = "SELECT dUSERNAME FROM dba WHERE dUSERNAME = '$login_username'";
-                                                $res = sqlsrv_query($conn, $sql);
-                                                if ($res === false) {
-                                                    // Handle SQL error
-                                                    die (print_r(sqlsrv_errors(), true));
-                                                }
-                                                while ($row = sqlsrv_fetch_array($res, SQLSRV_FETCH_ASSOC)) {
-                                                    $username = $row['dUSERNAME'];
-                                                    echo "<option value='$username'>$username</option>";
-                                                }
-                                                ?>
+                                            <h5>Payment Type <span class="text-danger">*</span></h5>
+                                            <select class="form-select select2" name="paymentType" required>
+                                                <option value="Cash">Cash</option>
+                                                <option value="Card">Card</option>
+                                                <option value="NEFT">NEFT</option>
+                                                <option value="Cheque">Cheque</option>
+                                                <option value="Credit">Credit</option>
                                             </select>
                                         </div>
                                     </div>
@@ -99,73 +91,105 @@ include ('header.php');
                                 <thead>
                                     <tr>
                                         <th>Reg. No.</th>
+                                        <th>OP Id</th>
                                         <th>Reg. Date Time.</th>
                                         <th>Name</th>
                                         <th>Gender</th>
-                                        <th>Age</th>
                                         <th>Ph. No</th>
-                                        <th>Username</th>
+                                        <th>Dept.</th>
                                         <th>Doctor</th>
                                         <th>Fee</th>
+                                        <th>Payment Type</th>
+                                        <th>Username</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <?php
                                     $totalAmount = 0;
-
-                                  if (isset($_POST['search'])) {
-                                    $username = $_POST['username'];
-                                    $to = $_POST['to'];
-                                    $from = $_POST['from'];
-                                    $sql = "SELECT
-                                                id, rno, rdate, rtime, 
-                                                rfname, CONCAT(rfname, ' ', COALESCE(rmname, ''), ' ', rlname) AS fullname, 
-                                                rsex, rage, fname, rrace, 
-                                                radd1, rcity, rdist, wamt, uname, rdoc
-                                            FROM 
-                                                registration 
-                                            WHERE 
-                                                uname = ? 
-                                                OR rdate BETWEEN ? AND ? 
-                                            ORDER BY 
-                                                id DESC";
-                                    $params = array($username, $from, $to);
-                                    $stmt = sqlsrv_query($conn, $sql, $params);
-                                    if ($stmt === false) {
-                                        die(print_r(sqlsrv_errors(), true));
-                                    }
-                                    while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
-                                        $rno = $row['rno'];
-                                        $id = $row['id'];
-                                        $rfname = $row['rfname'];
-                                        $doctor = $row['rdoc'];
-                                        $wamt = number_format($row['wamt'], 2);
-                                        if (is_numeric($row['wamt'])) {
-                                            $totalAmount += $row['wamt'];
+                                    if (isset($_POST['search'])) {
+                                        $paymentType = $_POST['paymentType'];
+                                        $login_username = $_SESSION['username'];
+                                        $to = $_POST['to'];
+                                        $from = $_POST['from'];
+                                        $sql = "SELECT
+                                            id, rno, rdate, rtime, 
+                                            rfname, CONCAT(rfname, ' ', COALESCE(rmname, ''), ' ', rlname) AS fullname, 
+                                            rsex, rage, fname, phone, paymentType, opid, dept,
+                                            radd1, rcity, rdist, wamt, addedBy, rdoc
+                                        FROM 
+                                            registration 
+                                        WHERE 
+                                        paymentType = ? 
+                                            OR (rdate BETWEEN ? AND ?) AND addedBy = ?
+                                        ORDER BY 
+                                            id DESC";
+                                        $params = array($paymentType, $from, $to, $login_username);
+                                        $stmt = sqlsrv_query($conn, $sql, $params);
+                                        if ($stmt === false) {
+                                            die(print_r(sqlsrv_errors(), true));
                                         }
-                                        ?>
-                                        <tr>
-                                            <td><?php echo $rno; ?></td>
-                                            <td><?php echo date_format($row['rdate'], 'Y-m-d') . ' ' . $row['rtime']; ?></td>
-                                            <td><?php echo $row['fullname']; ?></td>
-                                            <td><?php echo $row['rsex']; ?></td>
-                                            <td><?php echo $row['rage']; ?></td>
-                                            <td><?php echo $row['rrace']; ?></td>
-                                            <td><?php echo $row['uname']; ?></td>
-                                            <td><?php echo $doctor; ?></td>
-                                            <td><?php echo $wamt; ?></td>
-                                        </tr>
-                                        <?php
+                                        while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
+                                            $rno = $row['rno'];
+                                            $opid = $row['opid'];
+                                            $id = $row['id'];
+                                            $rfname = $row['rfname'];
+                                            $doctor = $row['rdoc'];
+                                            $dept = $row['dept'];
+                                            $paymentType = $row['paymentType'];
+                                            $wamt = number_format($row['wamt'], 2);
+                                            if (is_numeric($row['wamt'])) {
+                                                $totalAmount += $row['wamt'];
+                                            }
+                                            ?>
+                                            <tr>
+                                                <td>
+                                                    <?php echo $rno; ?>
+                                                </td>
+                                                <td>
+                                                    <?php echo $opid; ?>
+                                                </td>
+                                                <td>
+                                                    <?php echo $row['rdate'] . ' ' . $row['rtime']->format('H:i:s'); ?>
+                                                </td>
+                                                <td>
+                                                    <?php echo $row['fullname']; ?> (
+                                                    <?php echo $row['rage']; ?>)
+                                                </td>
+                                                <td>
+                                                    <?php echo $row['rsex']; ?>
+                                                </td>
+                                                <td>
+                                                    <?php echo $row['phone']; ?>
+                                                </td>
+                                                <td>
+                                                    <?php echo $dept; ?>
+                                                </td>
+                                                <td>
+                                                    <?php echo $doctor; ?>
+                                                </td>
+                                                <td>
+                                                    <?php echo $wamt; ?>
+                                                </td>
+                                                <td>
+                                                    <?php echo $paymentType; ?>
+                                                </td>
+                                                <td>
+                                                    <?php echo $row['addedBy']; ?>
+                                                </td>
+                                            </tr>
+                                            <?php
+                                        }
                                     }
-                                }
-                                ?>
-                                
+                                    ?>
+
                                 </tbody>
                                 <tfoot>
-                                <tr>
-                                    <td colspan="6">Total: </td>
-                                    <td><?php echo number_format($totalAmount, 2); ?></td>
-                                </tr>
+                                    <tr>
+                                        <td colspan="8">Total: </td>
+                                        <td>
+                                            <?php echo number_format($totalAmount, 2); ?>
+                                        </td>
+                                    </tr>
                                 </tfoot>
                             </table>
 

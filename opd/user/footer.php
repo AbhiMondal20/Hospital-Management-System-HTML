@@ -33,6 +33,10 @@
 <script src="../assets/vendor_components/bootstrap-tagsinput/dist/bootstrap-tagsinput.js"></script>
 <script src="../assets/vendor_components/bootstrap-touchspin/dist/jquery.bootstrap-touchspin.min.js"></script>
 <script src="../assets/vendor_components/select2/dist/js/select2.full.js"></script>
+
+<!-- <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" /> -->
+<!-- <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script> -->
+
 <script src="../assets/vendor_plugins/input-mask/jquery.inputmask.js"></script>
 <script src="../assets/vendor_plugins/input-mask/jquery.inputmask.date.extensions.js"></script>
 <script src="../assets/vendor_plugins/input-mask/jquery.inputmask.extensions.js"></script>

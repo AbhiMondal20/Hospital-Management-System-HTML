@@ -42,7 +42,7 @@ include ('header.php');
                                             <!-- <input type="text" name="username" placeholder="Reg. No" class="form-control"> -->
                                             <select class="form-select" name="username">
                                                 <?php
-                                                $sql = "SELECT dUSERNAME FROM dba";
+                                                $sql = "SELECT dUSERNAME FROM dba WHERE dUSERNAME = '$login_username'";
                                                 $res = sqlsrv_query($conn, $sql);
                                                 if ($res === false) {
                                                     // Handle SQL error
@@ -99,14 +99,15 @@ include ('header.php');
                                 <thead>
                                     <tr>
                                         <th>Reg. No.</th>
+                                        <th>OP Id</th>
                                         <th>Reg. Date Time.</th>
                                         <th>Name</th>
                                         <th>Gender</th>
-                                        <th>Age</th>
                                         <th>Ph. No</th>
-                                        <th>Username</th>
+                                        <th>Dept.</th>
                                         <th>Doctor</th>
                                         <th>Fee</th>
+                                        <th>Username</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -118,12 +119,12 @@ include ('header.php');
                                     $sql = "SELECT
                                                 id, rno, rdate, rtime, 
                                                 rfname, CONCAT(rfname, ' ', COALESCE(rmname, ''), ' ', rlname) AS fullname, 
-                                                rsex, rage, fname, rrace, 
-                                                radd1, rcity, rdist, wamt, uname, rdoc
+                                                rsex, rage, fname, phone, dept,
+                                                radd1, rcity, rdist, wamt, addedBy, rdoc, opid
                                             FROM 
                                                 registration 
                                             WHERE 
-                                                uname = ? 
+                                                addedBy = ? 
                                                 OR rdate BETWEEN ? AND ? 
                                             ORDER BY 
                                                 id DESC";
@@ -134,21 +135,24 @@ include ('header.php');
                                     }
                                     while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
                                         $rno = $row['rno'];
+                                        $opid = $row['opid'];
                                         $id = $row['id'];
                                         $rfname = $row['rfname'];
                                         $doctor = $row['rdoc'];
+                                        $dept = $row['dept'];
                                         $wamt = number_format($row['wamt'], 2);
                                         ?>
                                         <tr>
                                             <td><?php echo $rno; ?></td>
-                                            <td><?php echo date_format($row['rdate'], 'Y-m-d') . ' ' . $row['rtime']; ?></td>
-                                            <td><?php echo $row['fullname']; ?></td>
+                                            <td><?php echo $opid; ?></td>
+                                            <td><?php echo $row['rdate'] . ' ' . $row['rtime']->format('H:i:s') ?></td>
+                                            <td><?php echo $row['fullname']; ?> (<?php echo $row['rage']; ?>)</td>
                                             <td><?php echo $row['rsex']; ?></td>
-                                            <td><?php echo $row['rage']; ?></td>
-                                            <td><?php echo $row['rrace']; ?></td>
-                                            <td><?php echo $row['uname']; ?></td>
+                                            <td><?php echo $row['phone']; ?></td>
+                                            <td><?php echo $row['dept']; ?></td>
                                             <td><?php echo $doctor; ?></td>
                                             <td><?php echo $wamt; ?></td>
+                                            <td><?php echo $row['addedBy']; ?></td>
                                         </tr>
                                         <?php
                                     }

@@ -3,7 +3,7 @@ include ('../../../db_conn.php');
 if(isset($_GET['phoneNumber'])) {
     $phoneNumber = $_GET['phoneNumber'];
     
-    $sql = "SELECT COUNT(*) as count FROM registration WHERE rrace = ?";
+    $sql = "SELECT COUNT(*) as count FROM registration WHERE phone = ?";
     $stmt = sqlsrv_prepare($conn, $sql, array(&$phoneNumber));
     
     if (sqlsrv_execute($stmt)) {

@@ -41,29 +41,31 @@ include ('header.php');
                             <form novalidate method="POST" action="">
                                 <div class="row">
                                     <div class="col-md-3">
-                                        <div class="form-group">
+                                        <div class="controls">
                                             <h5>MR. No. <span class="text-danger">*</span></h5>
-                                            <div class="controls">
-                                                <?php
-                                                $sql = "SELECT TOP 1 rno FROM registration ORDER BY id DESC";
-                                                $stmt = sqlsrv_query($conn, $sql);
-                                                if ($stmt === false) {
-                                                    die(print_r(sqlsrv_errors(), true));
-                                                } else {
+                                            <?php
+                                            $sql = "SELECT TOP 1 rno FROM registration ORDER BY id DESC";
+                                            $stmt = sqlsrv_query($conn, $sql);
+                                            if ($stmt === false) {
+                                                die(print_r(sqlsrv_errors(), true));
+                                            } else {
+                                                $next_rno = "MR000001";
+                                                if (sqlsrv_has_rows($stmt)) {
                                                     $row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC);
                                                     $last_rno = $row['rno'];
-                                                    if ($last_rno == '') {
-                                                        $next_rno = "MR000001";
-                                                    } else {
-                                                        $next_rno = strval(intval($last_rno) + 1);
+                                                    if (!empty($last_rno)) {
+                                                        $last_number = intval(substr($last_rno, 2));
+                                                        $next_number = $last_number + 1;
+                                                        $next_rno = "MR" . str_pad($next_number, 6, "0", STR_PAD_LEFT); // Format next rno
                                                     }
                                                 }
-                                                ?>
-                                                <input type="text" name="rno" placeholder="MR000001"
-                                                    class="form-control" required value="<?php echo $next_rno; ?>"
-                                                    readonly data-validation-required-message="This field is required">
-                                            </div>
+                                            }
+                                            ?>
+                                            <input type="text" name="rno" placeholder="MR000001" class="form-control"
+                                                required value="<?php echo $next_rno; ?>" readonly
+                                                data-validation-required-message="This field is required">
                                         </div>
+
                                     </div>
                                     <div class="col-md-3">
                                         <div class="form-group">
@@ -75,17 +77,20 @@ include ('header.php');
                                                 if ($stmt === false) {
                                                     die(print_r(sqlsrv_errors(), true));
                                                 } else {
-                                                    $row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC);
-                                                    $last_rno = $row['opid'];
-                                                    if ($last_rno == '') {
-                                                        $next_rno = "OP000001";
-                                                    } else {
-                                                        $next_rno = strval(intval($last_rno) + 1);
+                                                    $next_opid = "OP000001";
+                                                    if (sqlsrv_has_rows($stmt)) {
+                                                        $row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC);
+                                                        $last_opid = $row['opid'];
+                                                        if (!empty($last_rno)) {
+                                                            $last_number = intval(substr($last_opid, 2));
+                                                            $next_number = $last_number + 1;
+                                                            $next_opid = "OP" . str_pad($next_number, 6, "0", STR_PAD_LEFT);
+                                                        }
                                                     }
                                                 }
                                                 ?>
-                                                <input type="text" name="rno" placeholder="OP000001"
-                                                    class="form-control" required value="<?php echo $next_rno; ?>"
+                                                <input type="text" name="opid" placeholder="OP000001"
+                                                    class="form-control" required value="<?php echo $next_opid; ?>"
                                                     readonly data-validation-required-message="This field is required">
                                             </div>
                                         </div>
@@ -133,7 +138,7 @@ include ('header.php');
                                         <div class="form-group">
                                             <div class="controls">
                                                 <h5>First Name <span class="text-danger">*</span></h5>
-                                                <input type="text" class="form-control" required name="rfname"
+                                                <input type="text" class="form-control" required name="rfname" tabindex="1"
                                                     data-validation-required-message="This field is required">
                                             </div>
                                         </div>
@@ -150,7 +155,7 @@ include ('header.php');
                                         <div class="form-group">
                                             <div class="controls">
                                                 <h5>Last Name <span class="text-danger">*</span></h5>
-                                                <input type="text" class="form-control" required name="rlname"
+                                                <input type="text" class="form-control" required name="rlname" tabindex="2"
                                                     data-validation-required-message="This field is required">
                                             </div>
                                         </div>
@@ -158,7 +163,7 @@ include ('header.php');
                                     <div class="col-md-3">
                                         <div class="form-group">
                                             <h5>Gender <span class="text-danger">*</span></h5>
-                                            <select class="form-select" name="rsex">
+                                            <select class="form-select" name="rsex" tabindex="3">
                                                 <option value="Male">Male</option>
                                                 <option value="Female">Female</option>
                                                 <option value="Others">Others</option>
@@ -169,7 +174,7 @@ include ('header.php');
                                         <div class="form-group">
                                             <div class="controls">
                                                 <h5>Age (Years) <span class="text-danger">*</span></h5>
-                                                <input type="text" class="form-control" required name="rage"
+                                                <input type="text" class="form-control" required name="rage" tabindex="4"
                                                     data-validation-required-message="This field is required">
                                             </div>
                                         </div>
@@ -194,8 +199,8 @@ include ('header.php');
                                         <div class="form-group">
                                             <div class="controls">
                                                 <h5>Ph. No. <span class="text-danger">*</span></h5>
-                                                <input type="text" class="form-control" required name="rrace"
-                                                    id="rraceInput" maxlength="10" minlength="10"
+                                                <input type="text" class="form-control" required name="phone" tabindex="5"
+                                                    id="phoneInput" maxlength="10" minlength="10"
                                                     data-validation-required-message="This field is required"
                                                     onblur="checkPhoneNumber()">
                                             </div>
@@ -205,7 +210,7 @@ include ('header.php');
                                         <div class="form-group">
                                             <div class="controls">
                                                 <h5>F/H/S/D/W <span class="text-danger">*</span></h5>
-                                                <input type="text" class="form-control" required name="fname"
+                                                <input type="text" class="form-control" required name="fname" tabindex="6"
                                                     data-validation-required-message="This field is required">
                                             </div>
                                         </div>
@@ -214,7 +219,7 @@ include ('header.php');
                                         <div class="form-group">
                                             <div class="controls">
                                                 <h5>Address <span class="text-danger">*</span></h5>
-                                                <input type="text" class="form-control" required name="radd1"
+                                                <input type="text" class="form-control" required name="radd1" tabindex="7"
                                                     data-validation-required-message="This field is required">
                                             </div>
                                         </div>
@@ -231,7 +236,7 @@ include ('header.php');
                                     <div class="col-md-3">
                                         <div class="form-group">
                                             <h5>City <span class="text-danger">*</span></h5>
-                                            <select class="form-select select2" id="rcity" name="rcity">
+                                            <select class="form-select select2" id="rcity" name="rcity" tabindex="8">
                                                 <option selected disabled>Select City</option>
                                                 <?php
                                                 $sql = "SELECT Cityname FROM citymaster";
@@ -266,13 +271,11 @@ include ('header.php');
                                             <input type="text" class="form-control" name="rcountry" id="rcountry">
                                         </div>
                                     </div>
-
-
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <h5>Department <span class="text-danger">*</span></h5>
-                                            <select class="form-select select2" name="dept" id="dept"
-                                                onchange="getDept(this.value)">
+                                            <select class="form-select select2" name="dept" id="dept" tabindex="9"
+                                                onchange="getDeptDoctors(this.value)">
                                                 <option selected disabled>Select Department</option>
                                                 <?php
                                                 $sql = "SELECT dept FROM deptmaster";
@@ -292,22 +295,9 @@ include ('header.php');
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <h5>Consult Doctor <span class="text-danger">*</span></h5>
-                                            <select class="form-select select2" name="rdoc"
+                                            <select class="form-select select2" name="rdoc" id="rdoc" tabindex="10"
                                                 onchange="getDocname(this.value)">
                                                 <option selected disabled>Select Doctor</option>
-                                                <?php
-                                                $sql = "SELECT docName FROM docmaster";
-                                                $stmt = sqlsrv_query($conn, $sql);
-                                                if ($stmt === false) {
-                                                    die(print_r(sqlsrv_errors(), true));
-                                                } else {
-                                                    while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
-                                                        $docName = $row['docName'];
-                                                        $fee = $row['fee'];
-                                                    }
-                                                }
-                                                ?>
-                                                <option value=""></option>
                                             </select>
                                         </div>
                                     </div>
@@ -315,14 +305,15 @@ include ('header.php');
                                         <div class="form-group">
                                             <div class="controls">
                                                 <h5>Fee</h5>
-                                                <input type="text" class="form-control" name="wamt" id="wamt">
+                                                <input type="text" class="form-control" name="wamt" id="wamt" readonly
+                                                    required>
                                             </div>
                                         </div>
                                     </div>
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            <h5>Ref. Source <span class="text-danger">*</span></h5>
-                                            <select class="form-select select2" name="rdoc">
+                                            <h5>Ref. Source </h5>
+                                            <select class="form-select select2" name="rdocname">
                                                 <option selected disabled>Select Doctor</option>
                                                 <?php
                                                 $sql = "SELECT docName FROM docmaster";
@@ -332,7 +323,6 @@ include ('header.php');
                                                 } else {
                                                     while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
                                                         $docName = $row['docName'];
-                                                        $fee = $row['fee'];
                                                         echo '<option value="' . $docName . '">' . $docName . '</option>';
                                                     }
                                                 }
@@ -340,16 +330,39 @@ include ('header.php');
                                             </select>
                                         </div>
                                     </div>
-
-
-                                    <input type="hidden" class="form-control" name="uname"
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <h5>Patient Type </h5>
+                                            <select class="form-select select2" name="runit" tabindex="11">
+                                                <option selected disabled>Select</option>
+                                                <option value="CAMP">CAMP</option>
+                                                <option value="EMG">EMG</option>
+                                                <option value="MLC">MLC</option>
+                                                <option value="REF">REF</option>
+                                                <option value="WALK-IN">WALK-IN</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <h5>Payment Type <span class="text-danger">*</span></h5>
+                                            <select class="form-select select2" name="paymentType" required tabindex="12"> 
+                                                <option value="Cash">Cash</option>
+                                                <option value="Card">Card</option>
+                                                <option value="NEFT">NEFT</option>
+                                                <option value="Cheque">Cheque</option>
+                                                <option value="Credit">Credit</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <input type="hidden" class="form-control" name="addedBy"
                                         value="<?php echo $login_username; ?>">
                                 </div>
                         </div>
                     </div>
                     <center>
                         <div class="text-xs-right">
-                            <button type="submit" class="btn btn-info" name="save">SAVE</button>
+                            <button type="submit" class="btn btn-info" name="save" tabindex="13">SAVE</button>
                         </div>
                     </center>
                     </form>
@@ -362,22 +375,6 @@ include ('header.php');
 </div>
 <!-- /.content-wrapper -->
 <script>
-
-    // Amount dependency
-    function docDept(rdocname) {
-        $.ajax({
-            url: "load/doc_fetch.php",
-            type: "POST",
-            data: { rdocname: rdocname },
-            dataType: "json",
-            success: function (data) {
-                $("#wamt").val(data.docName);
-            },
-            error: function (xhr, status, error) {
-                console.error(xhr.responseText);
-            }
-        });
-    }
 
     // City to dist Dependency
     $(document).ready(function () {
@@ -405,48 +402,80 @@ include ('header.php');
     });
 
 
-    // Dist to State Dependency
-    // $(document).ready(function () {
-    //     $('#rdist').change(function () {
-    //         var selectedState = $(this).val();
-    //         getstate(selectedState);
-    //     });
-    //     function getstate(rdist) {
-    //         $.ajax({
-    //             url: "load/get_state.php",
-    //             type: "POST",
-    //             data: { rdist: rdist },
-    //             dataType: "json",
-    //             success: function (data) {
-    //                 $("#rstate").val(data[0].state);
-    //             },
-    //             error: function (xhr, status, error) {
-    //                 console.error(xhr.responseText);
-    //             }
-    //         });
-    //     }
-    // });
+    // Function to populate doctors based on selected department
+    function getDeptDoctors(dept) {
+        $.ajax({
+            url: "load/doc_fetch_by_dept.php",
+            type: "POST",
+            data: { dept: dept },
+            dataType: "json",
+            success: function (data) {
+                if (data.error) {
+                    console.error(data.error);
+                } else {
+                    $('#rdoc').empty().append('<option value="">-- Select Doctor --</option>');
+                    $.each(data, function (index, doctor) {
+                        $('#rdoc').append($('<option>', {
+                            value: doctor.docName,
+                            text: doctor.docName
+                        }));
+                    });
+                }
+            },
+            error: function (xhr, status, error) {
+                console.error(xhr.responseText);
+            }
+        });
+    }
 
 
-    // function getDocname(docName) {
-    //     $.ajax({
-    //         url: "load/doc_fetch_price.php",
-    //         type: "POST",
-    //         data: { docName: docName },
-    //         dataType: "json",
-    //         success: function (data) {
-    //             $("#wamt").val(data.fee);
-    //         },
-    //         error: function (xhr, status, error) {
-    //             console.error(xhr.responseText);
-    //         }
-    //     });
-    // }
+    // clear fee when change doctor or department
+    $(document).ready(function () {
+        // Add event listener for department select box
+        $('#dept').change(function () {
+            // Clear fee input field when department changes
+            $('#wamt').val('');
+        });
+
+        // Add event listener for doctor select box
+        $('#rdoc').change(function () {
+            // Clear fee input field when doctor changes
+            $('#wamt').val('');
+        });
+    });
+
+    // Function to fetch fee for the selected doctor
+    function getDocname(docName) {
+        if (!docName) {
+            // If no doctor is selected, clear the fee input field
+            $("#wamt").val('');
+            return; // Exit the function early
+        }
+
+        $.ajax({
+            url: "load/doc_fetch_price.php",
+            type: "POST",
+            data: { docName: docName },
+            dataType: "json",
+            success: function (data) {
+                if (data.error) {
+                    console.error(data.error);
+                } else {
+                    $("#wamt").val(data.fee);
+                }
+            },
+            error: function (xhr, status, error) {
+                console.error(xhr.responseText);
+            }
+        });
+    }
+
+
 
 
     // Mobile number check
     function checkPhoneNumber() {
-        var phoneNumber = document.getElementById('rraceInput').value;
+        var phoneNumber = document.getElementById('phoneInput').value;
         var xhttp = new XMLHttpRequest();
         xhttp.onreadystatechange = function () {
             if (this.readyState == 4 && this.status == 200) {
@@ -457,7 +486,7 @@ include ('header.php');
                         icon: 'warning',
                         button: 'OK',
                     });
-                    document.getElementById('rraceInput').value = '';
+                    document.getElementById('phoneInput').value = '';
                 }
             }
         };
@@ -465,77 +494,17 @@ include ('header.php');
         xhttp.send();
     }
 </script>
-<!-- City Dist Dependency Dropdown -->
-<script>
-    // function populateDistricts() {
-    //     console.log("Fetching districts..."); // Log message to check if the function is called
-    //     var city = document.getElementById("rcity").value;
-    //     var districtDropdown = document.getElementById("rdist");
-    //     // Clear previous options
-    //     districtDropdown.innerHTML = "";
-
-    //     // Send AJAX request to fetch districts
-    //     var xhr = new XMLHttpRequest();
-    //     xhr.open("GET", "load/get_districts.php?city=" + city, true);
-    //     xhr.onreadystatechange = function () {
-    //         if (xhr.readyState == 4) {
-    //             console.log("Received response"); // Log message to check if the response is received
-    //             if (xhr.status == 200) {
-    //                 var districts = JSON.parse(xhr.responseText);
-    //                 // Populate district options
-    //                 for (var i = 0; i < districts.length; i++) {
-    //                     var option = document.createElement("option");
-    //                     option.text = districts[i];
-    //                     option.value = districts[i];
-    //                     districtDropdown.add(option);
-    //                 }
-    //             } else {
-    //                 console.log("Error: " + xhr.status); // Log message if there's an error in the response
-    //             }
-    //         }
-    //     };
-    //     xhr.send();
-    // }
 
 
-    // // Populate district dropdown initially
-    // populateDistricts();
-
-    // // Add change event listener to city dropdown
-    // document.getElementById("rcity").addEventListener("change", function () {
-    //     populateDistricts();
-    // });
-</script>
-
-<!-- load -->
-<script>
-    // function getrdist(rcity) {
-    //     $.ajax({
-    //         url: "load/get_dist.php",
-    //         type: "POST",
-    //         data: { rcity: rcity },
-    //         dataType: "json",
-    //         success: function (data) {
-    //             var rdistDropdown = $("#rdist");
-    //             rdistDropdown.empty().append('<option value="">--Select Dist --</option>');
-    //             data.forEach(function (citymaster) {
-    //                 var distnames = citymaster.distname;
-    //                 distnames.forEach(function (distname) {
-    //                     rdistDropdown.append('<option value="' + distname + '">' + distname + '</option>');
-    //                 });
-    //             });
-    //         }
-    //     });
-    // }
-
-</script>
 <?php
 if (isset($_POST['save'])) {
-    $rno = 'MR000001';
+    $rno = $_POST['rno'];
+    $opid = $_POST['opid'];
     $se = $_POST['se'];
     $rdate = $_POST['rdate'];
     $rtime = date('H:i:s A');
-    $rstatus = $_POST['rstatus'];
+    // payment type = status
+    $paymentType = $_POST['paymentType'];
     $rtitle = $_POST['rtitle'];
     $rfname = $_POST['rfname'];
     $rmname = $_POST['rmname'];
@@ -551,25 +520,29 @@ if (isset($_POST['save'])) {
     $rdist = $_POST['rdist'];
     $rstate = $_POST['rstate'];
     $rcity = $_POST['rcity'];
-    $rrace = $_POST['rrace'];
+    $phone = $_POST['phone'];
     $rdoc = $_POST['rdoc'];
-    $wamt = $_POST['wamt'];
+    $rdocname = $_POST['rdocname'];
+    $wamt = floatval($_POST['wamt']);
+
+    $dept = $_POST['dept'];
     $rcountry = $_POST['rcountry'];
-    $uname = $_POST['uname'];
+    $addedBy = $_POST['addedBy'];
 
-    $sql = "INSERT INTO registration (id, rno, se, rdate, rtime, rstatus, rtitle, rfname, rmname, uname, rlname, rsex, rage, fname, radd1, radd2, rcity, rdist, rstate, rrace, rdoc, wamt, rcountry) 
-    VALUES ('$rno','$rno', '$se', '$rdate', '$rtime', '$rstatus' ,'$rtitle', '$rfname', '$rmname', '$uname', '$rlname', '$rsex', '$rage', '$fname', '$radd1', '$radd2', '$rcity', '$rdist', '$rstate', '$rrace', '$rdoc', '$wamt', '$rcountry')";
-
+    $sql = "INSERT INTO registration (rno, opid, se, rdate, rtime, paymentType, rtitle, rfname, rmname, addedBy, rlname, rsex, rage, fname, radd1, radd2, rcity, rdist, rstate, phone, dept, rdoc, rdocname, wamt, rcountry) 
+VALUES ('$rno', '$opid', '$se', '$rdate', '$rtime', '$paymentType', '$rtitle', '$rfname', '$rmname', '$addedBy', '$rlname', '$rsex', '$rage', '$fname', '$radd1', '$radd2', '$rcity', '$rdist', '$rstate', '$phone', '$dept', '$rdoc', '$rdocname', '$wamt', '$rcountry')";
     $stmt = sqlsrv_query($conn, $sql);
     if ($stmt === false) {
         die(print_r(sqlsrv_errors(), true));
     } else {
         echo '<script>
-                swal("Success!", "", "success");
-                setTimeout(function(){
-                    window.location.href = window.location.href;
-                }, 1000);
-            </script>';
+        swal("Success!", "", "success");
+        setTimeout(function(){
+            window.open("reg-pdf?opid=' . $opid . '&rno=' . $rno . '", "_blank");
+            newTab.focus();
+        }, 1000);
+    </script>';
+
     }
 }
 

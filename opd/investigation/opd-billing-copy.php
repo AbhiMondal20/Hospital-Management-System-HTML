@@ -7,50 +7,50 @@ if (isset($_SESSION['login']) && $_SESSION['login'] == true) {
 }
 include ('header.php');
 
-$rno = "";
-$opid = "";
-if (isset($_GET['opid']) && isset($_GET['rno'])) {
-    $opid = $_GET['opid'];
-    $rno = $_GET['rno'];
-}
+// if (isset($_GET['opid']) && isset($_GET['rno'])) {
+//     echo "opid and rno parameters are set";
+    // $opid = $_GET['opid'];
+    // $rno = $_GET['rno'];
+// } else {
+//     echo "opid and/or rno parameters are not set";
+// }
+$id = "";
+$fullname = "";
+$paymentType = "";
 $rdate = "";
-$rtitle = "";
 $rtime = "";
-$se = "";
 $rfname = "";
-$rmname = "";
-$rlname = "";
-$rstatus = "";
-$fname = "";
 $rsex = "";
 $rage = "";
 $fname = "";
 $phone = "";
+$dept = "";
 $radd1 = "";
 $radd2 = "";
-$rcity = "";
-$rdoc = "";
 $rdist = "";
-$rstate = "";
-$rcountry = "";
 $wamt = "";
-$sql = "SELECT id, rno, rdate, rtime, rstatus,rtitle, se, rdoc, rfname, rmname, rlname, fname, rsex, rage, fname, phone, radd1, radd2, rcity, rdist, rstate, rcountry, wamt
+$addedBy = "";
+$rdoc = "";
+$rno = "";
+$opid = "";
+
+$sql = "SELECT id, rno, opid, rdate, rtime, rfname, CONCAT(rfname, ' ', COALESCE(rmname, ''), ' ', rlname) AS fullname, 
+rsex, rage, fname, phone, dept, paymentType, radd1, radd2, rcity, rdist, wamt, addedBy, rdoc
 FROM registration WHERE rno = '$rno' AND opid = '$opid'";
 $stmt = sqlsrv_query($conn, $sql);
 if ($stmt === false) {
     die(print_r(sqlsrv_errors(), true));
 }
 while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
-    $rno = $row['rno'];
     $opid = $row['opid'];
+    $rno = $row['rno'];
     $rdate = $row['rdate']->format('Y-m-d');
-    $rtitle = $row['rtitle'];
     $rtime = $row['rtime'];
+    $fullname = $row['fullname'];
     $se = $row['se'];
     $rfname = $row['rfname'];
     $rmname = $row['rmname'];
     $rlname = $row['rlname'];
-    $fname = $row['fname'];
     $rsex = $row['rsex'];
     $rage = $row['rage'];
     $fname = $row['fname'];
@@ -60,8 +60,6 @@ while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
     $rcity = $row['rcity'];
     $rdoc = $row['rdoc'];
     $rdist = $row['rdist'];
-    $rstate = $row['rstate'];
-    $rcountry = $row['rcountry'];
     $wamt = $row['wamt'];
 }
 ?>
@@ -87,7 +85,6 @@ while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
 
         <!-- Main content -->
         <section class="content">
-
             <!-- Basic Forms -->
             <div class="box">
                 <!-- /.box-header -->
@@ -96,19 +93,6 @@ while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
                         <div class="col-lg-12">
                             <form novalidate method="POST" enctype="multipart/form-data">
                                 <div class="row">
-                                    <div class="col-md-2">
-                                        <div class="form-group">
-                                            <h5>OPD / IPD <span class="text-danger">*</span></h5>
-                                            <select class="form-select" name="rstatus">
-                                                <option value="OPD" <?php if ($rstatus == 'OPD')
-                                                    echo ' selected'; ?>>OPD
-                                                </option>
-                                                <option value="IPD" <?php if ($rstatus == 'IPD')
-                                                    echo ' selected'; ?>>IPD
-                                                </option>
-                                            </select>
-                                        </div>
-                                    </div>
                                     <div class="col-md-3">
                                         <div class="form-group">
                                             <h5>Reg. No. <span class="text-danger">*</span></h5>
@@ -121,10 +105,20 @@ while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
                                     </div>
                                     <div class="col-md-3">
                                         <div class="form-group">
+                                            <h5>OP Id <span class="text-danger">*</span></h5>
+                                            <div class="controls">
+                                                <input type="text" name="opid" placeholder="OP Id" class="form-control"
+                                                    required value="<?php echo $opid; ?>" readonly
+                                                    data-validation-required-message="This field is required">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
                                             <div class="controls">
                                                 <h5>Name <span class="text-danger">*</span></h5>
                                                 <input type="text" class="form-control" required name="pname"
-                                                    value="<?php echo $rfname; ?> <?php echo $rmname; ?> <?php echo $rlname; ?>"
+                                                    value="<?php echo $fullname; ?>"
                                                     data-validation-required-message="This field is required">
                                             </div>
                                         </div>
@@ -200,109 +194,109 @@ while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
                                             </div>
                                         </div>
                                     </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-lg-4">
-                                            <label for="Services">Services</label>
-                                            <select class="form-select select2" name="sservname[]" id="servname"
-                                                tabindex="1" onchange="getservname(this.value)">
-                                                <option value="">Select Services</option>
-                                                <?php
-                                                $sql = "SELECT servname FROM servmaster";
-                                                $stmt = sqlsrv_query($conn, $sql);
-                                                if ($stmt === false) {
-                                                    die(print_r(sqlsrv_errors(), true));
-                                                } else {
-                                                    while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
-                                                        $servname_ = $row['servname'];
-                                                        echo "<option value='$servname_'>$servname_</option>";
-                                                    }
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-4">
+                                        <label for="Services">Services</label>
+                                        <select class="form-select select2" name="sservname[]" id="servname"
+                                            tabindex="1" onchange="getservname(this.value)">
+                                            <option value="">Select Services</option>
+                                            <?php
+                                            $sql = "SELECT servname FROM servmaster";
+                                            $stmt = sqlsrv_query($conn, $sql);
+                                            if ($stmt === false) {
+                                                die(print_r(sqlsrv_errors(), true));
+                                            } else {
+                                                while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
+                                                    $servname_ = $row['servname'];
+                                                    echo "<option value='$servname_'>$servname_</option>";
                                                 }
-                                                ?>
-                                            </select>
-                                        </div>
-                                        <div class="col-lg-4">
-                                            <label for="Price">Price</label>
-                                            <input type="text" class="form-control" name="sservrate[]" id="servrate"
-                                                readonly>
-                                        </div>
-                                        <div class="col-lg-4">
-                                            <label for="add"></label>
-                                            <button type="button" id="addBtn" tabindex="2"
-                                                class="btn btn-md btn-primary mt-4">Add</button>
-                                        </div>
+                                            }
+                                            ?>
+                                        </select>
                                     </div>
-                            </div>
-                            <table class="table table-bordered table-hover display nowrap margin-top-10 w-p100 dataTable">
-                                <thead>
-                                    <tr>
-                                        <th>Services</th>
-                                        <th>Price</th>
-                                        <th></th>
-                                    </tr>
-                                </thead>
-                                <tbody></tbody>
-                                <tfoot>
-                                    <tr>
-                                        <td colspan="2">Total Amount:</td>
-                                        <td><input type="text" class="form-control" placeholder="TOTAL Amount" required
-                                                name="totalPrice" id="totalPrice"></td>
-                                    </tr>
-                                    <tr>
-                                        <td colspan="2">Total Adjusted:</td>
-                                        <td><input type="text" class="form-control" placeholder="Total Adjusted"
-                                                name="totalAdj" id="totalAdj"></td>
-                                    </tr>
-                                    <tr style="display:none">
-                                        <td colspan="2">GST %:</td>
-                                        <td><input type="text" class="form-control" placeholder="GST %" name="gst" id="gst">
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td colspan="2">Bill Amount:</td>
-                                        <td><input type="text" class="form-control" placeholder="Bill Amount"
-                                                name="billAmount" id="billAmount"></td>
-                                    </tr>
-                                    <tr>
-                                        <td colspan="2">Paid Amount:</td>
-                                        <td><input type="text" class="form-control" placeholder="Paid Amount" required
-                                                name="paidAmount" id="paidAmount"></td>
-                                    </tr>
-                                    <tr>
-                                        <td colspan="2">Balance:</td>
-                                        <td><input type="text" class="form-control" placeholder="Balance" name="balance"
-                                                id="balance"></td>
-                                    </tr>
-                                    <tr>
-                                        <td colspan="2">Payment Type:</td>
-                                        <td>
-                                            <select class="form-select select2" name="paymentType" required>
-                                                <option value="Cash">Cash</option>
-                                                <option value="Card">Card</option>
-                                                <option value="NEFT">NEFT</option>
-                                                <option value="Cheque">Cheque</option>
-                                                <option value="Credit">Credit</option>
-                                            </select>
-                                        </td>
-                                    </tr>
-                                </tfoot>
-                            </table>
+                                    <div class="col-lg-4">
+                                        <label for="Price">Price</label>
+                                        <input type="text" class="form-control" name="sservrate[]" id="servrate"
+                                            readonly>
+                                    </div>
+                                    <div class="col-lg-4">
+                                        <label for="add"></label>
+                                        <button type="button" id="addBtn" tabindex="2"
+                                            class="btn btn-md btn-primary mt-4">Add</button>
+                                    </div>
+                                </div>
                         </div>
-                        <center>
-                            <div class="text-xs-right">
-                                <button type="submit" class="btn btn-info" name="billSave">SAVE</button>
-                            </div>
-                        </center>
-                        <div class="text-xs-right mt-4">
-                            <!-- <button type="clear" class="btn btn-info">CLEAR</button> -->
-                            <button type="button" class="btn btn-info">Total Collection</button>
-                            <button type="button" class="btn btn-info">Delivery Report</button>
-                            <button type="button" class="btn btn-primary" data-bs-toggle="modal"
-                                data-bs-target=".bs-example-modal-lg">List of Register Patient</button>
-                            <button type="button" class="btn btn-primary">List of Admitted Patient</button>
-                            <a href="money-receipt-list" class="btn btn-info">Money Receipt</a>
-                            <a href="index" class="btn btn-info"><i class="fa-solid fa-x"></i></a>
+                        <table class="table table-bordered table-hover display nowrap margin-top-10 w-p100 dataTable">
+                            <thead>
+                                <tr>
+                                    <th>Services</th>
+                                    <th>Price</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                            <tfoot>
+                                <tr>
+                                    <td colspan="2">Total Amount:</td>
+                                    <td><input type="text" class="form-control" placeholder="TOTAL Amount" required
+                                            name="totalPrice" id="totalPrice"></td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2">Total Adjusted:</td>
+                                    <td><input type="text" class="form-control" placeholder="Total Adjusted"
+                                            name="totalAdj" id="totalAdj"></td>
+                                </tr>
+                                <tr style="display:none">
+                                    <td colspan="2">GST %:</td>
+                                    <td><input type="text" class="form-control" placeholder="GST %" name="gst" id="gst">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2">Bill Amount:</td>
+                                    <td><input type="text" class="form-control" placeholder="Bill Amount"
+                                            name="billAmount" id="billAmount"></td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2">Paid Amount:</td>
+                                    <td><input type="text" class="form-control" placeholder="Paid Amount" required
+                                            name="paidAmount" id="paidAmount"></td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2">Balance:</td>
+                                    <td><input type="text" class="form-control" placeholder="Balance" name="balance"
+                                            id="balance"></td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2">Payment Type:</td>
+                                    <td>
+                                        <select class="form-select select2" name="paymentType" required>
+                                            <option value="Cash">Cash</option>
+                                            <option value="Card">Card</option>
+                                            <option value="NEFT">NEFT</option>
+                                            <option value="Cheque">Cheque</option>
+                                            <option value="Credit">Credit</option>
+                                        </select>
+                                    </td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                    <center>
+                        <div class="text-xs-right">
+                            <button type="submit" class="btn btn-info" name="billSave">SAVE</button>
                         </div>
+                    </center>
+                    <div class="text-xs-right mt-4">
+                        <!-- <button type="clear" class="btn btn-info">CLEAR</button> -->
+                        <button type="button" class="btn btn-info">Total Collection</button>
+                        <button type="button" class="btn btn-info">Delivery Report</button>
+                        <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                            data-bs-target=".bs-example-modal-lg">List of Register Patient</button>
+                        <button type="button" class="btn btn-primary">List of Admitted Patient</button>
+                        <a href="money-receipt-list" class="btn btn-info">Money Receipt</a>
+                        <a href="index" class="btn btn-info"><i class="fa-solid fa-x"></i></a>
+                    </div>
                     </form>
                 </div>
             </div>
@@ -414,9 +408,7 @@ while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
 </script>
 
 <?php
-// Assuming $conn is your established SQL Server connection
-
-if(isset($_POST["billSave"])) {
+if (isset($_POST["billSave"])) {
     $rstatus = $_POST["rstatus"];
     $rno = $_POST["rno"];
     $pname = $_POST["pname"];
@@ -436,19 +428,18 @@ if(isset($_POST["billSave"])) {
 
     if ($totalPrice === 0.00 || $paidAmount === 0.00 || $totalPrice === null || $paidAmount === null || $status === null) {
         echo '<script>
-            swal("Error!", "Total Price and Paid Amount should be greater than 0.00.", "error");
-        </script>';
+                swal("Error!", "Total Price and Paid Amount should be greater than 0.00.", "error");
+            </script>';
     } else {
 
-        // Prepare main SQL statement for billingDetails table
-        $sqlMain = "INSERT INTO billingDetails (rstatus, rno, pname, phone, rdocname, billno, billdate, totalPrice, totalAdj, gst, billAmount, paidAmount, balance, status, addedBy) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        $sqlMain = "INSERT INTO billingDetails (rstatus, rno, pname, phone, rdocname, billno, billdate, totalPrice, totalAdj, gst, billAmount, paidAmount, balance, status, uname) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         $paramsMain = array($rstatus, $rno, $pname, $phone, $rdocname, $billno, $billdate, $totalPrice, $totalAdj, $gst, $billAmount, $paidAmount, $balance, $status, $username);
         $stmtMain = sqlsrv_prepare($conn, $sqlMain, $paramsMain);
 
         if ($stmtMain) {
             if (sqlsrv_execute($stmtMain)) {
                 $success = true;
-                $sqlBilling = "INSERT INTO billing (rno, pname, billno, billdate, servname, servrate, addedBy) VALUES (?, ?, ?, ?, ?, ?, ?)";
+                $sqlBilling = "INSERT INTO billing (rno, pname, billno, billdate, servname, servrate, uname) VALUES (?, ?, ?, ?, ?, ?, ?)";
                 $stmtBilling = sqlsrv_prepare($conn, $sqlBilling, array(&$rno, &$pname, &$billno, &$billdate, &$servname, &$servrate, &$username));
 
                 if (!$stmtBilling) {
@@ -462,43 +453,44 @@ if(isset($_POST["billSave"])) {
                     if (!sqlsrv_execute($stmtBilling)) {
                         $success = false;
                         echo '<script>
-                        swal("Error!", "Error inserting billing item ' . ($i + 1) . '.", "error"); // Provide specific item number for error
-                    </script>';
+                            swal("Error!", "Error inserting billing item ' . ($i + 1) . '.", "error"); // Provide specific item number for error
+                        </script>';
                     }
                 }
 
                 if ($success) {
                     echo '<script>
-                    swal("Success!", "", "success");
-                    setTimeout(function(){
-                        var url = "opd-bill-cum-receipt?rno=' . $rno . '&billno=' . $billno . '&billdate=' . $billdate . '";
-                        var link = document.createElement("a");
-                        link.href = url;
-                        link.target = "_blank";
-                        link.click();
-                    }, 1000);
-                </script>';
+                        swal("Success!", "", "success");
+                        setTimeout(function(){
+                            var url = "opd-bill-cum-receipt?rno=' . $rno . '&billno=' . $billno . '&billdate=' . $billdate . '";
+                            var link = document.createElement("a");
+                            link.href = url;
+                            link.target = "_blank";
+                            link.click();
+                        }, 1000);
+                    </script>';
                 } else {
                     echo '<script>
-                    swal("Error!", "Error inserting one or more billing items.", "error");
-                </script>';
+                        swal("Error!", "Error inserting one or more billing items.", "error");
+                    </script>';
                 }
             } else {
                 echo '<script>
-                swal("Error!", "Error inserting main data.", "error");
-            </script>';
+                    swal("Error!", "Error inserting main data.", "error");
+                </script>';
             }
         } else {
             echo '<script>
-            swal("Error!", "Error preparing main SQL statement.", "error");
-        </script>';
+                swal("Error!", "Error preparing main SQL statement.", "error");
+            </script>';
         }
     }
 }
 
-
-
 ?>
+
+
+
 
 <?php
 // if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["billSave"])) {
@@ -526,14 +518,14 @@ if(isset($_POST["billSave"])) {
 //         </script>';
 //     } else {
 //         // Prepare main SQL statement for billingDetails table
-//         $sqlMain = "INSERT INTO billingDetails (rstatus, rno, pname, phone, rdocname, billno, billdate, totalPrice, totalAdj, gst, billAmount, paidAmount, balance, status, addedBy) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+//         $sqlMain = "INSERT INTO billingDetails (rstatus, rno, pname, phone, rdocname, billno, billdate, totalPrice, totalAdj, gst, billAmount, paidAmount, balance, status, uname) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 //         $paramsMain = array($rstatus, $rno, $pname, $phone, $rdocname, $billno, $billdate, $totalPrice, $totalAdj, $gst, $billAmount, $paidAmount, $balance, $status, $username);
 //         $stmtMain = sqlsrv_prepare($conn, $sqlMain, $paramsMain);
 
 //         if ($stmtMain) {
 //             if (sqlsrv_execute($stmtMain)) {
 //                 $success = true;
-//                 $sqlBilling = "INSERT INTO billing (rno, pname, billno, billdate, servname, servrate, addedBy) VALUES (?, ?, ?, ?, ?, ?, ?)";
+//                 $sqlBilling = "INSERT INTO billing (rno, pname, billno, billdate, servname, servrate, uname) VALUES (?, ?, ?, ?, ?, ?, ?)";
 //                 $stmtBilling = sqlsrv_prepare($conn, $sqlBilling, array(&$rno, &$pname, &$billno, &$billdate, &$servname, &$servrate, &$username));
 
 //                 if (!$stmtBilling) {
@@ -621,7 +613,7 @@ if(isset($_POST["billSave"])) {
 //         </script>';
 //     } else {
 //         // Prepare main SQL statement for billingDetails table
-//         $sqlMain = "INSERT INTO billingDetails (rstatus, rno, pname, phone, rdocname, billno, billdate, totalPrice, totalAdj, gst, billAmount, paidAmount, balance, status, addedBy) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+//         $sqlMain = "INSERT INTO billingDetails (rstatus, rno, pname, phone, rdocname, billno, billdate, totalPrice, totalAdj, gst, billAmount, paidAmount, balance, status, uname) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 //         $paramsMain = array($rstatus, $rno, $pname, $phone, $rdocname, $billno, $billdate, $totalPrice, $totalAdj, $gst, $billAmount, $paidAmount, $balance, $status, $username);
 //         $stmtMain = sqlsrv_prepare($conn, $sqlMain, $paramsMain);
 
@@ -635,7 +627,7 @@ if(isset($_POST["billSave"])) {
 //                 $servrate = $_POST['sservrate'][$i];
 
 //                 // Prepare SQL statement for billing table
-//                 $sqlBilling = "INSERT INTO billing (rno, pname, billno, billdate, servname, servrate, addedBy) VALUES (?, ?, ?, ?, ?, ?, ?)";
+//                 $sqlBilling = "INSERT INTO billing (rno, pname, billno, billdate, servname, servrate, uname) VALUES (?, ?, ?, ?, ?, ?, ?)";
 //                 $paramsBilling = array($rno, $pname, $billno, $billdate, $servname, $servrate, $username);
 //                 $stmtBilling = sqlsrv_prepare($conn, $sqlBilling, $paramsBilling);
 
@@ -671,11 +663,6 @@ if(isset($_POST["billSave"])) {
 //     }
 // }
 ?>
-
-
-
-
-
 
 <!-- load data -->
 <script>
@@ -722,85 +709,6 @@ if(isset($_POST["billSave"])) {
     });
 </script> -->
 
-<div class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel"
-    aria-hidden="true" style="display: none;">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h4 class="modal-title" id="myLargeModalLabel">List of Register Patient</h4>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <div class="table-responsive">
-                    <table id="example5" class="table nowrap margin-top-10 w-p100">
-                        <thead>
-                            <tr>
-                                <th>Action</th>
-                                <th>Reg. No.</th>
-                                <th>Reg. Date Time.</th>
-                                <th>Name</th>
-                                <th>Gender</th>
-                                <th>Age</th>
-                                <!-- <th>F/H/S/D/W</th> -->
-                                <th>Ph. No</th>
-                                <th>City</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php
-                            $sql = "SELECT TOP 900 id, rno, rdate, rtime, rfname, CONCAT(rfname, ' ', COALESCE(rmname, ''), ' ', rlname) AS fullname, rsex, rage, fname, phone, radd1, rcity, rdist, wamt, addedBy
-                                    FROM registration 
-                                    ORDER BY id DESC";
-                            $stmt = sqlsrv_query($conn, $sql);
-                            if ($stmt === false) {
-                                die(print_r(sqlsrv_errors(), true));
-                            }
-                            while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
-                                $rno = $row['rno'];
-                                $id = $row['id'];
-                                $rfname = $row['rfname'];
-                                ?>
-                                <tr>
-                                    <td>
-                                        <a href="?id=<?php echo $id; ?>&rno=<?php echo $rno; ?>"
-                                            class="btn btn-sm btn-primary"><i class="fa-solid fa-file-invoice"></i></a>
-                                    </td>
-                                    <td>
-                                        <?php echo $rno; ?>
-                                    </td>
-                                    <td>
-                                        <?php echo $row['rdate']->format('Y-m-d'); ?>
-                                    </td>
-                                    <td>
-                                        <?php echo $row['fullname']; ?>
-                                    </td>
-                                    <td>
-                                        <?php echo $row['rsex']; ?>
-                                    </td>
-                                    <td>
-                                        <?php echo $row['rage']; ?>
-                                    </td>
-                                    <td>
-                                        <?php echo $row['phone']; ?>
-                                    </td>
-                                    <td>
-                                        <?php echo $row['rcity']; ?>
-                                    </td>
-
-                                </tr>
-                                <?php
-                            }
-                            ?>
-                        </tbody>
-                    </table>
-
-                </div>
-            </div>
-        </div>
-        <!-- /.modal-content -->
-    </div>
-    <!-- /.modal-dialog -->
-</div>
 
 <?php
 include ('footer.php');

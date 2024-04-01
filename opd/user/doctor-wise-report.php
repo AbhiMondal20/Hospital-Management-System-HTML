@@ -1,6 +1,6 @@
 <?php
 session_start();
-if (isset ($_SESSION['login']) && $_SESSION['login'] == true) {
+if (isset($_SESSION['login']) && $_SESSION['login'] == true) {
     $login_username = $_SESSION['username'];
 } else {
     echo "<script>location.href='../../login';</script>";
@@ -45,7 +45,7 @@ include ('header.php');
                                                 $sql = "SELECT docName FROM docmaster";
                                                 $stmt = sqlsrv_query($conn, $sql);
                                                 if ($stmt === false) {
-                                                    die (print_r(sqlsrv_errors(), true));
+                                                    die(print_r(sqlsrv_errors(), true));
                                                 } else {
                                                     while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
                                                         $docName = $row['docName'];
@@ -100,14 +100,16 @@ include ('header.php');
                                 <thead>
                                     <tr>
                                         <th>Reg. No.</th>
+                                        <th>OP Id</th>
                                         <th>Reg. Date Time.</th>
                                         <th>Name</th>
                                         <th>Gender</th>
-                                        <th>Age</th>
                                         <th>Ph. No</th>
-                                        <th>Username</th>
+                                        <th>Dept.</th>
                                         <th>Doctor</th>
                                         <th>Fee</th>
+                                        <th>Payment Type</th>
+                                        <th>Username</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -115,57 +117,87 @@ include ('header.php');
                                     $totalAmount = 0;
 
                                     $username = $login_username;
-                                  if (isset($_POST['search'])) {
-                                    $doctor = $_POST['doctor'];
-                                    $to = $_POST['to'];
-                                    $from = $_POST['from'];
-                                    $sql = "SELECT
+                                    if (isset($_POST['search'])) {
+                                        $doctor = $_POST['doctor'];
+                                        $to = $_POST['to'];
+                                        $from = $_POST['from'];
+                                        $sql = "SELECT
                                                 id, rno, rdate, rtime, 
                                                 rfname, CONCAT(rfname, ' ', COALESCE(rmname, ''), ' ', rlname) AS fullname, 
-                                                rsex, rage, fname, rrace, 
-                                                radd1, rcity, rdist, wamt, uname, rdoc
+                                                rsex, rage, fname, phone, dept, opid, paymentType,
+                                                radd1, rcity, rdist, wamt, addedBy, rdoc
                                             FROM 
                                                 registration 
                                             WHERE 
-                                                (rdoc = ? OR (rdate BETWEEN ? AND ? AND uname = ?))
+                                                (rdoc = ? OR (rdate BETWEEN ? AND ? AND addedBy = ?))
                                             ORDER BY 
                                                 id DESC";
-                                    $params = array($doctor, $from, $to, $username);
+                                        $params = array($doctor, $from, $to, $username);
 
-                                    $stmt = sqlsrv_query($conn, $sql, $params);
-                                    if ($stmt === false) {
-                                        die(print_r(sqlsrv_errors(), true));
+                                        $stmt = sqlsrv_query($conn, $sql, $params);
+                                        if ($stmt === false) {
+                                            die(print_r(sqlsrv_errors(), true));
+                                        }
+                                        while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
+                                            $rno = $row['rno'];
+                                            $id = $row['id'];
+                                            $rfname = $row['rfname'];
+                                            $doctor = $row['rdoc'];
+                                            $paymentType = $row['paymentType'];
+                                            $dept = $row['dept'];
+                                            $opid = $row['opid'];
+                                            $wamt = number_format($row['wamt'], 2);
+                                            $totalAmount += $row['wamt'];
+                                            ?>
+                                            <tr>
+                                                <td>
+                                                    <?php echo $rno; ?>
+                                                </td>
+                                                <td>
+                                                    <?php echo $opid; ?>
+                                                </td>
+                                                <td>
+                                                    <?php echo $row['rdate'] . ' ' . $row['rtime']->format('H:i:s'); ?>
+                                                </td>
+                                                <td>
+                                                    <?php echo $row['fullname']; ?> (
+                                                    <?php echo $row['rage']; ?>)
+                                                </td>
+                                                <td>
+                                                    <?php echo $row['rsex']; ?>
+                                                </td>
+                                                <td>
+                                                    <?php echo $row['phone']; ?>
+                                                </td>
+                                                <td>
+                                                    <?php echo $dept; ?>
+                                                </td>
+                                                <td>
+                                                    <?php echo $doctor; ?>
+                                                </td>
+                                                <td>
+                                                    <?php echo $wamt; ?>
+                                                </td>
+                                                <td>
+                                                    <?php echo $paymentType; ?>
+                                                </td>
+                                                <td>
+                                                    <?php echo $row['addedBy']; ?>
+                                                </td>
+                                            </tr>
+                                            <?php
+                                        }
                                     }
-                                    while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
-                                        $rno = $row['rno'];
-                                        $id = $row['id'];
-                                        $rfname = $row['rfname'];
-                                        $doctor = $row['rdoc'];
-                                        $wamt = number_format($row['wamt'], 2);
-                                        $totalAmount += $wamt;
-                                        ?>
-                                        <tr>
-                                            <td><?php echo $rno; ?></td>
-                                            <td><?php echo date_format($row['rdate'], 'Y-m-d') . ' ' . $row['rtime']; ?></td>
-                                            <td><?php echo $row['fullname']; ?></td>
-                                            <td><?php echo $row['rsex']; ?></td>
-                                            <td><?php echo $row['rage']; ?></td>
-                                            <td><?php echo $row['rrace']; ?></td>
-                                            <td><?php echo $row['uname']; ?></td>
-                                            <td><?php echo $doctor; ?></td>
-                                            <td><?php echo $wamt; ?></td>
-                                        </tr>
-                                        <?php
-                                    }
-                                }
-                                ?>
-                                
+                                    ?>
+
                                 </tbody>
                                 <tfoot>
-                                <tr>
-                                    <td colspan="6">Total: </td>
-                                    <td><?php echo number_format($totalAmount, 2); ?></td>
-                                </tr>
+                                    <tr>
+                                        <td colspan="8">Total: </td>
+                                        <td>
+                                            <?php echo number_format($totalAmount, 2); ?>
+                                        </td>
+                                    </tr>
                                 </tfoot>
                             </table>
 

@@ -184,13 +184,13 @@ include ('function.php');
                                             <i class="icon-Commit"><span class="path1"></span><span
                                                     class="path2"></span></i>Total Cash Reports
                                         </a>
+                                        <a href="doctor-wise-report">
+                                            <i class="icon-Commit"><span class="path1"></span><span
+                                            class="path2"></span></i>Doctor Wise Report
+                                        </a>
                                         <a href="daily-cash-report">
                                             <i class="icon-Commit"><span class="path1"></span><span
                                                     class="path2"></span></i>Daily Cash Report
-                                        </a>
-                                        <a href="doctor-wise-report">
-                                            <i class="icon-Commit"><span class="path1"></span><span
-                                                    class="path2"></span></i>Doctor Wise Report
                                         </a>
                                     </li>
                                 </ul>

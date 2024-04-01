@@ -5,13 +5,13 @@ SELECT * FROM [dbo].[dba] WHERE dUSERNAME = 'Administrator' AND dPASSWORD = 'Par
 
 INSERT INTO citymaster (Cityname, distname, state, country, added_by) VALUES ('Kolkata', 'Kolkata', 'West Bengal', 'India', 'Administrator')
 
-Select * FROM citymaster
-
+Select * FROM docmaster
+SELECT docName, fee FROM docmaster WHERE dept = 'Cardiology'
 UPDATE citymaster
 SET date = CURRENT_TIMESTAMP;
 
 Select * FROM InPatho2324 where rno = '237500'
---DELETE FROM citymaster WHERE rno = '237480'
+DELETE FROM citymaster WHERE rno = '237480'
 ALTER TABLE citymaster
 ADD state VARCHAR(MAX),
 	country VARCHAR(MAX),
@@ -26,7 +26,17 @@ ADD dept VARCHAR(MAX) NULL;
 
 
 Select * FROM deptmaster where billno = '237578'
-select * from billingDetails
+select * from registration
+--delete from registration
+drop table registration
+ALTER TABLE registration
+ADD id INT IDENTITY(1,1) PRIMARY KEY;
+
+
+ALTER TABLE registration
+DROP COLUMN id;
+
+
 
 select * from AdmitCard2324 where regno = '237493'
 
@@ -106,8 +116,9 @@ INNER JOIN registration AS rs
 ON bd.rno = rs.rno;
 
 ALTER TABLE registration
-ADD modify_by VARCHAR(255), -- or appropriate data type
-    modify_date DATETIME; -- or appropriate data type
+ADD date DATETIME DEFAULT GETDATE(), -- or appropriate data type
+	modifiedBy VARCHAR(MAX),
+    modifiedDate DATETIME; -- or appropriate data type
 
 ALTER TABLE registration
 ALTER COLUMN opid VARCHAR(MAX) NULL
@@ -115,13 +126,22 @@ AFTER rno;
 ALTER TABLE registration
 ADD opid VARCHAR(MAX) NULL;
 
+delete from registration
+
+-- Drop the default constraint on modifiedDate column
 ALTER TABLE registration
-DROP COLUMN opid_new;
+DROP CONSTRAINT DF__registrat__modif__3CF0D5C4; -- Replace 'DF__registrat__modif__3CF0D5C4' with the actual name of the default constraint
+
+-- Drop the modifiedDate column
+ALTER TABLE registration
+DROP COLUMN modifiedBy;
 
 
+Select rstatus FROM registration
 
-
-
+UPDATE registration
+SET rno = 'MR000003'
+WHERE id = 4;
 
 
 Select * FROM citymaster
