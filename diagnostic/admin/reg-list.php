@@ -1,6 +1,6 @@
 <?php
 session_start();
-if (isset ($_SESSION['login']) && $_SESSION['login'] == true) {
+if (isset($_SESSION['login']) && $_SESSION['login'] == true) {
     $login_username = $_SESSION['username'];
 } else {
     echo "<script>location.href='../../login';</script>";
@@ -37,75 +37,90 @@ include ('header.php');
                                 <thead>
                                     <tr>
                                         <th>Reg. No.</th>
-                                        <th>Reg. Date Time.</th>
-                                        <th>Name</th>
-                                        <th>Gender</th>
-                                        <th>Age</th>
-                                        <!-- <th>F/H/S/D/W</th> -->
-                                        <th>Ph. No</th>
-                                        <th>City</th>
-                                        <th>Fee</th>
+                                        <th>Bill No</th>
+                                        <th>Bill Date</th>
+                                        <th>Name </th>
+                                        <th>Gender </th>
+                                        <th>Test</th>
+                                        <th>Rate</th>
+                                        <th>Doctor</th>
                                         <th>Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <?php
-                                    $sql = "SELECT TOP 900 id, rno, rdate, rtime, rfname, CONCAT(rfname, ' ', COALESCE(rmname, ''), ' ', rlname) AS fullname, rsex, rage, fname, rrace, radd1, rcity, rdist, wamt, uname
-                                    FROM registration 
-                                    ORDER BY id DESC";
+                                    $sql = "SELECT b.id, b.rno, b.opid, b.billdate, b.billno, b.pname, b.uname, b.servname, b.servrate, r.rsex, r.rage, r.rdoc
+                                    FROM billing AS b
+                                    INNER JOIN registration AS r ON b.rno = r.rno
+                                    INNER JOIN servmaster AS s ON b.servname = s.servname 
+                                    WHERE s.dept = 'PATHOLOGY'
+                                    ORDER BY billno DESC";
                                     $stmt = sqlsrv_query($conn, $sql);
                                     if ($stmt === false) {
-                                        die (print_r(sqlsrv_errors(), true));
+                                        die(print_r(sqlsrv_errors(), true));
                                     }
                                     while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
-                                        $rno = $row['rno'];
                                         $id = $row['id'];
-                                        $rfname = $row['rfname'];
-                                         $wamt = number_format($row['wamt'], 2);
+                                        $rno = $row['rno'];
+                                        $opid = $row['opid'];
+                                        $pname = $row['pname'];
+                                        $billdate = $row['billdate'];
+                                        $billno = $row['billno'];
+                                        $servname = $row['servname'];
+                                        $servrate = $row['servrate'];
+                                        $addedBy = $row['uname'];
+                                        $rsex = $row['rsex'];
+                                        $rage = $row['rage'];
+                                        $rdoc = $row['rdoc'];
                                         ?>
                                         <tr>
                                             <td>
                                                 <?php echo $rno; ?>
                                             </td>
                                             <td>
-                                                <?php echo $row['rdate']->format('Y-m-d'); ?>
-                                                <?php echo $row['rtime']; ?>
+                                                <?php echo $billno; ?>
                                             </td>
                                             <td>
-                                                <?php echo $row['fullname']; ?>
+                                                <?php echo $billdate; ?>
                                             </td>
                                             <td>
-                                                <?php echo $row['rsex']; ?>
+                                                <?php echo $pname; ?> (<?php echo $rage; ?>)
                                             </td>
                                             <td>
-                                                <?php echo $row['rage']; ?>
+                                                <?php echo $rsex; ?>
                                             </td>
                                             <td>
-                                                <?php echo $row['rrace']; ?>
+                                                <?php echo $servname; ?>
                                             </td>
                                             <td>
-                                                <?php echo $row['rcity']; ?>
+                                                <?php echo $servrate; ?>
                                             </td>
                                             <td>
-                                                <?php echo $wamt; ?>
+                                                <?php echo $rdoc; ?>
                                             </td>
                                             <td class="text-center">
-											<div class="list-icons d-inline-flex">
-												<div class="list-icons-item dropdown">
-													<a href="#" class="list-icons-item dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false"><i class="fa fa-file-text"></i></a>
-													<div class="dropdown-menu dropdown-menu-end" style="">
-														<!-- <a href="#" class="dropdown-item"><i class="fa fa-download"></i> Download</a> -->
-														<a href="#" class="dropdown-item"><i class="fa fa-print"></i> Print</a>
-														<div class="dropdown-divider"></div>
-														<a href="update-reg?id=<?php echo $id; ?>&rno=<?php echo $rno; ?>" class="dropdown-item"><i class="fa fa-pencil"></i> Edit</a>
-														<div class="dropdown-divider"></div>
-                                                        <a href="visit-doctor?id=<?php echo $id; ?>&rno=<?php echo $rno; ?>" class="dropdown-item"><i
-                                                        class="fa-solid fa-user-doctor"></i> Visit Doctor</a>
-														<a href="opd-billing?id=<?php echo $id; ?>&rno=<?php echo $rno; ?>" class="dropdown-item"> OPD Billing</a>
-                                                        <a href="#" class="dropdown-item"> IPD Admisstion</a>
-													</div>
-												</div>
-											</div>
+                                                <div class="list-icons d-inline-flex">
+                                                    <div class="list-icons-item dropdown">
+                                                        <a href="#" class="list-icons-item dropdown-toggle"
+                                                            data-bs-toggle="dropdown" aria-expanded="false"><i
+                                                                class="fa fa-file-text"></i></a>
+                                                        <div class="dropdown-menu dropdown-menu-end" style="">
+                                                            <!-- <a href="#" class="dropdown-item"><i class="fa fa-download"></i> Download</a> -->
+                                                            <a href="#" class="dropdown-item"><i class="fa fa-print"></i>
+                                                                Print</a>
+                                                            <div class="dropdown-divider"></div>
+                                                            <a href="update-reg?id=<?php echo $id; ?>&rno=<?php echo $rno; ?>"
+                                                                class="dropdown-item"><i class="fa fa-pencil"></i> Edit</a>
+                                                            <div class="dropdown-divider"></div>
+                                                            <a href="visit-doctor?id=<?php echo $id; ?>&rno=<?php echo $rno; ?>"
+                                                                class="dropdown-item"><i
+                                                                    class="fa-solid fa-user-doctor"></i> Visit Doctor</a>
+                                                            <a href="opd-billing?id=<?php echo $id; ?>&rno=<?php echo $rno; ?>"
+                                                                class="dropdown-item"> OPD Billing</a>
+                                                            <a href="#" class="dropdown-item"> IPD Admisstion</a>
+                                                        </div>
+                                                    </div>
+                                                </div>
                                         </tr>
                                         <?php
                                     }

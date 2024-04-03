@@ -118,11 +118,12 @@ include ('header.php');
                                                             <a href="update-reg?id=<?php echo $id; ?>&rno=<?php echo $rno; ?>"
                                                                 class="dropdown-item"><i class="fa fa-pencil"></i> Edit</a>
                                                             <div class="dropdown-divider"></div>
-                                                            <a href="opd-billing?opid=<?php echo $opid; ?>&rno=<?php echo $rno; ?>"
+                                                            <a href="opd-billing2?opid=<?php echo $opid; ?>&rno=<?php echo $rno; ?>"
                                                                 class="dropdown-item"> OPD Billing</a>
                                                         </div>
                                                     </div>
                                                 </div>
+                                            </td>
                                         </tr>
                                         <?php
                                     }

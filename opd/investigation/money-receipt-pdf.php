@@ -45,7 +45,7 @@ include ('header.php');
             $id = $_GET['id'];
             $rno = $_GET['rno'];
 
-            $sql = "SELECT TOP 500 bd.rstatus AS rstatus, 
+            $sql = "SELECT TOP 500 
             bd.pname AS pname,
             bd.id AS id,
             bd.rno AS rno,
@@ -69,7 +69,6 @@ include ('header.php');
                 $id = $row['id'];
                 $rno = $row['rno'];
                 $billno = $row['billno'];
-                $rstatus = $row['rstatus'];
                 $pname = $row['pname'];
                 $billdate = $row['billdate'];
                 $totalPrice = $row['totalPrice'];
@@ -86,12 +85,11 @@ include ('header.php');
                 <div class="col-md-6 invoice-col">
                     <!-- <strong>From</strong> -->
                     <address>
-                        <strong class="text-blue fs-16">Receipt No :
-                            <?php echo $rno - 1; ?>
+                        <strong class="text-blue fs-16">Bill No :
+                            <?php echo $billno; ?>
                         </strong><br>
                         <strong class="text-blue fs-16">Reg No :
-                            <?php echo $rno; ?> /
-                            <?php echo $rstatus; ?>
+                            <?php echo $rno; ?> 
                         </strong><br>
                     </address>
                 </div>

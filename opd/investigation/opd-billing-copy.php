@@ -7,34 +7,12 @@ if (isset($_SESSION['login']) && $_SESSION['login'] == true) {
 }
 include ('header.php');
 
-// if (isset($_GET['opid']) && isset($_GET['rno'])) {
-//     echo "opid and rno parameters are set";
-    // $opid = $_GET['opid'];
-    // $rno = $_GET['rno'];
-// } else {
-//     echo "opid and/or rno parameters are not set";
-// }
-$id = "";
-$fullname = "";
-$paymentType = "";
-$rdate = "";
-$rtime = "";
-$rfname = "";
-$rsex = "";
-$rage = "";
-$fname = "";
-$phone = "";
-$dept = "";
-$radd1 = "";
-$radd2 = "";
-$rdist = "";
-$wamt = "";
-$addedBy = "";
-$rdoc = "";
-$rno = "";
-$opid = "";
+if (isset($_GET['opid']) && isset($_GET['rno'])) {
+    $rno = $_GET['rno'];
+    $opid = $_GET['opid'];
+}
 
-$sql = "SELECT id, rno, opid, rdate, rtime, rfname, CONCAT(rfname, ' ', COALESCE(rmname, ''), ' ', rlname) AS fullname, 
+$sql = "SELECT id, rno, opid, rdate, rtime, rfname, se, CONCAT(rfname, ' ', COALESCE(rmname, ''), ' ', rlname) AS fullname, 
 rsex, rage, fname, phone, dept, paymentType, radd1, radd2, rcity, rdist, wamt, addedBy, rdoc
 FROM registration WHERE rno = '$rno' AND opid = '$opid'";
 $stmt = sqlsrv_query($conn, $sql);
@@ -42,24 +20,12 @@ if ($stmt === false) {
     die(print_r(sqlsrv_errors(), true));
 }
 while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
-    $opid = $row['opid'];
+    $id = $row['id'];
     $rno = $row['rno'];
-    $rdate = $row['rdate']->format('Y-m-d');
-    $rtime = $row['rtime'];
+    $opid = $row['opid'];
     $fullname = $row['fullname'];
-    $se = $row['se'];
-    $rfname = $row['rfname'];
-    $rmname = $row['rmname'];
-    $rlname = $row['rlname'];
-    $rsex = $row['rsex'];
-    $rage = $row['rage'];
-    $fname = $row['fname'];
-    $phone = $row['phone'];
-    $radd1 = $row['radd1'];
-    $radd2 = $row['radd2'];
-    $rcity = $row['rcity'];
     $rdoc = $row['rdoc'];
-    $rdist = $row['rdist'];
+    $phone = $row['phone'];
     $wamt = $row['wamt'];
 }
 ?>
@@ -358,25 +324,27 @@ while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
         }
 
         // Check if there are existing rows in the table body
-        const rows = tbody.querySelectorAll("tr");
-        if (rows.length === 0) {
-            console.log("No rows found in table body!");
-        }
+        // const rows = tbody.querySelectorAll("tr");
+        // if (rows.length === 0) {
+        //     console.log("No rows found in table body!");
+        // }
 
-        const existingServices = Array.from(rows).map(row => {
-            const input = row.querySelector("td:first-child input");
-            return input ? input.value : null;
-        });
-        console.log("Existing services:", existingServices);
-        if (existingServices.includes(servname)) {
-            console.log("Service already added!");
-            swal({
-                title: 'Service already added!',
-                icon: 'warning',
-                button: 'OK',
-            });
-            return;
-        }
+        // const existingServices = Array.from(rows).map(row => {
+        //     const input = row.querySelector("td:first-child input");
+        //     return input ? input.value : null;
+        // });
+        // console.log("Existing services:", existingServices);
+        // if (existingServices.includes(servname)) {
+        //     console.log("Service already added!");
+        //     swal({
+        //         title: 'Service already added!',
+        //         icon: 'warning',
+        //         button: 'OK',
+        //     });
+        //     return;
+        // }
+
+
 
         // Add service to the table
         const newRow = `
@@ -390,6 +358,7 @@ while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
         prices.push(parseFloat(servrate));
         calculateTotalPrice();
     }
+
 
 
     function onDeleteRow(e) {
@@ -409,7 +378,6 @@ while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
 
 <?php
 if (isset($_POST["billSave"])) {
-    $rstatus = $_POST["rstatus"];
     $rno = $_POST["rno"];
     $pname = $_POST["pname"];
     $phone = $_POST["phone"];
@@ -426,40 +394,47 @@ if (isset($_POST["billSave"])) {
     $username = $login_username;
     $status = isset($_POST["paymentType"]) ? $_POST["paymentType"] : "";
 
-    if ($totalPrice === 0.00 || $paidAmount === 0.00 || $totalPrice === null || $paidAmount === null || $status === null) {
-        echo '<script>
-                swal("Error!", "Total Price and Paid Amount should be greater than 0.00.", "error");
-            </script>';
-    } else {
+    // if ($totalPrice === 0.00 || $paidAmount === 0.00 || $totalPrice === null || $paidAmount === null || $status === null) {
+    //     echo '<script>
+    //             swal("Error!", "Total Price and Paid Amount should be greater than 0.00.", "error");
+    //         </script>';
+    // } else {
 
-        $sqlMain = "INSERT INTO billingDetails (rstatus, rno, pname, phone, rdocname, billno, billdate, totalPrice, totalAdj, gst, billAmount, paidAmount, balance, status, uname) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-        $paramsMain = array($rstatus, $rno, $pname, $phone, $rdocname, $billno, $billdate, $totalPrice, $totalAdj, $gst, $billAmount, $paidAmount, $balance, $status, $username);
-        $stmtMain = sqlsrv_prepare($conn, $sqlMain, $paramsMain);
+    // $sqlMain = "INSERT INTO billingDetails ( rno, pname, phone, rdocname, billno, billdate, totalPrice, totalAdj, gst, billAmount, paidAmount, balance, status, uname) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    // $paramsMain = array($rno, $pname, $phone, $rdocname, $billno, $billdate, $totalPrice, $totalAdj, $gst, $billAmount, $paidAmount, $balance, $status, $username);
+    // $stmtMain = sqlsrv_prepare($conn, $sqlMain, $paramsMain);
 
-        if ($stmtMain) {
-            if (sqlsrv_execute($stmtMain)) {
-                $success = true;
-                $sqlBilling = "INSERT INTO billing (rno, pname, billno, billdate, servname, servrate, uname) VALUES (?, ?, ?, ?, ?, ?, ?)";
-                $stmtBilling = sqlsrv_prepare($conn, $sqlBilling, array(&$rno, &$pname, &$billno, &$billdate, &$servname, &$servrate, &$username));
+    // if ($stmtMain) {
+    // if (sqlsrv_execute($stmtMain)) {
+        $success = true;
 
-                if (!$stmtBilling) {
-                    die(print_r(sqlsrv_errors(), true));
-                }
-
-                for ($i = 0; $i < count($_POST['sservname']); $i++) {
-                    $servname = $_POST['sservname'][$i];
-                    $servrate = $_POST['sservrate'][$i];
-
-                    if (!sqlsrv_execute($stmtBilling)) {
-                        $success = false;
-                        echo '<script>
-                            swal("Error!", "Error inserting billing item ' . ($i + 1) . '.", "error"); // Provide specific item number for error
+        // Loop through each set of values
+        for ($i = 0; $i < count($_POST['sservname']); $i++) {
+            // Get the values for the current iteration
+            $servname = $_POST['sservname'][$i];
+            $servrate = $_POST['sservrate'][$i];
+        
+            // Prepare the SQL statement for the current iteration
+            $sqlBilling = "INSERT INTO billing (rno, pname, billno, billdate, servname, servrate, uname) VALUES (?, ?, ?, ?, ?, ?, ?)";
+            $stmtBilling = sqlsrv_prepare($conn, $sqlBilling, array(&$rno, &$pname, &$billno, &$billdate, &$servname, &$servrate, &$username));
+        
+            if (!$stmtBilling) {
+                die(print_r(sqlsrv_errors(), true));
+            }
+        
+            // Execute the prepared statement for the current set of values
+            if (!sqlsrv_execute($stmtBilling)) {
+                $success = false;
+                // Print detailed error for the failed execution
+                echo '<script>
+                            swal("Error!", "Error inserting billing item ' . ($i + 1) . ': ' . sqlsrv_errors()[0]['message'] . '", "error");
                         </script>';
-                    }
-                }
-
-                if ($success) {
-                    echo '<script>
+            }
+        }
+        
+        // Check if all insertions were successful
+        if ($success) {
+            echo '<script>
                         swal("Success!", "", "success");
                         setTimeout(function(){
                             var url = "opd-bill-cum-receipt?rno=' . $rno . '&billno=' . $billno . '&billdate=' . $billdate . '";
@@ -469,23 +444,19 @@ if (isset($_POST["billSave"])) {
                             link.click();
                         }, 1000);
                     </script>';
-                } else {
-                    echo '<script>
-                        swal("Error!", "Error inserting one or more billing items.", "error");
-                    </script>';
-                }
-            } else {
-                echo '<script>
-                    swal("Error!", "Error inserting main data.", "error");
-                </script>';
-            }
         } else {
             echo '<script>
-                swal("Error!", "Error preparing main SQL statement.", "error");
-            </script>';
+                        swal("Error!", "Error inserting one or more billing items.", "error");
+                    </script>';
         }
     }
-}
+// } else {
+//     echo '<script>
+//         swal("Error!", "Error preparing main SQL statement.", "error");
+//     </script>';
+// }
+// }
+// }
 
 ?>
 

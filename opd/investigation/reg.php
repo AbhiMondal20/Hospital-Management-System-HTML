@@ -138,7 +138,8 @@ include ('header.php');
                                         <div class="form-group">
                                             <div class="controls">
                                                 <h5>First Name <span class="text-danger">*</span></h5>
-                                                <input type="text" class="form-control" required name="rfname" tabindex="1"
+                                                <input type="text" class="form-control" required name="rfname"
+                                                    tabindex="1"
                                                     data-validation-required-message="This field is required">
                                             </div>
                                         </div>
@@ -155,7 +156,8 @@ include ('header.php');
                                         <div class="form-group">
                                             <div class="controls">
                                                 <h5>Last Name <span class="text-danger">*</span></h5>
-                                                <input type="text" class="form-control" required name="rlname" tabindex="2"
+                                                <input type="text" class="form-control" required name="rlname"
+                                                    tabindex="2"
                                                     data-validation-required-message="This field is required">
                                             </div>
                                         </div>
@@ -174,7 +176,8 @@ include ('header.php');
                                         <div class="form-group">
                                             <div class="controls">
                                                 <h5>Age (Years) <span class="text-danger">*</span></h5>
-                                                <input type="text" class="form-control" required name="rage" tabindex="4"
+                                                <input type="text" class="form-control" required name="rage"
+                                                    tabindex="4"
                                                     data-validation-required-message="This field is required">
                                             </div>
                                         </div>
@@ -199,8 +202,8 @@ include ('header.php');
                                         <div class="form-group">
                                             <div class="controls">
                                                 <h5>Ph. No. <span class="text-danger">*</span></h5>
-                                                <input type="text" class="form-control" required name="phone" tabindex="5"
-                                                    id="phoneInput" maxlength="10" minlength="10"
+                                                <input type="text" class="form-control" required name="phone"
+                                                    tabindex="5" id="phoneInput" maxlength="10" minlength="10"
                                                     data-validation-required-message="This field is required"
                                                     onblur="checkPhoneNumber()">
                                             </div>
@@ -210,7 +213,8 @@ include ('header.php');
                                         <div class="form-group">
                                             <div class="controls">
                                                 <h5>F/H/S/D/W <span class="text-danger">*</span></h5>
-                                                <input type="text" class="form-control" required name="fname" tabindex="6"
+                                                <input type="text" class="form-control" required name="fname"
+                                                    tabindex="6"
                                                     data-validation-required-message="This field is required">
                                             </div>
                                         </div>
@@ -219,7 +223,8 @@ include ('header.php');
                                         <div class="form-group">
                                             <div class="controls">
                                                 <h5>Address <span class="text-danger">*</span></h5>
-                                                <input type="text" class="form-control" required name="radd1" tabindex="7"
+                                                <input type="text" class="form-control" required name="radd1"
+                                                    tabindex="7"
                                                     data-validation-required-message="This field is required">
                                             </div>
                                         </div>
@@ -346,7 +351,8 @@ include ('header.php');
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <h5>Payment Type <span class="text-danger">*</span></h5>
-                                            <select class="form-select select2" name="paymentType" required tabindex="12"> 
+                                            <select class="form-select select2" name="paymentType" required
+                                                tabindex="12">
                                                 <option value="Cash">Cash</option>
                                                 <option value="Card">Card</option>
                                                 <option value="NEFT">NEFT</option>
@@ -535,14 +541,12 @@ VALUES ('$rno', '$opid', '$se', '$rdate', '$rtime', '$paymentType', '$rtitle', '
     if ($stmt === false) {
         die(print_r(sqlsrv_errors(), true));
     } else {
-        echo '<script>
-        swal("Success!", "", "success");
-        setTimeout(function(){
-            window.open("reg-pdf?opid=' . $opid . '&rno=' . $rno . '", "_blank");
-            newTab.focus();
-        }, 1000);
-    </script>';
-
+            echo '<script>
+            swal("Success!", "", "success");
+            setTimeout(function(){
+                window.location.href="reg-pdf?opid=' . $opid . '&rno=' . $rno . '";
+            }, 1000);
+        </script>';
     }
 }
 

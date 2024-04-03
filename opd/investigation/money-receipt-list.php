@@ -1,6 +1,6 @@
 <?php
 session_start();
-if (isset ($_SESSION['login']) && $_SESSION['login'] == true) {
+if (isset($_SESSION['login']) && $_SESSION['login'] == true) {
     $login_username = $_SESSION['username'];
 } else {
     echo "<script>location.href='../../login';</script>";
@@ -44,11 +44,12 @@ include ('header.php');
                                     <th>Paid Amt.</th>
                                     <th>Bill Amt.</th>
                                     <th>Ref. Doc</th>
+                                    <th>Action</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <?php
-                                 $sql = "SELECT TOP 500 bd.rstatus AS rstatus, 
+                                $sql = "SELECT TOP 500
                                  bd.pname AS pname,
                                  bd.id AS id,
                                  bd.rno AS rno,
@@ -62,30 +63,28 @@ include ('header.php');
                                  bd.paidAmount AS paidAmount, 
                                  bd.balance AS balance, 
                                  bd.status AS status
-                                 FROM billingDetails AS bd
-                                 WHERE bd.rstatus = 'OPD'";
-                                 $stmt = sqlsrv_query($conn, $sql);
-                                 if ($stmt === false) {
-                                     die (print_r(sqlsrv_errors(), true));
-                                 }
-                                 while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
-                                     $id = $row['id'];
-                                     $rno = $row['rno'];
-                                     $billno = $row['billno'];
-                                     $rstatus = $row['rstatus'];
-                                     $pname = $row['pname'];
-                                     $billdate = $row['billdate'];
-                                     $totalPrice = $row['totalPrice'];
-                                     $rdocname = $row['rdocname'];
-                                     $totalAdj = $row['totalAdj'];
-                                     $gst = $row['gst'];
-                                     $billAmount = $row['billAmount'];
-                                     $paidAmount = $row['paidAmount'];
-                                     $balance = $row['balance'];
-                                     $status = $row['status'];
-                                 ?>
+                                 FROM billingDetails AS bd";
+                                $stmt = sqlsrv_query($conn, $sql);
+                                if ($stmt === false) {
+                                    die(print_r(sqlsrv_errors(), true));
+                                }
+                                while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
+                                    $id = $row['id'];
+                                    $rno = $row['rno'];
+                                    $billno = $row['billno'];
+                                    $pname = $row['pname'];
+                                    $billdate = $row['billdate'];
+                                    $totalPrice = $row['totalPrice'];
+                                    $rdocname = $row['rdocname'];
+                                    $totalAdj = $row['totalAdj'];
+                                    $gst = $row['gst'];
+                                    $billAmount = $row['billAmount'];
+                                    $paidAmount = $row['paidAmount'];
+                                    $balance = $row['balance'];
+                                    $status = $row['status'];
+                                    ?>
                                     <tr>
-                                        
+
                                         <td>
                                             <?php
                                             echo "<a href='money-receipt-pdf?id=$id&rno=$rno'>$billno</a>";
@@ -116,6 +115,24 @@ include ('header.php');
                                         </td>
                                         <td>
                                             <?php echo $rdocname; ?>
+                                        </td>
+                                        <td class="text-center">
+                                            <div class="list-icons d-inline-flex">
+                                                <div class="list-icons-item dropdown">
+                                                    <a href="#" class="list-icons-item dropdown-toggle"
+                                                        data-bs-toggle="dropdown" aria-expanded="false"><i
+                                                            class="fa fa-file-text"></i></a>
+                                                    <div class="dropdown-menu dropdown-menu-end" style="">
+                                                        <!-- <a href="#" class="dropdown-item"><i class="fa fa-download"></i> Download</a> -->
+                                                        <a href="opd-bill-cum-receipt?rno=<?php echo $rno; ?>&billno=<?php echo $billno; ?>&billdate=<?php echo $billdate; ?>"
+                                                            class="dropdown-item"><i class="fa fa-print"></i>
+                                                            Bill Cum Receipt</a>
+                                                        <a href="money-receipt-pdf?id=<?php echo $id ?>&rno=<?php echo $rno; ?>"
+                                                        class="dropdown-item"><i class="fa fa-print"></i>
+                                                        Money Receipt</a>
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </td>
 
                                     </tr>

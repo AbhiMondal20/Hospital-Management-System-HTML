@@ -536,12 +536,11 @@ VALUES ('$rno', '$opid', '$se', '$rdate', '$rtime', '$paymentType', '$rtitle', '
         die(print_r(sqlsrv_errors(), true));
     } else {
         echo '<script>
-        swal("Success!", "", "success");
-        setTimeout(function(){
-            window.open("reg-pdf?opid=' . $opid . '&rno=' . $rno . '", "_blank");
-            newTab.focus();
-        }, 1000);
-    </script>';
+            swal("Success!", "", "success");
+            setTimeout(function(){
+                window.location.href="reg-pdf?opid=' . $opid . '&rno=' . $rno . '", "_blank";
+            }, 1000);
+        </script>';
 
     }
 }

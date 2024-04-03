@@ -42,11 +42,12 @@ if (isset ($_SESSION['login']) && $_SESSION['login'] == true) {
                 <!-- /.col -->
             </div>
             <?php
-            $rno = $_GET['rno'];
-            $billno = $_GET['billno'];
+$rno1 = isset($_GET['rno']) ? $_GET['rno'] : '';
+$billno1 = isset($_GET['billno']) ? $_GET['billno'] : '';
 
-            $sql = "SELECT bd.rstatus AS rstatus, 
-            bd.pname AS pname, 
+if (!empty($rno1) && !empty($billno1)) {
+    // Fetching billing details
+    $sql1 = "SELECT bd.pname AS pname, 
             bd.phone AS phone, 
             bd.rdocname AS rdocname,
             bd.billdate AS billdate, 
@@ -65,38 +66,53 @@ if (isset ($_SESSION['login']) && $_SESSION['login'] == true) {
             FROM billingDetails AS bd 
             INNER JOIN registration AS rs 
             ON bd.rno = rs.rno
-            WHERE bd.rno = '$rno' AND bd.billno = '$billno'";
-            $stmt = sqlsrv_query($conn, $sql);
-            if ($stmt === false) {
-                die (print_r(sqlsrv_errors(), true));
-            }
-            while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
-                $rstatus = $row['rstatus'];
-                $pname = $row['pname'];
-                $phone = $row['phone'];
-                $billdate = $row['billdate'];
-                $totalPrice = $row['totalPrice'];
-                $rdocname = $row['rdocname'];
-                $totalAdj = $row['totalAdj'];
-                $gst = $row['gst'];
-                $billAmount = $row['billAmount'];
-                $paidAmount = $row['paidAmount'];
-                $balance = $row['balance'];
-                $status = $row['status'];
+            WHERE bd.rno = ? AND bd.billno = ?";
 
-                $gender = $row['rsex'];
-                $age = $row['rage'];
-                $add1 = $row['add1'];
-                $add2 = $row['add2'];
-                $city = $row['city'];
-            }
-            ?>
+    // Prepare and execute the SQL statement
+    $params1 = array($rno1, $billno1);
+    $stmt1 = sqlsrv_query($conn, $sql1, $params1);
+
+    if ($stmt1 === false) {
+        die(print_r(sqlsrv_errors(), true));
+    }
+
+    // Fetch data from the result set
+    if ($row = sqlsrv_fetch_array($stmt1, SQLSRV_FETCH_ASSOC)) {
+        // Assign fetched data to variables
+        $pname = $row['pname'];
+        $phone = $row['phone'];
+        $billdate = $row['billdate'];
+        $totalPrice = $row['totalPrice'];
+        $rdocname = $row['rdocname'];
+        $totalAdj = $row['totalAdj'];
+        $gst = $row['gst'];
+        $billAmount = $row['billAmount'];
+        $paidAmount = $row['paidAmount'];
+        $balance = $row['balance'];
+        $status = $row['status'];
+        $gender = $row['rsex'];
+        $age = $row['rage'];
+        $add1 = $row['add1'];
+        $add2 = $row['add2'];
+        $city = $row['city'];
+
+        // Output the fetched data
+        // Echo patient details here
+    } else {
+        echo "No data found for the provided rno and billno.";
+    }
+
+    // Free the statement
+    sqlsrv_free_stmt($stmt1);
+}
+?>
+
             <div class="row invoice-info">
                 <div class="col-md-6 invoice-col">
                     <!-- <strong>From</strong> -->
                     <address>
                         <strong class="text-blue fs-16">Regd No :
-                            <?php echo $rno; ?>
+                            <?php echo $rno1; ?>
                         </strong><br>
                         <strong class="text-blue fs-16">Name of Patient :
                             <?php echo $pname; ?>, Age :
@@ -116,8 +132,7 @@ if (isset ($_SESSION['login']) && $_SESSION['login'] == true) {
                 <div class="col-md-6 invoice-col text-end">
                     <address>
                         <strong class="text-blue fs-24">Bill No :
-                            <?php echo $billno; ?> /
-                            <?php echo $rstatus; ?>
+                            <?php echo $billno1; ?> 
                         </strong><br>
                         Date :
                         <?php echo $billdate; ?><br>
@@ -135,33 +150,32 @@ if (isset ($_SESSION['login']) && $_SESSION['login'] == true) {
                                 <th class="text-end">Amount</th>
                             </tr>
                             <?php
-                           $sql = "SELECT billing.servname, MAX(billing.servrate) AS max_servrate 
-                           FROM billing 
-                           WHERE rno = '$rno' AND billno = '$billno' 
-                           GROUP BY billing.servname";                   
-                            $stmt = sqlsrv_query($conn, $sql);
-                            $sno = 0;
-                            if ($stmt === false) {
-                                die (print_r(sqlsrv_errors(), true));
-                            }
-                            while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
-                                $sno = $sno + 1;
-                                $servname = $row['servname'];
-                                $servrate = $row['max_servrate'];
-                                ?>
-                                <tr>
-                                    <td>
-                                        <?php echo $sno; ?>
-                                    </td>
-                                    <td >
-                                        <?php echo $servname; ?>
-                                    </td>
-                                    <td class="text-end">1</td>
-                                    <td class="text-end">₹
-                                        <?php echo $servrate; ?>
-                                    </td>
-                                </tr>
-                            <?php } ?>
+                          $sql = "SELECT b.servname, b.servrate FROM billing AS b WHERE b.rno = '$rno1' AND b.billno = '$billno1'";                   
+                          $params = array($rno1, $billno1);
+                          $stmt = sqlsrv_query($conn, $sql, $params);
+                          $sno = 0;
+                          if ($stmt === false) {
+                              die(print_r(sqlsrv_errors(), true));
+                          }
+                          while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
+                              $sno = $sno + 1;
+                              $servname = $row['servname'];
+                              $servrate = $row['servrate'];
+                          ?>
+                          <tr>
+                              <td>
+                                  <?php echo $sno; ?>
+                              </td>
+                              <td>
+                                  <?php echo $servname; ?>
+                              </td>
+                              <td class="text-end">1</td>
+                              <td class="text-end">₹
+                                  <?php echo $servrate; ?>
+                              </td>
+                          </tr>
+                          <?php } ?>
+                          
                         </tbody>
                     </table>
                 </div>

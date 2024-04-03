@@ -25,13 +25,15 @@ ALTER TABLE registration
 ADD dept VARCHAR(MAX) NULL;
 
 
-Select * FROM deptmaster where billno = '237578'
-select * from registration
+Select * FROM registration where billno = '237578'
+select * from InPatho2324 where rcno = '35985'
 --delete from registration
 drop table registration
 ALTER TABLE registration
 ADD id INT IDENTITY(1,1) PRIMARY KEY;
 
+
+SELECT TOP 1 rcno FROM InPatho2324 ORDER BY id DESC
 
 ALTER TABLE registration
 DROP COLUMN id;
@@ -40,10 +42,27 @@ DROP COLUMN id;
 
 select * from AdmitCard2324 where regno = '237493'
 
-select * from bedmaster
+select * from billingDetails
 
+--Rename Column name 
+EXEC sp_rename 'billingDetails.rstatus', 'opid', 'COLUMN';
+
+select * from billing
+select * from registration
+
+select * from servmaster
+ALTER TABLE billing
+ADD opid INT NULL; -- or appropriate data type
+
+-- Reorder columns to place opid after id
+ALTER TABLE billing
+ALTER COLUMN opid INT NULL;
+
+
+
+delete from billingDetails
 select * from docmaster where srno = '1985';
-select * from deptmaster
+
 
 --DELETE FROM deptmaster;
 
@@ -144,7 +163,7 @@ SET rno = 'MR000003'
 WHERE id = 4;
 
 
-Select * FROM citymaster
+Select * FROM registration
 Select * FROM deptmaster
 Select * FROM docmaster
 Select * FROM titlemaster
@@ -235,3 +254,8 @@ INSERT INTO billing (rno, pname, billno, billdate, servname, servrate) VALUES ('
 
 INSERT INTO billingDetails (rstatus, rno, pname, phone, rdocname, billno, billdate, totalPrice, totalAdj, gst, billAmount, paidAmount, balance, status)
 VALUES ('OPD','000212' ,'Abhi','8101202074', 'Vivek Sarkar', '002125', '22-03-2024', '62000', '', '10', '66000', '50000', '16000', 'cash')
+
+
+
+
+SELECT b.servname, b.servrate FROM billing AS b WHERE b.rno = 'MR000002' AND b.billno = '237497'

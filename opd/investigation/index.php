@@ -1,11 +1,11 @@
 <?php
 session_start();
-if (isset ($_SESSION['login']) && $_SESSION['login'] == true) {
+if (isset($_SESSION['login']) && $_SESSION['login'] == true) {
     $username = $_SESSION['username'];
 } else {
     echo "<script>location.href='../../login';</script>";
 }
-    include ('header.php');
+include ('header.php');
 ?>
 
 <div class="content-wrapper">
@@ -19,7 +19,15 @@ if (isset ($_SESSION['login']) && $_SESSION['login'] == true) {
                             <div class="text-center">
                                 <h1 class="fs-50 text-primary"><i class="mdi mdi-wheelchair-accessibility"></i>
                                 </h1>
-                                <h2>4,569</h2>
+                                <?php
+                                $sql = "SELECT COUNT(*) AS totalRegistrations FROM registration WHERE addedBy = '$username'";
+                                $stmt = sqlsrv_query($conn, $sql);
+                                $row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC);
+                                $total = $row['totalRegistrations'];
+                                ?>
+                                <h2>
+                                    <?php echo $total; ?>
+                                </h2>
                                 <span class="badge badge-pill badge-primary px-10 mb-10">Patient</span>
                             </div>
                         </div>
@@ -52,7 +60,13 @@ if (isset ($_SESSION['login']) && $_SESSION['login'] == true) {
                         <div class="box-body">
                             <div class="text-center">
                                 <h1 class="fs-50 text-success"><i class="mdi mdi-heart-pulse"></i></h1>
-                                <h2>12,100</h2>
+                                <?php
+                                $sql = "SELECT COUNT(*) AS totallabp FROM billingDetails where uname = '$username'";
+                                $stmt = sqlsrv_query($conn, $sql);
+                                $row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC);
+                                $totallabp = $row['totallabp'];
+                                ?>
+                                <h2><?php echo $totallabp; ?></h2>
                                 <span class="badge badge-pill badge-success px-10 mb-10">Lab</span>
                             </div>
                         </div>
@@ -86,5 +100,5 @@ if (isset ($_SESSION['login']) && $_SESSION['login'] == true) {
     </div>
 </div>
 <?php
-    include ('footer.php');
+include ('footer.php');
 ?>

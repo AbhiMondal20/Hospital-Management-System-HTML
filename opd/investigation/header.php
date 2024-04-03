@@ -162,7 +162,7 @@ include ('function.php');
                                 </a>
                             </li>
                             <li>
-                                <a href="opd-billing">
+                                <a href="opd-billing2">
                                     <i data-feather="inbox"></i>
                                     <span>OPD Billing</span>
                                 </a>
