@@ -6,16 +6,16 @@ if (isset($_SESSION['login']) && $_SESSION['login'] == true) {
     echo "<script>location.href='../../login';</script>";
 }
 include ('header.php');
+
 if (isset($_GET['type']) && $_GET['type'] === 'delete' && isset($_GET['srno']) && $_GET['srno'] > 0) {
     $srno = $_GET['srno'];
-    $sql2 = "DELETE FROM citymaster WHERE srno = ?";
+    $sql2 = "DELETE FROM servmaster WHERE srno = ?";
     $stmt = sqlsrv_prepare($conn, $sql2, array(&$srno));
-
     if (sqlsrv_execute($stmt)) {
         echo "<script>
                 swal('Success!', '', 'success');
                 setTimeout(function(){
-                    window.location.href = 'doctor-master';
+                    window.location.href = 'test-master';
                 }, 2000);
               </script>";
         exit;
@@ -31,17 +31,18 @@ if (isset($_GET['type']) && $_GET['type'] === 'delete' && isset($_GET['srno']) &
         <div class="content-header">
             <div class="d-flex align-items-center">
                 <div class="me-auto">
-                    <h4 class="page-title">City Master</h4>
+                    <h4 class="page-title">Test Master</h4>
                     <div class="d-inline-block align-items-center">
                         <nav>
                             <ol class="breadcrumb">
                                 <li class="breadcrumb-item"><a href="#"><i class="mdi mdi-home-outline"></i></a></li>
-                                <li class="breadcrumb-item" aria-current="page">City</li>
+                                <li class="breadcrumb-item" aria-current="page">Test</li>
                                 <li class="breadcrumb-item active" aria-current="page">Master</li>
                             </ol>
                         </nav>
                     </div>
                 </div>
+
             </div>
         </div>
         <section class="content">
@@ -53,16 +54,15 @@ if (isset($_GET['type']) && $_GET['type'] === 'delete' && isset($_GET['srno']) &
                                 <thead>
                                     <tr>
                                         <th>SL. No</th>
-                                        <th>City</th>
-                                        <th>State</th>
-                                        <th>Dist</th>
-                                        <th>Country</th>
+                                        <th>Department</th>
+                                        <th>Test</th>
+                                        <th>Price</th>
                                         <th>Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <?php
-                                    $sql = "SELECT srno, Cityname, distname, state, country FROM citymaster 
+                                    $sql = "SELECT srno, dept, servname, servrate FROM servmaster 
                                     ORDER BY srno DESC";
                                     $stmt = sqlsrv_query($conn, $sql);
                                     if ($stmt === false) {
@@ -71,27 +71,24 @@ if (isset($_GET['type']) && $_GET['type'] === 'delete' && isset($_GET['srno']) &
                                     $sno = 0;
                                     while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
                                         $srno = $row['srno'];
-                                        $Cityname = $row['Cityname'];
-                                        $state = $row['state'];
-                                        $distname = $row['distname'];
-                                        $country = $row['country'];
+                                        $servname = $row['servname'];
+                                        $dept = $row['dept'];
+                                        $servrate = number_format($row['servrate'], 2);
+
                                         $sno = $sno + 1;
                                         ?>
                                         <tr>
                                             <td>
-                                                <?php echo $sno; ?>
+                                                <?php echo $srno; ?>
                                             </td>
                                             <td>
-                                                <?php echo $Cityname; ?>
+                                                <?php echo $dept; ?>
                                             </td>
                                             <td>
-                                                <?php echo $state; ?>
+                                                <?php echo $servname; ?>
                                             </td>
                                             <td>
-                                                <?php echo $distname; ?>
-                                            </td>
-                                            <td>
-                                                <?php echo $country; ?>
+                                                <?php echo $servrate; ?>
                                             </td>
                                             <td class="text-center">
                                                 <div class="list-icons d-inline-flex">
@@ -101,7 +98,7 @@ if (isset($_GET['type']) && $_GET['type'] === 'delete' && isset($_GET['srno']) &
                                                                 class="fa fa-file-text"></i></a>
                                                         <div class="dropdown-menu dropdown-menu-end" style="">
                                                             <div class="dropdown-divider"></div>
-                                                            <a href="update-city-master?srno=<?php echo $srno; ?>"
+                                                            <a href="update-test-master?srno=<?php echo $srno; ?>"
                                                                 class="dropdown-item"><i class="fa fa-pencil"></i> Edit</a>
                                                                 <a href="javascript:void(0)" onclick="return confirmDelete(<?php echo $srno; ?>);" class="delete dropdown-item"><i class="fa-solid fa-trash"></i> Delete</a>
 

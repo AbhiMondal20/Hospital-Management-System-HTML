@@ -12,10 +12,8 @@ SET date = CURRENT_TIMESTAMP;
 
 Select * FROM InPatho2324 where rno = '237500'
 DELETE FROM citymaster WHERE rno = '237480'
-ALTER TABLE citymaster
-ADD state VARCHAR(MAX),
-	country VARCHAR(MAX),
-	added_by VARCHAR(255), 
+ALTER TABLE servmaster
+ADD added_by VARCHAR(255), 
     date DATETIME,
 	modify_by VARCHAR(255),
     modify_date DATETIME; 
@@ -25,7 +23,7 @@ ALTER TABLE registration
 ADD dept VARCHAR(MAX) NULL;
 
 
-Select * FROM registration where billno = '237578'
+Select * FROM servmaster where srno = '1716'
 select * from InPatho2324 where rcno = '35985'
 --delete from registration
 drop table registration
@@ -50,7 +48,7 @@ EXEC sp_rename 'billingDetails.rstatus', 'opid', 'COLUMN';
 select * from billing
 select * from registration
 
-select * from servmaster
+select * from servmaster where dept = 'Hematolog'
 ALTER TABLE billing
 ADD opid INT NULL; -- or appropriate data type
 
@@ -258,4 +256,6 @@ VALUES ('OPD','000212' ,'Abhi','8101202074', 'Vivek Sarkar', '002125', '22-03-20
 
 
 
-SELECT b.servname, b.servrate FROM billing AS b WHERE b.rno = 'MR000002' AND b.billno = '237497'
+SELECT * FROM servmaster WHERE servname = 'Test2'
+
+INSERT INTO servmaster (dept, servname, servrate, ServFlag) VALUES ('CT', 'Test2', '50', 'Y')

@@ -37,6 +37,7 @@ include ('header.php');
                                 <thead>
                                     <tr>
                                         <th>Reg. No.</th>
+                                        <!-- <th>OP Id</th> -->
                                         <th>Bill No</th>
                                         <th>Bill Date</th>
                                         <th>Name </th>
@@ -54,7 +55,7 @@ include ('header.php');
                                     INNER JOIN registration AS r ON b.rno = r.rno
                                     INNER JOIN servmaster AS s ON b.servname = s.servname 
                                     WHERE s.dept = 'PATHOLOGY'
-                                    ORDER BY billno DESC";
+                                    ORDER BY b.billno DESC";
                                     $stmt = sqlsrv_query($conn, $sql);
                                     if ($stmt === false) {
                                         die(print_r(sqlsrv_errors(), true));
@@ -104,8 +105,7 @@ include ('header.php');
                                                         <a href="#" class="list-icons-item dropdown-toggle"
                                                             data-bs-toggle="dropdown" aria-expanded="false"><i
                                                                 class="fa fa-file-text"></i></a>
-                                                        <div class="dropdown-menu dropdown-menu-end" style="">
-                                                            <!-- <a href="#" class="dropdown-item"><i class="fa fa-download"></i> Download</a> -->
+                                                        <div class="dropdown-menu dropdown-menu-end">
                                                             <a href="#" class="dropdown-item"><i class="fa fa-print"></i>
                                                                 Print</a>
                                                             <div class="dropdown-divider"></div>

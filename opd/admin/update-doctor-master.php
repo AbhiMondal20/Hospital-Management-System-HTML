@@ -57,32 +57,55 @@ while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
                                     <div class="col-md-3">
                                         <div class="form-group">
                                             <h5>Department<span class="text-danger">*</span></h5>
-                                            <input type="text" name="dept" value="<?php echo $dept; ?>" placeholder="" class="form-control" required  data-validation-required-message="This field is required">
+                                            <select name="dept" class="form-control select2" required
+                                                data-validation-required-message="This field is required">
+                                                <option disabled>select</option>
+                                                <?php
+                                                $sql = "SELECT dept FROM deptmaster";
+                                                $stmt = sqlsrv_query($conn, $sql);
+                                                if ($stmt === false) {
+                                                    die(print_r(sqlsrv_errors(), true));
+                                                }
+                                                while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
+                                                    $deptOption = $row['dept'];
+                                                    $isSelected = ($deptOption == $dept) ? 'selected' : '';
+                                                    echo "<option value='$deptOption' $isSelected>" . $deptOption . "</option>";
+                                                }
+                                                ?>
+                                            </select>
                                         </div>
                                     </div>
                                     <div class="col-md-3">
                                         <div class="form-group">
                                             <h5>Doctor Reg. No.<span class="text-danger">*</span></h5>
-                                            <input type="text" name="docregno" placeholder="" class="form-control" required  value="<?php echo $docregno; ?>"data-validation-required-message="This field is required">
+                                            <input type="text" name="docregno" placeholder="" class="form-control"
+                                                required value="<?php echo $docregno; ?>"
+                                                data-validation-required-message="This field is required">
                                         </div>
                                     </div>
                                     <div class="col-md-3">
                                         <div class="form-group">
                                             <h5>Doctor Name<span class="text-danger">*</span></h5>
-                                            <input type="text" name="docName" placeholder="" class="form-control" required  value="<?php echo $docName; ?>" data-validation-required-message="This field is required">
+                                            <input type="text" name="docName" placeholder="" class="form-control"
+                                                required value="<?php echo $docName; ?>"
+                                                data-validation-required-message="This field is required">
                                         </div>
                                     </div>
                                     <div class="col-md-3">
                                         <div class="form-group">
                                             <h5>Speciality<span class="text-danger">*</span></h5>
-                                            <input type="text" name="sp" placeholder="" class="form-control" required value="<?php echo $sp; ?>" data-validation-required-message="This field is required">
+                                            <input type="text" name="sp" placeholder="" class="form-control" required
+                                                value="<?php echo $sp; ?>"
+                                                data-validation-required-message="This field is required">
                                         </div>
                                     </div>
                                     <div class="col-md-3">
                                         <div class="form-group">
                                             <h5>Fees <span class="text-danger">*</span></h5>
                                             <div class="controls">
-                                                <input type="text" name="fee" placeholder="" class="form-control" required value="<?php echo $fee; ?>" data-validation-required-message="This field is required">
+                                                <input type="text" name="fee" placeholder="" class="form-control"
+                                                    required value="<?php echo $fee; ?>"
+                                                    data-validation-required-message="This field is required">
                                             </div>
                                         </div>
                                     </div>
@@ -128,7 +151,7 @@ if (isset($_POST['save'])) {
             fee = '$fee', 
             modified_by = '$login_username',
             modified_date = '$modify_date'
-        WHERE srno = '$srno'"; 
+        WHERE srno = '$srno'";
 
     $stmt = sqlsrv_query($conn, $sql);
     if ($stmt === false) {

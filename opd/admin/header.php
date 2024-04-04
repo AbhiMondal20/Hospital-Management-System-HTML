@@ -199,6 +199,18 @@ include ('function.php');
                                                     class="path2"></span></i>City Master
                                         </a>
                                     </li>
+                                    <li>
+                                        <a href="add-test-master">
+                                            <i class="icon-Commit"><span class="path1"></span><span
+                                                    class="path2"></span></i>Add Test Master
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="test-master">
+                                            <i class="icon-Commit"><span class="path1"></span><span
+                                                    class="path2"></span></i>Test Master
+                                        </a>
+                                    </li>
                                 </ul>
                             </li>
                             <li class="treeview">
