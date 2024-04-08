@@ -51,7 +51,7 @@ include ('header.php');
                                 </thead>
                                 <tbody>
                                     <?php
-                                    $sql = "SELECT b.id, b.rno, b.opid, b.billdate, b.billno, b.pname, b.uname, b.servname, b.servrate, r.rsex, r.rage, r.rdoc, s.modality, p.servname AS PServname
+                                    $sql = "SELECT b.id, b.rno, b.opid, b.billdate, b.billno, b.pname, b.uname, b.servname, b.servrate, r.rsex, r.rage, r.rdoc, s.modality, p.servname AS PServname, p.uploadReport, p.inval, p.id AS pid
                                     FROM billing AS b
                                     INNER JOIN registration AS r ON b.rno = r.rno
                                     INNER JOIN servmaster AS s ON b.servname = s.servname
@@ -78,6 +78,9 @@ include ('header.php');
                                         $rdoc = $row['rdoc'];
 
                                         $PServname = $row['PServname'];
+                                        $uploadReport = $row['uploadReport'];
+                                        $inval = $row['inval'];
+                                        $pid = $row['pid'];
                                         ?>
                                         <tr>
                                             <td>
@@ -103,8 +106,8 @@ include ('header.php');
                                                 <?php echo $modality; ?>
                                             </td>
                                             <td>
-                                                <?php 
-                                                    echo $servname;                                                 
+                                                <?php
+                                                echo $servname;
                                                 ?>
                                             </td>
                                             <td>
@@ -125,12 +128,14 @@ include ('header.php');
                                                                 Reports</a>
                                                             <div class="dropdown-divider"></div>
                                                             <?php
-                                                                if ($PServname != NULL) {
-                                                                    echo '<a href="BiochemistryPdf?rno=' . $rno . '" class="dropdown-item"><i class="fa-solid fa-download"></i> Download</a>';
-                                                                }
-                                                            ?>
+                                                            if ($inval != NULL) {
+                                                                echo '<a href="BiochemistryPdf.php?rno=' . $rno . '" class="dropdown-item"><i class="fa-solid fa-download"></i> Download</a>';
+                                                            } elseif ($uploadReport != NULL) {
+                                                                echo '<a href="uploadReportPreview.php?rno=' . $rno . '&pid=' . $pid . '&modality=' . $modality . '" class="dropdown-item"><i class="fa-solid fa-download"></i> Download</a>';
+                                                            } else {
 
-                                                            
+                                                            }
+                                                            ?>
                                                         </div>
                                                     </div>
                                                 </div>

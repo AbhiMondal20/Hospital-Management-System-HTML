@@ -854,8 +854,10 @@ while ($row = sqlsrv_fetch_array($res, SQLSRV_FETCH_ASSOC)) {
                                 <input class="form-control" type="hidden" name="rno" value="<?php echo $rno; ?>">
                                 <input class="form-control" type="hidden" name="pname" value="<?php echo $pname; ?>">
                                 <input class="form-control" type="hidden" name="opid" value="<?php echo $opid; ?>">
-                                <input class="form-control" type="hidden" name="subgroup" value="UREA/CALCIUM/URIC ACID/CPK">
-                                <input class="form-control" type="hidden" name="servname" value="<?php echo $servname; ?>">
+                                <input class="form-control" type="hidden" name="subgroup"
+                                    value="UREA/CALCIUM/URIC ACID/CPK">
+                                <input class="form-control" type="hidden" name="servname"
+                                    value="<?php echo $servname; ?>">
                                 <input class="form-control" type="hidden" value="Biochemistry" name="modality">
 
                                 <div class="form-group row mt-3">
@@ -1228,16 +1230,20 @@ while ($row = sqlsrv_fetch_array($res, SQLSRV_FETCH_ASSOC)) {
                             <div class="box-body">
                                 <form method="POST" enctype="multipart/form-data">
                                     <input class="form-control" type="hidden" name="rno" value="<?php echo $rno; ?>">
-                                    <input class="form-control" type="hidden" name="pname" value="<?php echo $pname; ?>">
+                                    <input class="form-control" type="hidden" name="pname"
+                                        value="<?php echo $pname; ?>">
                                     <input class="form-control" type="hidden" name="opid" value="<?php echo $opid; ?>">
-                                    <input class="form-control" type="hidden" name="servname" value="<?php echo $servname; ?>">
+                                    <input class="form-control" type="hidden" name="servname"
+                                        value="<?php echo $servname; ?>">
                                     <input class="form-control" type="hidden" value="Biochemistry" name="modality">
 
                                     <div class="row">
                                         <div class="col-lg-12">
-                                            <input name="file" type="file" multiple />
+                                            <input type="file" name="file[]" required class="form-control" id="file"
+                                                accept=".jpeg,.jpg,.png,.pdf,.webp" multiple>
                                         </div>
                                     </div>
+                                    <br>
                                     <center>
                                         <button class="btn btn-md btn-primary" type="submit" name="Filesave"
                                             tabindex="38">SAVE</button>
@@ -1257,63 +1263,73 @@ while ($row = sqlsrv_fetch_array($res, SQLSRV_FETCH_ASSOC)) {
 
 // File Upload Code
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['Filesave'])) {
-    // Check if files are uploaded
-    if (isset($_FILES['file']['name']) && count($_FILES['file']['name']) > 0) {
-        // Prepare SQL statement
-        $sql = "INSERT INTO PathoReport (rno, pname, opid, servname, modality, uploadReport) VALUES (?, ?, ?, ?, ?, ?)";
-        $stmt = sqlsrv_prepare($conn, $sql, array(&$rno, &$pname, &$opid, &$servname, &$modality, &$uploadReport));
+    $fileCount = count($_FILES['file']['name']);
+    $tmp_dir = './uploads/';
+    $img_upload = array();
+    $upload_success = true;
 
-        if (!$stmt) {
-            die("Statement preparation failed: " . print_r(sqlsrv_errors(), true));
-        }
+    for ($i = 0; $i < $fileCount; $i++) {
+        $img_name = $_FILES['file']['name'][$i];
+        $thambname = uniqid('', true);
+        $img_ext = pathinfo($img_name, PATHINFO_EXTENSION);
+        $img_size = $_FILES['file']['size'][$i] / (1024 * 1024);
+        $img_dir = $tmp_dir . $thambname . "." . $img_ext;
 
-        // Get file details
-        $fileCount = count($_FILES['file']['name']);
-        $uploadReport = [];
+        // Debugging: Print file information
+        echo "File name: " . $img_name . "<br>";
+        echo "File type: " . $_FILES['file']['type'][$i] . "<br>";
+        echo "File size: " . $img_size . " MB<br>";
 
-        // Loop through each file
-        for ($i = 0; $i < $fileCount; $i++) {
-            $fileName = $_FILES['file']['name'][$i];
-            $fileTmpName = $_FILES['file']['tmp_name'][$i];
-            $fileSize = $_FILES['file']['size'][$i];
 
-            // Check if file is uploaded successfully
-            if ($fileSize > 0 && is_uploaded_file($fileTmpName)) {
-                // Move uploaded file to destination directory
-                $destination = "uploads/" . $fileName;
-                if (move_uploaded_file($fileTmpName, $destination)) {
-                    $uploadReport[] = $destination; // Add file path to array
-                }
-            }
-        }
-
-        // Bind parameters and execute SQL statement for each file
-        foreach ($uploadReport as $file) {
-            $rno = isset($_POST['rno']) ? $_POST['rno'] : '';
-            $pname = isset($_POST['pname']) ? $_POST['pname'] : '';
-            $opid = isset($_POST['opid']) ? $_POST['opid'] : '';
-            $servname = isset($_POST['servname']) ? $_POST['servname'] : '';
-            $modality = isset($_POST['modality']) ? $_POST['modality'] : '';
-
-            // Bind the uploadReport parameter to the file path
-            $uploadReport = $file;
-
-            if (!sqlsrv_execute($stmt)) {
-                die("Statement execution failed: " . print_r(sqlsrv_errors(), true));
-            }
-        }
-
-        echo '<script>
-                swal("Success!", "", "success");
+        if ($img_size > 5) {
+            echo "<script>
+                swal('Error!', 'Image size is greater than 5 MB.', 'error');
                 setTimeout(function(){
                     window.location.href = window.location.href;
                 }, 1000);
-            </script>';
-    } else {
-        echo "No files uploaded.";
+            </script>";
+            $upload_success = false;
+            break;
+        }
+
+        if (move_uploaded_file($_FILES['file']['tmp_name'][$i], $img_dir)) {
+            $img_upload[] = 'uploads/' . $thambname . "." . $img_ext;
+        } else {
+            $upload_success = false;
+            break;
+        }
     }
-    
+
+    if ($upload_success) {
+        $img_upload_str = implode(', ', $img_upload);
+
+        $rno = isset($_POST['rno']) ? $_POST['rno'] : '';
+        $pname = isset($_POST['pname']) ? $_POST['pname'] : '';
+        $opid = isset($_POST['opid']) ? $_POST['opid'] : '';
+        $servname = isset($_POST['servname']) ? $_POST['servname'] : '';
+        $modality = isset($_POST['modality']) ? $_POST['modality'] : '';
+        $sql = "INSERT INTO PathoReport (rno, pname, opid, servname, addedBy, modality, uploadReport) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        $stmt = sqlsrv_prepare($conn, $sql, array(&$rno, &$pname, &$opid, &$servname, &$login_username, &$modality, &$img_upload_str));
+
+        if (sqlsrv_execute($stmt)) {
+            echo "<script>
+                swal('Success!', 'Files uploaded successfully.', 'success');
+                setTimeout(function(){
+                    window.location.href = 'uploadReportPreview?rno=".$rno."&pid=".$id."&modality=".$modality."';
+                }, 1000);
+            </script>";
+        } else {
+            echo "<script>
+                swal('Error!', 'Failed to upload files.', 'error');
+                setTimeout(function(){
+                    window.location.href = window.location.href;
+                }, 1000);
+            </script>";
+        }
+    }
 }
+
+
 
 // LFT Code
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['LFTsave'])) {
@@ -1478,3 +1494,33 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['UREAnotes'])) {
 include ('footer.php');
 
 ?>
+
+<!-- Upload File Format -->
+<script>
+    const fileInput = document.getElementById('file');
+    fileInput.addEventListener('change', () => {
+        const allowedExtensions = /(\.jpeg|\.jpg|\.png|\.pdf|\.webp)$/i;
+        const maxSizeMB = 5;
+        const fileSizeMB = fileInput.files[0].size / (1024 * 1024);
+        const fileName = fileInput.value;
+        if (!allowedExtensions.exec(fileName)) {
+            swal({
+                title: 'Invalid!',
+                text: 'Invalid file format. Only PDF, WEBP, JPEG, JPG and PNG files are allowed.',
+                icon: 'error',
+                button: 'Ok',
+            });
+            fileInput.value = '';
+            return false;
+        } else if (fileSizeMB > maxSizeMB) {
+            swal({
+                title: 'Invalid!',
+                text: 'File size exceeds the maximum allowed size of 5 MB.',
+                icon: 'error',
+                button: 'Ok',
+            });
+            fileInput.value = '';
+            return false;
+        }
+    });
+</script>
