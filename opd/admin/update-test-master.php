@@ -8,7 +8,7 @@ if (isset($_SESSION['login']) && $_SESSION['login'] == true) {
 include ('header.php');
 
 $srno = $_GET['srno'];
-$sql = "SELECT srno, dept, servname, servrate, ServFlag FROM servmaster WHERE srno = '$srno'";
+$sql = "SELECT srno, dept, modality, servname, servrate, ServFlag FROM servmaster WHERE srno = '$srno'";
 $stmt = sqlsrv_query($conn, $sql);
 if ($stmt === false) {
     die(print_r(sqlsrv_errors(), true));
@@ -18,6 +18,7 @@ while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
     $servname = $row['servname'];
     $servrate = number_format($row['servrate'], 2);
     $dept = $row['dept'];
+    $modality = $row['modality'];
     $ServFlag = $row['ServFlag'];
 }
 ?>
@@ -82,6 +83,12 @@ while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
                                     </div>
                                     <div class="col-md-3">
                                         <div class="form-group">
+                                            <h5>Modality</h5>
+                                            <input type="text" name="modality" value="<?php echo $modality ?>" class="form-control">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
                                             <h5>Price<span class="text-danger">*</span></h5>
                                             <input type="text" name="servrate" placeholder="" class="form-control"
                                                 required value="<?php echo $servrate; ?>"
@@ -126,11 +133,12 @@ while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
 <?php
 if (isset($_POST['save'])) {
     $dept = $_POST['dept'];
+    $modality = $_POST['modality'];
     $servname = $_POST['servname'];
     $servrate = $_POST['servrate'];
     $ServFlag = $_POST['ServFlag'];
     $modify_date = date('Y-m-d H:i:s');
-    $sql = "UPDATE servmaster SET dept = '$dept', servname = '$servname', servrate = '$servrate', ServFlag = '$ServFlag', modified_by = '$login_username',  modified_date = '$modify_date'  WHERE srno = '$srno'";
+    $sql = "UPDATE servmaster SET dept = '$dept', modality = '$modality', servname = '$servname', servrate = '$servrate', ServFlag = '$ServFlag', modify_by = '$login_username',  modify_date = '$modify_date'  WHERE srno = '$srno'";
 
     $stmt = sqlsrv_query($conn, $sql);
     if ($stmt === false) {

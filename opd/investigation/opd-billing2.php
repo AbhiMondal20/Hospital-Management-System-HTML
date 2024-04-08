@@ -561,8 +561,8 @@ if (isset($_POST['billSave'])) {
             $billno = $_POST['billno'];
             $servrates = $_POST['servrates'][$i];
 
-            $sql = "INSERT INTO billing (rno, pname, billno, billdate, servname, servrate, uname) VALUES (?, ?, ?, ?, ?, ?, ?)";
-            $params = array($rno, $pname, $billno, $billdate, $servnames, $servrates, $username);
+            $sql = "INSERT INTO billing (rno, pname, billno, billdate, servname, servrate, uname, opid) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+            $params = array($rno, $pname, $billno, $billdate, $servnames, $servrates, $username, $opid);
             $stmt = sqlsrv_prepare($conn, $sql, $params);
 
             if (!sqlsrv_execute($stmt)) {

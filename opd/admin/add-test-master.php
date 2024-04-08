@@ -70,6 +70,12 @@ include ('header.php');
                                     </div>
                                     <div class="col-md-3">
                                         <div class="form-group">
+                                            <h5>Modality</h5>
+                                            <input type="text" name="modality" class="form-control">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
                                             <h5>Price<span class="text-danger">*</span></h5>
                                             <input type="text" name="servrate" placeholder="" class="form-control"
                                                 required data-validation-required-message="This field is required">
@@ -145,6 +151,7 @@ if (isset($_POST['save'])) {
     $dept = $_POST['dept'];
     $servname = $_POST['servname'];
     $servrate = $_POST['servrate'];
+    $modality = $_POST['modality'];
     $ServFlag = $_POST['ServFlag'];
     $date = date('Y-m-d H:i:s');
 
@@ -164,14 +171,13 @@ if (isset($_POST['save'])) {
               </script>';
     } else {
         // Insert the new servname
-        $sql = "INSERT INTO servmaster (dept, servname, servrate, ServFlag, added_by, date) VALUES (?, ?, ?, ?, ?, ?)";
-        $params = array($dept, $servname, $servrate, $ServFlag, $login_username, $date);
+        $sql = "INSERT INTO servmaster (dept, modality, servname, servrate, ServFlag, added_by, date) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        $params = array($dept, $modality, $servname, $servrate, $ServFlag, $login_username, $date);
         
         $stmt = sqlsrv_query($conn, $sql, $params);
         if ($stmt === false) {
             die(print_r(sqlsrv_errors(), true));
         } else {
-            // Insert successful, display success message
             echo '<script>
                     swal("Success!", "Service added successfully.", "success");
                     setTimeout(function(){
@@ -181,7 +187,6 @@ if (isset($_POST['save'])) {
         }
     }
 }
-
 
 
 // CSV Upload 
@@ -218,5 +223,4 @@ if (isset($_POST['save'])) {
 // }
 
 include ('footer.php');
-
 ?>

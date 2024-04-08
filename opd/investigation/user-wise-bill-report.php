@@ -102,7 +102,7 @@ include ('header.php');
                                         <th>Bill No</th>
                                         <th>Billing Date</th>
                                         <th>Name</th>
-                                        <th>Ph. No</th>
+                                        <!-- <th>Ph. No</th> -->
                                         <th>Age</th>
                                         <th>Services</th>
                                         <th>Price</th>
@@ -120,7 +120,7 @@ include ('header.php');
                                     $from = $_POST['from'];
                                     $sql = "SELECT
                                                 r.id, r.rno, r.rdate, r.rtime, b.pname AS fullname, 
-                                                r.rsex, r.rage, r.rrace, b.uname, r.rdoc, b.billdate, b.billno, b.servname, b.servrate, b.uname
+                                                r.rsex, r.rage, b.uname, r.rdoc, b.billdate, b.billno, b.servname, b.servrate, b.uname
                                             FROM 
                                                 registration AS r
                                             INNER JOIN billing AS b ON r.rno = b.rno
@@ -143,7 +143,6 @@ include ('header.php');
                                         $fullname = $row['fullname'];
                                         $sex = $row['rsex'];
                                         $age = $row['rage'];
-                                        $phone = $row['rrace'];
                                         $uname = $row['uname'];
                                         $servname = $row['servname'];
                                         // $servrate = $row['servrate']; 
@@ -159,7 +158,6 @@ include ('header.php');
                                             <td><?php echo $billno; ?></td>
                                             <td><?php echo $billdate; ?></td>
                                             <td><?php echo $fullname; ?></td>
-                                            <td><?php echo $phone; ?></td>
                                             <td><?php echo $age; ?></td>
                                             <td><?php echo $servname; ?></td>
                                             <td><?php echo $servrate; ?></td>

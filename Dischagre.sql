@@ -19,13 +19,20 @@ ADD added_by VARCHAR(255),
     modify_date DATETIME; 
 
 -- Add the dept column to the end of the table
-ALTER TABLE registration
-ADD dept VARCHAR(MAX) NULL;
+ALTER TABLE servmaster
+ADD dept2 VARCHAR(MAX) NULL;
 
+Select * FROM servmaster where servname = 'K T L'
+-- Inserting 'Breast' into dept column
+update servmaster set dept = 'Breast Screening' where servname = 'demo8'; 
 
-Select * FROM servmaster where srno = '1716'
 select * from InPatho2324 where rcno = '35985'
---delete from registration
+delete from servmaster where servname = 'test2'
+
+ALTER TABLE servmaster
+ALTER COLUMN dept VARCHAR(MAX);
+
+
 drop table registration
 ALTER TABLE registration
 ADD id INT IDENTITY(1,1) PRIMARY KEY;
@@ -52,9 +59,9 @@ select * from servmaster where dept = 'Hematolog'
 ALTER TABLE billing
 ADD opid INT NULL; -- or appropriate data type
 
--- Reorder columns to place opid after id
 ALTER TABLE billing
-ALTER COLUMN opid INT NULL;
+ALTER COLUMN opid VARCHAR(MAX);
+
 
 
 
@@ -258,4 +265,16 @@ VALUES ('OPD','000212' ,'Abhi','8101202074', 'Vivek Sarkar', '002125', '22-03-20
 
 SELECT * FROM servmaster WHERE servname = 'Test2'
 
+EXEC sp_rename 'servmaster.dept2', 'modality', 'COLUMN';
+
+
 INSERT INTO servmaster (dept, servname, servrate, ServFlag) VALUES ('CT', 'Test2', '50', 'Y')
+
+SELECT * FROM servmaster where srno='5385'
+
+SELECT b.id, b.rno, b.opid, b.billdate, b.billno, b.pname, b.uname, b.servname, b.servrate, r.rsex, r.rage, r.rdoc, s.dept
+                                    FROM billing AS b
+                                    INNER JOIN registration AS r ON b.rno = r.rno
+                                    INNER JOIN servmaster AS s ON b.servname = s.servname 
+                                    WHERE s.dept = 'PATHOLOGY'
+                                    ORDER BY b.billno DESC

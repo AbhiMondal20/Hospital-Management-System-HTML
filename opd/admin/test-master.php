@@ -55,6 +55,7 @@ if (isset($_GET['type']) && $_GET['type'] === 'delete' && isset($_GET['srno']) &
                                     <tr>
                                         <th>SL. No</th>
                                         <th>Department</th>
+                                        <th>Modality</th>
                                         <th>Test</th>
                                         <th>Price</th>
                                         <th>Action</th>
@@ -62,7 +63,7 @@ if (isset($_GET['type']) && $_GET['type'] === 'delete' && isset($_GET['srno']) &
                                 </thead>
                                 <tbody>
                                     <?php
-                                    $sql = "SELECT srno, dept, servname, servrate FROM servmaster 
+                                    $sql = "SELECT srno, dept, modality, servname, servrate FROM servmaster 
                                     ORDER BY srno DESC";
                                     $stmt = sqlsrv_query($conn, $sql);
                                     if ($stmt === false) {
@@ -73,6 +74,7 @@ if (isset($_GET['type']) && $_GET['type'] === 'delete' && isset($_GET['srno']) &
                                         $srno = $row['srno'];
                                         $servname = $row['servname'];
                                         $dept = $row['dept'];
+                                        $modality = $row['modality'];
                                         $servrate = number_format($row['servrate'], 2);
 
                                         $sno = $sno + 1;
@@ -83,6 +85,9 @@ if (isset($_GET['type']) && $_GET['type'] === 'delete' && isset($_GET['srno']) &
                                             </td>
                                             <td>
                                                 <?php echo $dept; ?>
+                                            </td>
+                                            <td>
+                                                <?php echo $modality; ?>
                                             </td>
                                             <td>
                                                 <?php echo $servname; ?>

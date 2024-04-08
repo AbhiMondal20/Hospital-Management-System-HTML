@@ -1,5 +1,5 @@
 <?php
-if (isset ($_SESSION['login']) && $_SESSION['login'] == true) {
+if (isset($_SESSION['login']) && $_SESSION['login'] == true) {
     $login_username = $_SESSION['username'];
 } else {
     echo "<script>location.href='../../login';</script>";
@@ -24,8 +24,10 @@ include ('function.php');
 </head>
 
 <!-- CK Editor -->
-<!-- <script src="https://cdn.ckeditor.com/ckeditor5/41.2.0/classic/ckeditor.js"></script> -->
-<!-- <script src="https://cdn.ckeditor.com/ckeditor5/41.2.0/super-build/ckeditor.js"></script> -->
+<!-- <script src="https://cdn.ckeditor.com/ckeditor5/41.2.0/classic/ckeditor.js"></script>
+<script src="https://cdn.ckeditor.com/ckeditor5/41.2.0/super-build/ckeditor.js"></script> -->
+
+<script src="https://cdn.ckeditor.com/ckeditor5/41.2.1/classic/ckeditor.js"></script>
 
 <!-- Bootstrap CSS -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
@@ -48,6 +50,15 @@ include ('function.php');
 <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 <script src="js/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4="
     crossorigin="anonymous"></script>
+
+<!-- TinyMCE CDN -->
+<!-- <script src="https://cdn.tiny.cloud/1/o8950qf9dc8sskbzm6k5dglwvhdl8vpzrcwickctdemgzfb5/tinymce/6/tinymce.min.js"
+    referrerpolicy="origin"></script>
+<script>
+    tinymce.init({
+        selector: 'textarea#editor',
+    });
+</script> -->
 </head>
 
 <body class="hold-transition light-skin sidebar-mini theme-success fixed">

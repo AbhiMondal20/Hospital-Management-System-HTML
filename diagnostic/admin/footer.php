@@ -5,6 +5,49 @@
 		Hospitals</a>. All Rights Reserved.
 </footer>
 
+<!-- CK Editor -->
+<script>
+        ClassicEditor
+            .create( document.querySelector( '#editor' ) )
+            .catch( error => {
+                console.error( error );
+            } );
+
+            ClassicEditor
+            .create( document.querySelector( '#editor1' ) )
+            .catch( error => {
+                console.error( error );
+            } );
+
+            ClassicEditor
+            .create( document.querySelector( '#editor2' ) )
+            .catch( error => {
+                console.error( error );
+            } );
+
+            ClassicEditor
+            .create( document.querySelector( '#editor3' ) )
+            .catch( error => {
+                console.error( error );
+            } );
+    </script>
+
+<!-- TinyMCE -->
+<!-- <script>
+  tinymce.init({
+    selector: 'textarea',
+    plugins: 'anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount checklist mediaembed casechange export formatpainter pageembed linkchecker a11ychecker tinymcespellchecker permanentpen powerpaste advtable advcode editimage advtemplate ai mentions tinycomments tableofcontents footnotes mergetags autocorrect typography inlinecss',
+    toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table mergetags | removeformat',
+    tinycomments_mode: 'embedded',
+    tinycomments_author: 'Author name',
+    mergetags_list: [
+      { value: 'First.Name', title: 'First Name' },
+      { value: 'Email', title: 'Email' },
+    ],
+    ai_request: (request, respondWith) => respondWith.string(() => Promise.reject("See docs to implement AI Assistant")),
+  });
+</script> -->
+
 <!-- Vendor JS -->
 <script src="js/vendors.min.js"></script>
 <script src="js/pages/chat-popup.js"></script>
@@ -51,6 +94,7 @@
 <script src="../assets/vendor_plugins/JqueryPrintArea/demo/jquery.PrintArea.js"></script>
 
 <script src="js/pages/invoice.js"></script>
+<script src="../assets/vendor_components/dropzone/dropzone.js"></script>
 
 </body>
 
